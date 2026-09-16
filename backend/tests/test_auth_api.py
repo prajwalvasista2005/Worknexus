@@ -45,6 +45,7 @@ def test_login_success():
     token_response = login(credentials=creds, db=mock_db)
 
     assert token_response.access_token is not None
+    assert token_response.refresh_token is not None
     assert token_response.token_type == "bearer"
 
 

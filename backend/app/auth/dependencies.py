@@ -7,7 +7,7 @@ from app.db.dependencies import get_db
 from app.models.users import User
 from app.services.auth_service import AuthService
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 
 def get_current_user(
@@ -20,7 +20,7 @@ def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
 
-    payload = verify_token(token)
+    payload = verify_token(token, expected_type="access")
     if payload is None:
         raise credentials_exception
 
