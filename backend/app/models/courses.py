@@ -1,34 +1,41 @@
 from datetime import datetime, timezone
-from sqlalchemy import String, Boolean, DateTime
+from sqlalchemy import Integer, String, Boolean, DateTime, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
 
-class User(Base):
-    __tablename__ = "users"
+class Course(Base):
+    __tablename__ = "courses"
 
     id: Mapped[int] = mapped_column(
+        Integer,
         primary_key=True,
         index=True,
     )
-    email: Mapped[str] = mapped_column(
-        String(255),
+    course_id: Mapped[str] = mapped_column(
+        String(50),
         unique=True,
         index=True,
         nullable=False,
     )
-    hashed_password: Mapped[str] = mapped_column(
+    name: Mapped[str] = mapped_column(
         String(255),
         nullable=False,
+        index=True,
     )
-    full_name: Mapped[str] = mapped_column(
-        String(255),
+    description: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+    department: Mapped[str] = mapped_column(
+        String(100),
         nullable=False,
+        index=True,
     )
-    role: Mapped[str] = mapped_column(
+    semester: Mapped[str | None] = mapped_column(
         String(50),
-        nullable=False,
+        nullable=True,
     )
     is_active: Mapped[bool] = mapped_column(
         Boolean,
@@ -41,14 +48,8 @@ class User(Base):
         nullable=False,
     )
 
-    skills = relationship(
-        "UserSkill",
-        back_populates="user",
+    course_skills = relationship(
+        "CourseSkill",
+        back_populates="course",
         cascade="all, delete-orphan",
     )
-    refresh_tokens = relationship(
-        "RefreshToken",
-        back_populates="user",
-        cascade="all, delete-orphan",
-    )
-
