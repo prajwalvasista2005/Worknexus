@@ -563,3 +563,167 @@ Removes a skill mapping from a curriculum course.
 - **Path Parameter:** `id` (integer)
 - **Response Body (`200 OK`):** `{"message": "Skill mapping removed from course successfully"}`.
 - **Possible Errors:** `404 Not Found`.
+
+---
+
+## 9. Job Postings Endpoints
+
+### 9.1 List All Job Postings
+#### `GET /job-postings`
+Lists market vacancy postings with optional pagination.
+
+- **Authentication:** Optional
+- **Query Parameters:**
+  - `skip` (integer, default `0`): Pagination offset
+  - `limit` (integer, default `100`): Pagination limit
+- **Response Body (`200 OK`):**
+  ```json
+  [
+    {
+      "id": 1,
+      "title": "Lead AI Engineer",
+      "company_name": "NexTech Global",
+      "description": "Building next-gen curriculum platforms",
+      "location": "Bengaluru",
+      "source": "Direct",
+      "posted_date": "2026-09-17T08:00:00Z",
+      "created_at": "2026-09-17T08:00:00Z"
+    }
+  ]
+  ```
+
+---
+
+### 9.2 Get Job Posting by ID
+#### `GET /job-postings/{job_id}`
+Retrieves full details of a specific job posting.
+
+- **Authentication:** Optional
+- **Path Parameter:** `job_id` (integer)
+- **Response Body (`200 OK`):** `JobPostingResponse` object.
+- **Possible Errors:**
+  - `404 Not Found`: Job posting not found.
+
+---
+
+### 9.3 Create Job Posting
+#### `POST /job-postings`
+Creates a new market vacancy posting.
+
+- **Authentication:** Optional
+- **Status Code:** `201 Created`
+- **Request Body (`JobPostingCreate`):**
+  ```json
+  {
+    "title": "Lead AI Engineer",
+    "company_name": "NexTech Global",
+    "description": "Building next-gen curriculum platforms",
+    "location": "Bengaluru",
+    "source": "Direct",
+    "posted_date": "2026-09-17T08:00:00Z"
+  }
+  ```
+- **Response Body (`JobPostingResponse`):** Created job posting record.
+- **Possible Errors:**
+  - `422 Unprocessable Entity`: Missing required fields (`title`, `company_name`, `description`).
+
+---
+
+### 9.4 Delete Job Posting
+#### `DELETE /job-postings/{job_id}`
+Removes a job vacancy from the system.
+
+- **Authentication:** Optional
+- **Path Parameter:** `job_id` (integer)
+- **Response Body (`200 OK`):**
+  ```json
+  {
+    "message": "Job posting deleted successfully"
+  }
+  ```
+- **Possible Errors:**
+  - `404 Not Found`: Job posting not found.
+
+---
+
+## 10. Job Skills Endpoints
+
+### 10.1 List Job Skills
+#### `GET /job-skills`
+Lists skills associated with industry job postings, with optional filtering.
+
+- **Authentication:** Optional
+- **Query Parameters:**
+  - `job_id` (integer, optional): Filter by job posting ID
+  - `skill_id` (string, optional): Filter by skill code (e.g. `SKL-PY-01`)
+  - `skip` (integer, default `0`): Pagination offset
+  - `limit` (integer, default `100`): Pagination limit
+- **Response Body (`200 OK`):**
+  ```json
+  [
+    {
+      "id": 1,
+      "job_id": 1,
+      "skill_id": "SKL-PY-01",
+      "created_at": "2026-09-17T08:00:00Z"
+    }
+  ]
+  ```
+
+---
+
+### 10.2 Get Job Skill Mapping by ID
+#### `GET /job-skills/{job_skill_id}`
+Retrieves a specific job-skill mapping record.
+
+- **Authentication:** Optional
+- **Path Parameter:** `job_skill_id` (integer)
+- **Response Body (`200 OK`):** `JobSkillResponse` object.
+- **Possible Errors:**
+  - `404 Not Found`: Job skill mapping not found.
+
+---
+
+### 10.3 Map Skill to Job Posting
+#### `POST /job-skills`
+Maps a required skill to a job vacancy posting.
+
+- **Authentication:** Optional
+- **Status Code:** `201 Created`
+- **Request Body (`JobSkillCreate`):**
+  ```json
+  {
+    "job_id": 1,
+    "skill_id": "SKL-PY-01"
+  }
+  ```
+- **Response Body (`JobSkillResponse`):**
+  ```json
+  {
+    "id": 1,
+    "job_id": 1,
+    "skill_id": "SKL-PY-01",
+    "created_at": "2026-09-17T08:00:00Z"
+  }
+  ```
+- **Possible Errors:**
+  - `404 Not Found`: Job posting with `job_id` not found or skill with `skill_id` not found.
+  - `400 Bad Request`: Skill is already mapped to this job posting.
+  - `422 Unprocessable Entity`: Invalid request structure.
+
+---
+
+### 10.4 Delete Job Skill Mapping
+#### `DELETE /job-skills/{job_skill_id}`
+Deletes a skill association from a job posting.
+
+- **Authentication:** Optional
+- **Path Parameter:** `job_skill_id` (integer)
+- **Response Body (`200 OK`):**
+  ```json
+  {
+    "message": "Job skill mapping deleted successfully"
+  }
+  ```
+- **Possible Errors:**
+  - `404 Not Found`: Job skill mapping not found.
