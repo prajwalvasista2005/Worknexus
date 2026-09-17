@@ -1,7 +1,7 @@
 # WorkNexus Backend Architecture Guide
 
 > **Target Audience:** Backend Developers, Machine Learning Engineers, and Frontend Engineers working on the WorkNexus platform.  
-> **Status:** Production-Ready Core Foundation (Authentication, Token Rotation, Skills Taxonomy, Curriculum Courses, User Skills, Course-Skill Mapping)  
+> **Status:** Production-Ready Core Foundation (Authentication, Token Rotation, Skills Taxonomy, Curriculum Courses, User Skills, Course-Skill Mapping, Job Postings, Job Skills Demand Mapping)  
 > **Repository:** `Worknexus` | **Backend Core:** `backend/`
 
 ---
@@ -18,7 +18,7 @@ WorkNexus is a **Labour Market Intelligence & Curriculum Alignment Platform** de
 ### Current Implementation Status
 The backend provides a scalable, enterprise-grade architecture:
 - **Relational Database:** PostgreSQL 15+ managed via **SQLAlchemy 2.0** (with strict `Mapped[...]` typing) and the high-performance **psycopg3** driver.
-- **Database Migrations:** Managed through **Alembic**, versioning `users`, `skills`, `courses`, `user_skills`, `course_skills`, and `refresh_tokens`.
+- **Database Migrations:** Managed through **Alembic**, versioning `users`, `skills`, `courses`, `user_skills`, `course_skills`, `job_postings`, `job_skills`, and `refresh_tokens`.
 - **Cryptographic Security & Authentication:**
   - Password hashing via **Passlib (bcrypt)** with per-user salting.
   - Dual-token lifecycle: **Access Tokens (30 min)** + **Refresh Tokens (7 days)**.
@@ -53,7 +53,8 @@ backend/
 │   ├── versions/                    # Migration revision files
 │   │   ├── f97f51981d4c_create_users_table.py
 │   │   ├── 0507cf69fd83_create_skills_table.py
-│   │   └── 861649acb717_create_courses_user_skills_course_.py
+│   │   ├── 861649acb717_create_courses_user_skills_course_.py
+│   │   └── 49ecdd8f4657_create_job_posting_tables.py
 │   ├── env.py                       # Alembic migration engine and metadata loader
 │   ├── README                       # Alembic environment documentation
 │   └── script.py.mako               # Migration template
@@ -64,7 +65,9 @@ backend/
 │   │   ├── skills.py                # CRUD for /skills/
 │   │   ├── courses.py               # CRUD for /courses/ and /courses/{id}/skills
 │   │   ├── user_skills.py           # CRUD for /user-skills/ and /user-skills/me
-│   │   └── course_skills.py         # CRUD for /course-skills/
+│   │   ├── course_skills.py         # CRUD for /course-skills/
+│   │   ├── job_postings.py          # CRUD for /job-postings
+│   │   └── job_skills.py            # CRUD for /job-skills
 │   ├── auth/                        # Security and cryptographic primitives
 │   │   ├── __init__.py
 │   │   ├── dependencies.py          # get_current_user OAuth2 dependency
@@ -82,6 +85,8 @@ backend/
 │   │   ├── courses.py               # Course table
 │   │   ├── user_skills.py           # UserSkill association table
 │   │   ├── course_skills.py         # CourseSkill association table
+│   │   ├── job_postings.py          # JobPosting table
+│   │   ├── jobSkill.py              # JobSkill association table
 │   │   └── refresh_tokens.py        # RefreshToken storage and revocation table
 │   ├── schemas/                     # Pydantic validation & serialization schemas
 │   │   ├── __init__.py              # Re-exports all schemas
@@ -90,14 +95,18 @@ backend/
 │   │   ├── skill.py                 # SkillCreate, SkillUpdate, SkillResponse
 │   │   ├── course.py                # CourseCreate, CourseUpdate, CourseResponse
 │   │   ├── user_skill.py            # UserSkillCreate, UserSkillUpdate, UserSkillResponse
-│   │   └── course_skill.py          # CourseSkillCreate, CourseSkillResponse
+│   │   ├── course_skill.py          # CourseSkillCreate, CourseSkillResponse
+│   │   ├── job_postings.py          # JobPostingCreate, JobPostingResponse
+│   │   └── job_skills.py            # JobSkillCreate, JobSkillResponse
 │   ├── services/                    # Business logic and database operations
 │   │   ├── __init__.py              # Re-exports all services
 │   │   ├── auth_service.py          # User authentication and token rotation logic
 │   │   ├── skill_service.py         # Skill taxonomy queries
 │   │   ├── course_service.py        # Course management queries
 │   │   ├── user_skill_service.py    # User skill profiling logic
-│   │   └── course_skill_service.py  # Curriculum-skill mapping logic
+│   │   ├── course_skill_service.py  # Curriculum-skill mapping logic
+│   │   ├── job_posting_service.py   # Job posting market demand queries
+│   │   └── job_skill_service.py     # Vacancy-skill requirement mapping logic
 │   ├── utils/                       # Shared utility helpers
 │   ├── config.py                    # Environment configuration via BaseSettings
 │   └── main.py                      # Application factory, middleware & router mounting
@@ -108,6 +117,8 @@ backend/
 │   ├── test_courses_api.py          # Course CRUD unit tests
 │   ├── test_user_skills_api.py      # User skills unit tests
 │   ├── test_course_skills_api.py    # Course skill mappings unit tests
+│   ├── test_job_postings_api.py     # Job posting CRUD unit tests
+│   ├── test_job_skills_api.py       # Job skill mappings unit tests
 │   └── test_integration.py         # End-to-end full system flow test against PostgreSQL
 ├── alembic.ini                      # Alembic CLI runtime configuration
 └── requirements.txt                 # Exact pinned dependencies
@@ -124,6 +135,8 @@ erDiagram
     skills ||--o{ user_skills : "assigned to"
     skills ||--o{ course_skills : "taught by"
     courses ||--o{ course_skills : "covers"
+    job_postings ||--o{ job_skills : "requires"
+    skills ||--o{ job_skills : "demanded by"
 
     users {
         int id PK
@@ -178,6 +191,24 @@ erDiagram
         int id PK
         int course_id FK
         int skill_id FK
+        datetime created_at
+    }
+
+    job_postings {
+        int id PK
+        string title
+        string company_name
+        text description
+        string location
+        string source
+        datetime posted_date
+        datetime created_at
+    }
+
+    job_skills {
+        int id PK
+        int job_id FK
+        string skill_id FK
         datetime created_at
     }
 ```
@@ -235,6 +266,28 @@ erDiagram
 - `skill_id` (Integer, FK `skills.id` ondelete CASCADE, Indexed)
 - `created_at` (DateTime with timezone)
 - *Constraint:* `UniqueConstraint("course_id", "skill_id")`
+
+#### 7. `job_postings`
+- `id` (Integer, PK)
+- `title` (String(255), Non-null)
+- `company_name` (String(255), Non-null)
+- `description` (Text, Non-null)
+- `location` (String(255), Nullable)
+- `source` (String(100), Nullable)
+- `posted_date` (DateTime with timezone, Nullable)
+- `created_at` (DateTime with timezone, Non-null, server_default `now()`)
+
+#### 8. `job_skills`
+- `id` (Integer, PK)
+- `job_id` (Integer, FK `job_postings.id`, Non-null)
+- `skill_id` (String(50), FK `skills.skill_id`, Non-null)
+- `created_at` (DateTime with timezone, Non-null, server_default `now()`)
+
+### Entity Relationships
+- **Job Postings <-> Job Skills:** One-to-Many relationship where each vacancy (`job_postings`) specifies one or more required skills mapped in `job_skills` via `job_skills.job_id -> job_postings.id`.
+- **Skills <-> Job Skills:** One-to-Many relationship where taxonomy skills (`skills`) are associated with vacancy demands in `job_skills` via the natural code key `job_skills.skill_id -> skills.skill_id`.
+- **Courses <-> Course Skills <-> Skills:** Many-to-Many relationship via `course_skills` joining `courses.id` and `skills.id`.
+- **Users <-> User Skills <-> Skills:** Many-to-Many relationship via `user_skills` joining `users.id` and `skills.id`.
 
 ---
 
@@ -298,6 +351,23 @@ Every business operation is decoupled from FastAPI routing:
   ```
 - No raw database queries or direct session commits occur in route handlers.
 
+### Service Modules Catalog
+
+1. **`AuthService` (`app/services/auth_service.py`):**
+   - User authentication, password verification, token pair generation, refresh token rotation, and session logout revocation.
+2. **`SkillService` (`app/services/skill_service.py`):**
+   - Taxonomy operations: `create_skill`, `get_skill_by_id`, `get_skill_by_code`, `get_all_skills`, `update_skill`, and `delete_skill`.
+3. **`CourseService` (`app/services/course_service.py`):**
+   - Curriculum operations: `create_course`, `get_course_by_id`, `get_course_by_code`, `get_all_courses`, `update_course`, and `delete_course`.
+4. **`UserSkillService` (`app/services/user_skill_service.py`):**
+   - Student profiling: `add_user_skill`, `get_user_skills`, `get_user_skill_by_id`, `get_user_skill_by_user_and_skill`, `update_user_skill`, and `delete_user_skill`.
+5. **`CourseSkillService` (`app/services/course_skill_service.py`):**
+   - Curriculum mapping: `add_skill_to_course`, `get_course_skills`, `get_course_skill_by_id`, `get_course_skill`, and `delete_course_skill`.
+6. **`JobPostingService` (`app/services/job_posting_service.py`):**
+   - Industry vacancy management: `create_job_posting`, `get_job_posting`, `get_all_job_postings`, and `delete_job_posting`.
+7. **`JobSkillService` (`app/services/job_skill_service.py`):**
+   - Vacancy skill demand mapping: `create_job_skill`, `get_job_skill`, `get_job_skill_by_job_and_skill`, `get_all_job_skills`, and `delete_job_skill`.
+
 ---
 
 ## 6. Frontend Integration Points
@@ -314,6 +384,9 @@ The React frontend (`frontend/src`) can connect directly to the FastAPI endpoint
 | **Course Catalog** | `DistrictDetail.tsx` | `GET /courses/?department=...` |
 | **Course Skills** | `CourseDetail.tsx` | `GET /courses/{id}/skills` |
 | **My Skills** | Student Dashboard | `GET /user-skills/me` & `POST /user-skills/` |
+| **Job Postings** | Employer / Jobs Portal | `GET /job-postings` & `POST /job-postings` |
+| **Job Details & Delete** | Job Posting View | `GET /job-postings/{id}` & `DELETE /job-postings/{id}` |
+| **Job Skill Requirements**| Vacancy Skill Manager | `GET /job-skills?job_id=...` & `POST /job-skills` |
 
 ---
 
@@ -324,16 +397,17 @@ WorkNexus's planned intelligence workflows hook into the data model:
 ```mermaid
 flowchart LR
     A["Job Descriptions & Syllabi"] --> B["NLP Skill Extraction (ml/extract)"]
-    B --> C["skills & course_skills (DB)"]
+    B --> C["skills, job_skills & course_skills (DB)"]
     C --> D["Embedding Generator"]
     D --> E["pgvector / Cosine Similarity"]
     E --> F["Skill Gap Analysis & Recommendations"]
 ```
 
 1. **Skill Extraction Pipeline (`POST /ml/extract-skills`):**
-   - Offline or batch NER models parse raw employer job postings and academic syllabi into standardized skill IDs.
+   - Offline or batch NER models parse raw employer job postings (`job_postings`) and academic syllabi (`courses`) into standardized skill IDs linked in `job_skills` and `course_skills`.
 2. **Embedding & Gap Computation (`GET /courses/{id}/gap-analysis`):**
-   - Compares vector embeddings or coverage metrics between `course_skills` and aggregated industry demand.
+   - Compares vector embeddings or coverage metrics between `course_skills` and aggregated industry demand across `job_skills`.
    - Calculates the **Alignment Score** ($0-100$) and flags high gaps ($\ge 20\%$).
 3. **Personalized Learning Paths (`GET /recommendations/courses`):**
-   - Matches a student's `user_skills` deficit against `courses` with high coverage in emerging skills.
+   - Matches a student's `user_skills` deficit against `courses` with high coverage in emerging skills demanded by active `job_postings`.
+

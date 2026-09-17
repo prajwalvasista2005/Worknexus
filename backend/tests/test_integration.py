@@ -137,7 +137,65 @@ def test_full_system_flow():
     assert c_skills_res.status_code == 200
     assert len(c_skills_res.json()) >= 1
 
-    # 12. Logout
+    # 12. Create Job Posting
+    job_res = client.post(
+        "/job-postings",
+        json={
+            "title": f"Lead AI Engineer {uid}",
+            "company_name": "NexTech Global",
+            "description": "Building next-gen curriculum platforms",
+            "location": "Bengaluru",
+            "source": "Direct",
+        },
+    )
+    assert job_res.status_code == 201
+    job_obj = job_res.json()
+    job_pk = job_obj["id"]
+    assert job_obj["title"] == f"Lead AI Engineer {uid}"
+
+    # 13. Get Job Posting
+    get_job_res = client.get(f"/job-postings/{job_pk}")
+    assert get_job_res.status_code == 200
+    assert get_job_res.json()["id"] == job_pk
+
+    # 14. List Job Postings
+    list_jobs_res = client.get("/job-postings")
+    assert list_jobs_res.status_code == 200
+    assert any(j["id"] == job_pk for j in list_jobs_res.json())
+
+    # 15. Map Skill to Job Posting
+    map_job_skill_res = client.post(
+        "/job-skills",
+        json={
+            "job_id": job_pk,
+            "skill_id": skill_code,
+        },
+    )
+    assert map_job_skill_res.status_code == 201
+    js_obj = map_job_skill_res.json()
+    js_pk = js_obj["id"]
+    assert js_obj["job_id"] == job_pk
+    assert js_obj["skill_id"] == skill_code
+
+    # 16. Get Job Skill Mapping
+    get_js_res = client.get(f"/job-skills/{js_pk}")
+    assert get_js_res.status_code == 200
+    assert get_js_res.json()["id"] == js_pk
+
+    # 17. List Job Skills
+    list_js_res = client.get(f"/job-skills?job_id={job_pk}")
+    assert list_js_res.status_code == 200
+    assert any(m["id"] == js_pk for m in list_js_res.json())
+
+    # 18. Delete Job Skill Mapping
+    del_js_res = client.delete(f"/job-skills/{js_pk}")
+    assert del_js_res.status_code == 200
+
+    # 19. Delete Job Posting
+    del_job_res = client.delete(f"/job-postings/{job_pk}")
+    assert del_job_res.status_code == 200
+
+    # 20. Logout
     logout_res = client.post(
         "/auth/logout",
         json={"refresh_token": new_refresh},

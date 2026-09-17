@@ -3,6 +3,8 @@ from app.api.skills import router as skills_router
 from app.api.courses import router as courses_router
 from app.api.user_skills import router as user_skills_router
 from app.api.course_skills import router as course_skills_router
+from app.api.job_postings import router as job_postings_router
+from app.api.job_skills import router as job_skills_router
 
 __all__ = [
     "auth_router",
@@ -10,4 +12,6 @@ __all__ = [
     "courses_router",
     "user_skills_router",
     "course_skills_router",
+    "job_postings_router",
+    "job_skills_router",
 ]
