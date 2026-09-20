@@ -1,0 +1,278 @@
+{
+  "metadata": {
+    "phase": "7A",
+    "pipeline": "student_skill_profile",
+    "taxonomy_version": "1",
+    "total_students": 5,
+    "total_skill_records": 18,
+    "total_unique_skills": 16,
+    "category_counts": {
+      "EV / Automotive": 4,
+      "Electrician / Electronics": 2,
+      "Healthcare Support": 4,
+      "IT / Data": 8
+    },
+    "scope_note": "Synthetic student skill profiles representing current claimed/verified skills and evidence provenance without proficiency scores or gap evaluations."
+  },
+  "students": [
+    {
+      "student_id": "STU_001",
+      "profile_name": "Synthetic Data Engineering Student",
+      "skill_count": 3,
+      "categories_present": [
+        "IT / Data"
+      ],
+      "skills": [
+        {
+          "skill_id": "SK_GIT",
+          "skill_name": "Git Version Control",
+          "category": "IT / Data",
+          "evidence": [
+            {
+              "evidence_type": "self_reported",
+              "evidence_strength": "basic"
+            }
+          ]
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "skill_name": "Python Programming",
+          "category": "IT / Data",
+          "evidence": [
+            {
+              "evidence_type": "certification",
+              "evidence_strength": "basic"
+            },
+            {
+              "evidence_type": "project",
+              "evidence_strength": "intermediate"
+            }
+          ]
+        },
+        {
+          "skill_id": "SK_SQL",
+          "skill_name": "SQL Database Management",
+          "category": "IT / Data",
+          "evidence": [
+            {
+              "evidence_type": "course_completed",
+              "evidence_strength": "intermediate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "student_id": "STU_002",
+      "profile_name": "Synthetic Beginner EV Technician Student",
+      "skill_count": 3,
+      "categories_present": [
+        "EV / Automotive"
+      ],
+      "skills": [
+        {
+          "skill_id": "SK_BATTERY_CELL",
+          "skill_name": "Cell Balancing and Testing",
+          "category": "EV / Automotive",
+          "evidence": [
+            {
+              "evidence_type": "self_reported",
+              "evidence_strength": "basic"
+            }
+          ]
+        },
+        {
+          "skill_id": "SK_BMS",
+          "skill_name": "Battery Management Systems",
+          "category": "EV / Automotive",
+          "evidence": [
+            {
+              "evidence_type": "course_completed",
+              "evidence_strength": "basic"
+            }
+          ]
+        },
+        {
+          "skill_id": "SK_HIGH_VOLTAGE",
+          "skill_name": "High Voltage Safety",
+          "category": "EV / Automotive",
+          "evidence": [
+            {
+              "evidence_type": "assessment",
+              "evidence_strength": "basic"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "student_id": "STU_003",
+      "profile_name": "Synthetic Advanced Full Stack Student",
+      "skill_count": 4,
+      "categories_present": [
+        "IT / Data"
+      ],
+      "skills": [
+        {
+          "skill_id": "SK_DOCKER",
+          "skill_name": "Docker Containerization",
+          "category": "IT / Data",
+          "evidence": [
+            {
+              "evidence_type": "assessment",
+              "evidence_strength": "intermediate"
+            }
+          ]
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "skill_name": "JavaScript Programming",
+          "category": "IT / Data",
+          "evidence": [
+            {
+              "evidence_type": "certification",
+              "evidence_strength": "advanced"
+            }
+          ]
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "skill_name": "Python Programming",
+          "category": "IT / Data",
+          "evidence": [
+            {
+              "evidence_type": "project",
+              "evidence_strength": "advanced"
+            }
+          ]
+        },
+        {
+          "skill_id": "SK_REACT",
+          "skill_name": "React.js Frontend",
+          "category": "IT / Data",
+          "evidence": [
+            {
+              "evidence_type": "project",
+              "evidence_strength": "advanced"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "student_id": "STU_004",
+      "profile_name": "Synthetic Healthcare Support Student",
+      "skill_count": 4,
+      "categories_present": [
+        "Healthcare Support"
+      ],
+      "skills": [
+        {
+          "skill_id": "SK_CPR_BLS",
+          "skill_name": "CPR and Basic Life Support",
+          "category": "Healthcare Support",
+          "evidence": [
+            {
+              "evidence_type": "certification",
+              "evidence_strength": "advanced"
+            }
+          ]
+        },
+        {
+          "skill_id": "SK_FIRST_AID",
+          "skill_name": "First Aid and Emergency Response",
+          "category": "Healthcare Support",
+          "evidence": [
+            {
+              "evidence_type": "certification",
+              "evidence_strength": "intermediate"
+            }
+          ]
+        },
+        {
+          "skill_id": "SK_PATIENT_CARE",
+          "skill_name": "Patient Care & Bedside Assistance",
+          "category": "Healthcare Support",
+          "evidence": [
+            {
+              "evidence_type": "course_completed",
+              "evidence_strength": "intermediate"
+            }
+          ]
+        },
+        {
+          "skill_id": "SK_VITAL_SIGNS",
+          "skill_name": "Vital Signs Monitoring",
+          "category": "Healthcare Support",
+          "evidence": [
+            {
+              "evidence_type": "assessment",
+              "evidence_strength": "intermediate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "student_id": "STU_005",
+      "profile_name": "Synthetic Cross-Disciplinary Automation Student",
+      "skill_count": 4,
+      "categories_present": [
+        "EV / Automotive",
+        "Electrician / Electronics",
+        "IT / Data"
+      ],
+      "skills": [
+        {
+          "skill_id": "SK_CAN",
+          "skill_name": "CAN Bus",
+          "category": "EV / Automotive",
+          "evidence": [
+            {
+              "evidence_type": "assessment",
+              "evidence_strength": "intermediate"
+            },
+            {
+              "evidence_type": "project",
+              "evidence_strength": "advanced"
+            }
+          ]
+        },
+        {
+          "skill_id": "SK_CIRCUIT_DESIGN",
+          "skill_name": "Circuit Design & Schematic",
+          "category": "Electrician / Electronics",
+          "evidence": [
+            {
+              "evidence_type": "assessment",
+              "evidence_strength": "basic"
+            }
+          ]
+        },
+        {
+          "skill_id": "SK_PLC",
+          "skill_name": "PLC Programming",
+          "category": "Electrician / Electronics",
+          "evidence": [
+            {
+              "evidence_type": "course_completed",
+              "evidence_strength": "intermediate"
+            }
+          ]
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "skill_name": "Python Programming",
+          "category": "IT / Data",
+          "evidence": [
+            {
+              "evidence_type": "project",
+              "evidence_strength": "intermediate"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,180 @@
+{
+  "metadata": {
+    "phase": "7E",
+    "pipeline": "course_selection_candidates",
+    "personalized_recommendation_input": "C:/Users/Nehal Jois/Documents/SIH/ml/personalized/student_skill_recommendations.json",
+    "course_mapping_input": "C:/Users/Nehal Jois/Documents/SIH/ml/course_mapping/personalized_course_mapping.json",
+    "course_catalog_input": "C:/Users/Nehal Jois/Documents/SIH/ml/data/sample_courses.json",
+    "taxonomy_input": "C:/Users/Nehal Jois/Documents/SIH/ml/data/skills.json",
+    "taxonomy_version": "1",
+    "total_students": 5,
+    "total_personalized_skills": 8,
+    "total_candidate_courses": 3,
+    "total_uncovered_personalized_skills": 4,
+    "scope_note": "Deterministic identification of candidate courses covering personalized skill recommendations without ranking, scoring, or learning path generation."
+  },
+  "students": [
+    {
+      "student_id": "STU_001",
+      "role": {
+        "role_id": "ROLE_DATA_ENGINEER",
+        "role_name": "Data Engineer"
+      },
+      "personalized_skill_ids": [
+        "SK_AIRFLOW",
+        "SK_AWS"
+      ],
+      "candidate_courses": [
+        {
+          "course_id": 102,
+          "course_name": "Data Engineering Associate",
+          "covered_personalized_skill_ids": [
+            "SK_AIRFLOW"
+          ],
+          "covered_personalized_skill_count": 1
+        }
+      ],
+      "uncovered_personalized_skills": [
+        "SK_AWS"
+      ],
+      "summary": {
+        "total_personalized_skills": 2,
+        "candidate_course_count": 1,
+        "covered_personalized_skill_count": 1,
+        "uncovered_personalized_skill_count": 1
+      }
+    },
+    {
+      "student_id": "STU_002",
+      "role": {
+        "role_id": "ROLE_EV_TECHNICIAN",
+        "role_name": "EV Technician"
+      },
+      "personalized_skill_ids": [
+        "SK_CAN",
+        "SK_DIAG",
+        "SK_THERMAL"
+      ],
+      "candidate_courses": [
+        {
+          "course_id": 42,
+          "course_name": "EV Technician",
+          "covered_personalized_skill_ids": [
+            "SK_DIAG",
+            "SK_THERMAL"
+          ],
+          "covered_personalized_skill_count": 2
+        }
+      ],
+      "uncovered_personalized_skills": [
+        "SK_CAN"
+      ],
+      "summary": {
+        "total_personalized_skills": 3,
+        "candidate_course_count": 1,
+        "covered_personalized_skill_count": 2,
+        "uncovered_personalized_skill_count": 1
+      }
+    },
+    {
+      "student_id": "STU_003",
+      "role": {
+        "role_id": "ROLE_FULL_STACK_DEV",
+        "role_name": "Full Stack Developer"
+      },
+      "personalized_skill_ids": [
+        "SK_SQL"
+      ],
+      "candidate_courses": [
+        {
+          "course_id": 101,
+          "course_name": "Full Stack Python Developer",
+          "covered_personalized_skill_ids": [
+            "SK_SQL"
+          ],
+          "covered_personalized_skill_count": 1
+        },
+        {
+          "course_id": 102,
+          "course_name": "Data Engineering Associate",
+          "covered_personalized_skill_ids": [
+            "SK_SQL"
+          ],
+          "covered_personalized_skill_count": 1
+        }
+      ],
+      "uncovered_personalized_skills": [],
+      "summary": {
+        "total_personalized_skills": 1,
+        "candidate_course_count": 2,
+        "covered_personalized_skill_count": 1,
+        "uncovered_personalized_skill_count": 0
+      }
+    },
+    {
+      "student_id": "STU_004",
+      "role": {
+        "role_id": "ROLE_HEALTHCARE_ASST",
+        "role_name": "General Duty Healthcare Assistant"
+      },
+      "personalized_skill_ids": [
+        "SK_EHR"
+      ],
+      "candidate_courses": [],
+      "uncovered_personalized_skills": [
+        "SK_EHR"
+      ],
+      "summary": {
+        "total_personalized_skills": 1,
+        "candidate_course_count": 0,
+        "covered_personalized_skill_count": 0,
+        "uncovered_personalized_skill_count": 1
+      }
+    },
+    {
+      "student_id": "STU_005",
+      "role": {
+        "role_id": "ROLE_INDUSTRIAL_AUTO",
+        "role_name": "Industrial Automation Technician"
+      },
+      "personalized_skill_ids": [
+        "SK_SCADA"
+      ],
+      "candidate_courses": [],
+      "uncovered_personalized_skills": [
+        "SK_SCADA"
+      ],
+      "summary": {
+        "total_personalized_skills": 1,
+        "candidate_course_count": 0,
+        "covered_personalized_skill_count": 0,
+        "uncovered_personalized_skill_count": 1
+      }
+    }
+  ],
+  "global_course_usage": [
+    {
+      "course_id": 42,
+      "course_name": "EV Technician",
+      "candidate_for_students": [
+        "STU_002"
+      ]
+    },
+    {
+      "course_id": 101,
+      "course_name": "Full Stack Python Developer",
+      "candidate_for_students": [
+        "STU_003"
+      ]
+    },
+    {
+      "course_id": 102,
+      "course_name": "Data Engineering Associate",
+      "candidate_for_students": [
+        "STU_001",
+        "STU_003"
+      ]
+    }
+  ],
+  "errors": []
+}

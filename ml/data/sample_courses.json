@@ -1,0 +1,93 @@
+[
+  {
+    "course_id": 42,
+    "name": "EV Technician",
+    "role": "EV Technician",
+    "skill_ids": [
+      "SK_BMS",
+      "SK_DIAG",
+      "SK_THERMAL"
+    ],
+    "coverage": {
+      "SK_BMS": 100,
+      "SK_DIAG": 60,
+      "SK_THERMAL": 100
+    }
+  },
+  {
+    "course_id": 101,
+    "name": "Full Stack Python Developer",
+    "role": "Software Developer",
+    "skill_ids": [
+      "SK_PYTHON",
+      "SK_FASTAPI",
+      "SK_SQL",
+      "SK_DOCKER",
+      "SK_GIT"
+    ],
+    "coverage": {
+      "SK_PYTHON": 100,
+      "SK_FASTAPI": 80,
+      "SK_SQL": 100,
+      "SK_DOCKER": 70,
+      "SK_GIT": 100
+    }
+  },
+  {
+    "course_id": 102,
+    "name": "Data Engineering Associate",
+    "role": "Data Engineer",
+    "skill_ids": [
+      "SK_PYTHON",
+      "SK_SQL",
+      "SK_PANDAS",
+      "SK_AIRFLOW",
+      "SK_SPARK"
+    ],
+    "coverage": {
+      "SK_PYTHON": 100,
+      "SK_SQL": 100,
+      "SK_PANDAS": 90,
+      "SK_AIRFLOW": 50,
+      "SK_SPARK": 70
+    }
+  },
+  {
+    "course_id": 103,
+    "name": "Industrial Automation & Electricals",
+    "role": "Industrial Electrician",
+    "skill_ids": [
+      "SK_CIRCUIT_DESIGN",
+      "SK_PLC",
+      "SK_PANEL_WIRING",
+      "SK_MULTIMETER",
+      "SK_EARTHING"
+    ],
+    "coverage": {
+      "SK_CIRCUIT_DESIGN": 100,
+      "SK_PLC": 75,
+      "SK_PANEL_WIRING": 100,
+      "SK_MULTIMETER": 100,
+      "SK_EARTHING": 90
+    }
+  },
+  {
+    "course_id": 104,
+    "name": "General Duty Healthcare Assistant",
+    "role": "General Duty Assistant",
+    "skill_ids": [
+      "SK_CPR_BLS",
+      "SK_PATIENT_CARE",
+      "SK_INFECTION_CONTROL",
+      "SK_VITAL_SIGNS",
+      "SK_FIRST_AID"
+    ],
+    "coverage": {
+      "SK_CPR_BLS": 100,
+      "SK_PATIENT_CARE": 90,
+      "SK_INFECTION_CONTROL": 100,
+      "SK_VITAL_SIGNS": 80,
+      "SK_FIRST_AID": 100
+    }
+  }
+]

@@ -1,0 +1,236 @@
+{
+  "total_explicit_skill_tokens": 830,
+  "matched_tokens": 145,
+  "unmatched_tokens": 685,
+  "matched_token_percentage": 17.5,
+  "total_unique_unmatched_terms": 274,
+  "top_50_unmatched_terms": [
+    {
+      "term": "Data Science",
+      "count": 31
+    },
+    {
+      "term": "IT Skills",
+      "count": 26
+    },
+    {
+      "term": "Machine Learning",
+      "count": 24
+    },
+    {
+      "term": "Machine learning",
+      "count": 22
+    },
+    {
+      "term": "data science",
+      "count": 12
+    },
+    {
+      "term": "machine learning",
+      "count": 11
+    },
+    {
+      "term": "Computer science",
+      "count": 11
+    },
+    {
+      "term": "Open source",
+      "count": 11
+    },
+    {
+      "term": "Java",
+      "count": 11
+    },
+    {
+      "term": "Artificial Intelligence",
+      "count": 11
+    },
+    {
+      "term": "R",
+      "count": 11
+    },
+    {
+      "term": "Artist",
+      "count": 11
+    },
+    {
+      "term": "Cloud",
+      "count": 10
+    },
+    {
+      "term": "DevOps",
+      "count": 9
+    },
+    {
+      "term": "Other",
+      "count": 9
+    },
+    {
+      "term": "Support",
+      "count": 9
+    },
+    {
+      "term": "Big Data",
+      "count": 8
+    },
+    {
+      "term": "SAS",
+      "count": 8
+    },
+    {
+      "term": "Data management",
+      "count": 7
+    },
+    {
+      "term": "Consulting",
+      "count": 7
+    },
+    {
+      "term": "Data Scientist",
+      "count": 7
+    },
+    {
+      "term": "Azure",
+      "count": 6
+    },
+    {
+      "term": "Analytics",
+      "count": 6
+    },
+    {
+      "term": "Data analysis",
+      "count": 6
+    },
+    {
+      "term": "C++",
+      "count": 6
+    },
+    {
+      "term": "Analytical",
+      "count": 6
+    },
+    {
+      "term": "Data mining",
+      "count": 6
+    },
+    {
+      "term": "Testing",
+      "count": 5
+    },
+    {
+      "term": "Computer vision",
+      "count": 5
+    },
+    {
+      "term": "Agile",
+      "count": 5
+    },
+    {
+      "term": "Operations research",
+      "count": 5
+    },
+    {
+      "term": "Enterprise applications",
+      "count": 5
+    },
+    {
+      "term": "Interpersonal skills",
+      "count": 5
+    },
+    {
+      "term": "Marketing",
+      "count": 5
+    },
+    {
+      "term": "advanced analytics",
+      "count": 4
+    },
+    {
+      "term": "NLP",
+      "count": 4
+    },
+    {
+      "term": "Neural networks",
+      "count": 4
+    },
+    {
+      "term": "Logistic Regression",
+      "count": 4
+    },
+    {
+      "term": "big data",
+      "count": 4
+    },
+    {
+      "term": "Text mining",
+      "count": 4
+    },
+    {
+      "term": "Automation",
+      "count": 4
+    },
+    {
+      "term": "Hadoop",
+      "count": 4
+    },
+    {
+      "term": "Sales",
+      "count": 4
+    },
+    {
+      "term": "MLT",
+      "count": 3
+    },
+    {
+      "term": "Cloud computing",
+      "count": 3
+    },
+    {
+      "term": "Data structures",
+      "count": 3
+    },
+    {
+      "term": "HTML",
+      "count": 3
+    },
+    {
+      "term": "Business intelligence",
+      "count": 3
+    },
+    {
+      "term": "SCALA",
+      "count": 3
+    },
+    {
+      "term": "Coding",
+      "count": 3
+    }
+  ],
+  "source_distribution": {
+    "linkedin_india": {},
+    "naukri": {
+      "Data Science": 27,
+      "IT Skills": 26,
+      "Machine Learning": 24,
+      "Machine learning": 22,
+      "data science": 12,
+      "machine learning": 11,
+      "Computer science": 11,
+      "Open source": 11,
+      "Artificial Intelligence": 11,
+      "R": 11
+    },
+    "parquet": {
+      "Artist": 11,
+      "Other": 9,
+      "Support": 9,
+      "DevOps": 8,
+      "Java": 6,
+      "Marketing": 5,
+      "Sales": 4,
+      "Data Science": 4,
+      "Design": 3,
+      "Unity": 3
+    }
+  }
+}

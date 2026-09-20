@@ -1,0 +1,629 @@
+{
+  "metadata": {
+    "phase": "7B",
+    "pipeline": "student_skill_gap_analysis",
+    "student_profile_input": "C:/Users/Nehal Jois/Documents/SIH/ml/student/student_skill_profiles.json",
+    "role_context_input": "C:/Users/Nehal Jois/Documents/SIH/ml/context/contextual_recommendations.json",
+    "role_assignment_input": "C:/Users/Nehal Jois/Documents/SIH/ml/data/sample_student_role_assignments.json",
+    "taxonomy_version": "1",
+    "total_students": 5,
+    "total_assignments": 5,
+    "total_role_skill_records": 26,
+    "total_present_skills": 15,
+    "total_missing_skills": 11,
+    "total_unavailable_context_skills": 7,
+    "scope_note": "Student skill gap analysis comparing normalized student profiles against explicit target-role requirements using canonical skill ID matching without proficiency scoring, percentage match, or recommendations."
+  },
+  "students": [
+    {
+      "student_id": "STU_001",
+      "profile_name": "Synthetic Data Engineering Student",
+      "role": {
+        "role_id": "ROLE_DATA_ENGINEER",
+        "role_name": "Data Engineer"
+      },
+      "summary": {
+        "total_role_skills": 5,
+        "present_skill_count": 2,
+        "missing_skill_count": 3,
+        "unavailable_context_count": 0
+      },
+      "present_skills": [
+        "SK_PYTHON",
+        "SK_SQL"
+      ],
+      "missing_skills": [
+        "SK_AIRFLOW",
+        "SK_AWS",
+        "SK_SPARK"
+      ],
+      "unavailable_context_skills": [],
+      "skill_gaps": [
+        {
+          "skill_id": "SK_AIRFLOW",
+          "skill_name": "Apache Airflow",
+          "category": "IT / Data",
+          "status": "missing",
+          "student_has_skill": false,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "recommended",
+          "contextual_recommendation_status": "recommended",
+          "student_evidence": [],
+          "context_reason": {
+            "reason_id": "explicit_role_skill_mapping",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_AWS",
+          "skill_name": "AWS Cloud Services",
+          "category": "IT / Data",
+          "status": "missing",
+          "student_has_skill": false,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "recommended",
+          "contextual_recommendation_status": "recommended",
+          "student_evidence": [],
+          "context_reason": {
+            "reason_id": "explicit_role_skill_mapping",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "skill_name": "Python Programming",
+          "category": "IT / Data",
+          "status": "present",
+          "student_has_skill": true,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "recommended",
+          "contextual_recommendation_status": "recommended",
+          "student_evidence": [
+            {
+              "evidence_type": "certification",
+              "evidence_strength": "basic"
+            },
+            {
+              "evidence_type": "project",
+              "evidence_strength": "intermediate"
+            }
+          ],
+          "context_reason": {
+            "reason_id": "explicit_role_skill_mapping",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "skill_name": "Apache Spark Big Data",
+          "category": "IT / Data",
+          "status": "missing",
+          "student_has_skill": false,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "not_recommended",
+          "contextual_recommendation_status": "not_recommended",
+          "student_evidence": [],
+          "context_reason": {
+            "reason_id": "role_mapping_without_generic_recommendation",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_SQL",
+          "skill_name": "SQL Database Management",
+          "category": "IT / Data",
+          "status": "present",
+          "student_has_skill": true,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "recommended",
+          "contextual_recommendation_status": "recommended",
+          "student_evidence": [
+            {
+              "evidence_type": "course_completed",
+              "evidence_strength": "intermediate"
+            }
+          ],
+          "context_reason": {
+            "reason_id": "explicit_role_skill_mapping",
+            "source": "sample_role_contexts.json"
+          }
+        }
+      ]
+    },
+    {
+      "student_id": "STU_002",
+      "profile_name": "Synthetic Beginner EV Technician Student",
+      "role": {
+        "role_id": "ROLE_EV_TECHNICIAN",
+        "role_name": "EV Technician"
+      },
+      "summary": {
+        "total_role_skills": 6,
+        "present_skill_count": 3,
+        "missing_skill_count": 3,
+        "unavailable_context_count": 0
+      },
+      "present_skills": [
+        "SK_BATTERY_CELL",
+        "SK_BMS",
+        "SK_HIGH_VOLTAGE"
+      ],
+      "missing_skills": [
+        "SK_CAN",
+        "SK_DIAG",
+        "SK_THERMAL"
+      ],
+      "unavailable_context_skills": [],
+      "skill_gaps": [
+        {
+          "skill_id": "SK_BATTERY_CELL",
+          "skill_name": "Cell Balancing and Testing",
+          "category": "EV / Automotive",
+          "status": "present",
+          "student_has_skill": true,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "recommended",
+          "contextual_recommendation_status": "recommended",
+          "student_evidence": [
+            {
+              "evidence_type": "self_reported",
+              "evidence_strength": "basic"
+            }
+          ],
+          "context_reason": {
+            "reason_id": "explicit_role_skill_mapping",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_BMS",
+          "skill_name": "Battery Management Systems",
+          "category": "EV / Automotive",
+          "status": "present",
+          "student_has_skill": true,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "recommended",
+          "contextual_recommendation_status": "recommended",
+          "student_evidence": [
+            {
+              "evidence_type": "course_completed",
+              "evidence_strength": "basic"
+            }
+          ],
+          "context_reason": {
+            "reason_id": "explicit_role_skill_mapping",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_CAN",
+          "skill_name": "CAN Bus",
+          "category": "EV / Automotive",
+          "status": "missing",
+          "student_has_skill": false,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "recommended",
+          "contextual_recommendation_status": "recommended",
+          "student_evidence": [],
+          "context_reason": {
+            "reason_id": "explicit_role_skill_mapping",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_DIAG",
+          "skill_name": "Vehicle Diagnostics",
+          "category": "EV / Automotive",
+          "status": "missing",
+          "student_has_skill": false,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "recommended",
+          "contextual_recommendation_status": "recommended",
+          "student_evidence": [],
+          "context_reason": {
+            "reason_id": "explicit_role_skill_mapping",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_HIGH_VOLTAGE",
+          "skill_name": "High Voltage Safety",
+          "category": "EV / Automotive",
+          "status": "present",
+          "student_has_skill": true,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "recommended",
+          "contextual_recommendation_status": "recommended",
+          "student_evidence": [
+            {
+              "evidence_type": "assessment",
+              "evidence_strength": "basic"
+            }
+          ],
+          "context_reason": {
+            "reason_id": "explicit_role_skill_mapping",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_THERMAL",
+          "skill_name": "Thermal Management",
+          "category": "EV / Automotive",
+          "status": "missing",
+          "student_has_skill": false,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "recommended",
+          "contextual_recommendation_status": "recommended",
+          "student_evidence": [],
+          "context_reason": {
+            "reason_id": "explicit_role_skill_mapping",
+            "source": "sample_role_contexts.json"
+          }
+        }
+      ]
+    },
+    {
+      "student_id": "STU_003",
+      "profile_name": "Synthetic Advanced Full Stack Student",
+      "role": {
+        "role_id": "ROLE_FULL_STACK_DEV",
+        "role_name": "Full Stack Developer"
+      },
+      "summary": {
+        "total_role_skills": 6,
+        "present_skill_count": 4,
+        "missing_skill_count": 2,
+        "unavailable_context_count": 0
+      },
+      "present_skills": [
+        "SK_DOCKER",
+        "SK_JAVASCRIPT",
+        "SK_PYTHON",
+        "SK_REACT"
+      ],
+      "missing_skills": [
+        "SK_GIT",
+        "SK_SQL"
+      ],
+      "unavailable_context_skills": [],
+      "skill_gaps": [
+        {
+          "skill_id": "SK_DOCKER",
+          "skill_name": "Docker Containerization",
+          "category": "IT / Data",
+          "status": "present",
+          "student_has_skill": true,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "not_recommended",
+          "contextual_recommendation_status": "not_recommended",
+          "student_evidence": [
+            {
+              "evidence_type": "assessment",
+              "evidence_strength": "intermediate"
+            }
+          ],
+          "context_reason": {
+            "reason_id": "role_mapping_without_generic_recommendation",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_GIT",
+          "skill_name": "Git Version Control",
+          "category": "IT / Data",
+          "status": "missing",
+          "student_has_skill": false,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "not_recommended",
+          "contextual_recommendation_status": "not_recommended",
+          "student_evidence": [],
+          "context_reason": {
+            "reason_id": "role_mapping_without_generic_recommendation",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "skill_name": "JavaScript Programming",
+          "category": "IT / Data",
+          "status": "present",
+          "student_has_skill": true,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "recommended",
+          "contextual_recommendation_status": "recommended",
+          "student_evidence": [
+            {
+              "evidence_type": "certification",
+              "evidence_strength": "advanced"
+            }
+          ],
+          "context_reason": {
+            "reason_id": "explicit_role_skill_mapping",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "skill_name": "Python Programming",
+          "category": "IT / Data",
+          "status": "present",
+          "student_has_skill": true,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "recommended",
+          "contextual_recommendation_status": "recommended",
+          "student_evidence": [
+            {
+              "evidence_type": "project",
+              "evidence_strength": "advanced"
+            }
+          ],
+          "context_reason": {
+            "reason_id": "explicit_role_skill_mapping",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_REACT",
+          "skill_name": "React.js Frontend",
+          "category": "IT / Data",
+          "status": "present",
+          "student_has_skill": true,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "recommended",
+          "contextual_recommendation_status": "recommended",
+          "student_evidence": [
+            {
+              "evidence_type": "project",
+              "evidence_strength": "advanced"
+            }
+          ],
+          "context_reason": {
+            "reason_id": "explicit_role_skill_mapping",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_SQL",
+          "skill_name": "SQL Database Management",
+          "category": "IT / Data",
+          "status": "missing",
+          "student_has_skill": false,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "recommended",
+          "contextual_recommendation_status": "recommended",
+          "student_evidence": [],
+          "context_reason": {
+            "reason_id": "explicit_role_skill_mapping",
+            "source": "sample_role_contexts.json"
+          }
+        }
+      ]
+    },
+    {
+      "student_id": "STU_004",
+      "profile_name": "Synthetic Healthcare Support Student",
+      "role": {
+        "role_id": "ROLE_HEALTHCARE_ASST",
+        "role_name": "General Duty Healthcare Assistant"
+      },
+      "summary": {
+        "total_role_skills": 5,
+        "present_skill_count": 4,
+        "missing_skill_count": 1,
+        "unavailable_context_count": 4
+      },
+      "present_skills": [
+        "SK_CPR_BLS",
+        "SK_FIRST_AID",
+        "SK_PATIENT_CARE",
+        "SK_VITAL_SIGNS"
+      ],
+      "missing_skills": [
+        "SK_EHR"
+      ],
+      "unavailable_context_skills": [
+        "SK_CPR_BLS",
+        "SK_FIRST_AID",
+        "SK_PATIENT_CARE",
+        "SK_VITAL_SIGNS"
+      ],
+      "skill_gaps": [
+        {
+          "skill_id": "SK_CPR_BLS",
+          "skill_name": "CPR and Basic Life Support",
+          "category": "Healthcare Support",
+          "status": "present",
+          "student_has_skill": true,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "not_available",
+          "contextual_recommendation_status": "not_available",
+          "student_evidence": [
+            {
+              "evidence_type": "certification",
+              "evidence_strength": "advanced"
+            }
+          ],
+          "context_reason": {
+            "reason_id": "role_skill_not_in_phase6a_universe",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_EHR",
+          "skill_name": "Electronic Health Records (EHR)",
+          "category": "Healthcare Support",
+          "status": "missing",
+          "student_has_skill": false,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "recommended",
+          "contextual_recommendation_status": "recommended",
+          "student_evidence": [],
+          "context_reason": {
+            "reason_id": "explicit_role_skill_mapping",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_FIRST_AID",
+          "skill_name": "First Aid and Emergency Response",
+          "category": "Healthcare Support",
+          "status": "present",
+          "student_has_skill": true,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "not_available",
+          "contextual_recommendation_status": "not_available",
+          "student_evidence": [
+            {
+              "evidence_type": "certification",
+              "evidence_strength": "intermediate"
+            }
+          ],
+          "context_reason": {
+            "reason_id": "role_skill_not_in_phase6a_universe",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_PATIENT_CARE",
+          "skill_name": "Patient Care & Bedside Assistance",
+          "category": "Healthcare Support",
+          "status": "present",
+          "student_has_skill": true,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "not_available",
+          "contextual_recommendation_status": "not_available",
+          "student_evidence": [
+            {
+              "evidence_type": "course_completed",
+              "evidence_strength": "intermediate"
+            }
+          ],
+          "context_reason": {
+            "reason_id": "role_skill_not_in_phase6a_universe",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_VITAL_SIGNS",
+          "skill_name": "Vital Signs Monitoring",
+          "category": "Healthcare Support",
+          "status": "present",
+          "student_has_skill": true,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "not_available",
+          "contextual_recommendation_status": "not_available",
+          "student_evidence": [
+            {
+              "evidence_type": "assessment",
+              "evidence_strength": "intermediate"
+            }
+          ],
+          "context_reason": {
+            "reason_id": "role_skill_not_in_phase6a_universe",
+            "source": "sample_role_contexts.json"
+          }
+        }
+      ]
+    },
+    {
+      "student_id": "STU_005",
+      "profile_name": "Synthetic Cross-Disciplinary Automation Student",
+      "role": {
+        "role_id": "ROLE_INDUSTRIAL_AUTO",
+        "role_name": "Industrial Automation Technician"
+      },
+      "summary": {
+        "total_role_skills": 4,
+        "present_skill_count": 2,
+        "missing_skill_count": 2,
+        "unavailable_context_count": 3
+      },
+      "present_skills": [
+        "SK_CIRCUIT_DESIGN",
+        "SK_PLC"
+      ],
+      "missing_skills": [
+        "SK_PANEL_WIRING",
+        "SK_SCADA"
+      ],
+      "unavailable_context_skills": [
+        "SK_CIRCUIT_DESIGN",
+        "SK_PANEL_WIRING",
+        "SK_PLC"
+      ],
+      "skill_gaps": [
+        {
+          "skill_id": "SK_CIRCUIT_DESIGN",
+          "skill_name": "Circuit Design & Schematic",
+          "category": "Electrician / Electronics",
+          "status": "present",
+          "student_has_skill": true,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "not_available",
+          "contextual_recommendation_status": "not_available",
+          "student_evidence": [
+            {
+              "evidence_type": "assessment",
+              "evidence_strength": "basic"
+            }
+          ],
+          "context_reason": {
+            "reason_id": "role_skill_not_in_phase6a_universe",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_PANEL_WIRING",
+          "skill_name": "Electrical Panel Wiring",
+          "category": "Electrician / Electronics",
+          "status": "missing",
+          "student_has_skill": false,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "not_available",
+          "contextual_recommendation_status": "not_available",
+          "student_evidence": [],
+          "context_reason": {
+            "reason_id": "role_skill_not_in_phase6a_universe",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_PLC",
+          "skill_name": "PLC Programming",
+          "category": "Electrician / Electronics",
+          "status": "present",
+          "student_has_skill": true,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "not_available",
+          "contextual_recommendation_status": "not_available",
+          "student_evidence": [
+            {
+              "evidence_type": "course_completed",
+              "evidence_strength": "intermediate"
+            }
+          ],
+          "context_reason": {
+            "reason_id": "role_skill_not_in_phase6a_universe",
+            "source": "sample_role_contexts.json"
+          }
+        },
+        {
+          "skill_id": "SK_SCADA",
+          "skill_name": "SCADA Industrial Systems",
+          "category": "Electrician / Electronics",
+          "status": "missing",
+          "student_has_skill": false,
+          "role_requires_skill": true,
+          "generic_recommendation_status": "recommended",
+          "contextual_recommendation_status": "recommended",
+          "student_evidence": [],
+          "context_reason": {
+            "reason_id": "explicit_role_skill_mapping",
+            "source": "sample_role_contexts.json"
+          }
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

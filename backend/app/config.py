@@ -1,30 +1,11 @@
-from urllib.parse import quote_plus
-from pydantic_settings import BaseSettings, SettingsConfigDict
+﻿import os
+from pathlib import Path
 
-
-class Settings(BaseSettings):
-    DB_USER: str
-    DB_PASSWORD: str
-    DB_HOST: str
-    DB_PORT: int
-    DB_NAME: str
-
-    SECRET_KEY: str
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
-
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
-
-    @property
-    def DATABASE_URL(self) -> str:
-        password = quote_plus(self.DB_PASSWORD)
-
-        return (
-            f"postgresql+psycopg://"
-            f"{self.DB_USER}:{password}"
-            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
-        )
-
+class Settings:
+    PROJECT_NAME: str = "WorkNexus / SkillMesh"
+    API_V1_STR: str = "/api/v1"
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./worknexus.db")
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "sih2026-worknexus-dev-secret-key-12345")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24
 
 settings = Settings()

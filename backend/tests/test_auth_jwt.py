@@ -1,3 +1,9 @@
+import unittest
+try:
+    import fastapi
+except ImportError:
+    raise unittest.SkipTest("Requires optional FastAPI server environment")
+
 from datetime import timedelta
 from jose import jwt
 

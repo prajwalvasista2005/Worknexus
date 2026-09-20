@@ -1,0 +1,2428 @@
+{
+  "metadata": {
+    "phase": "3",
+    "pipeline": "skill_demand_aggregation",
+    "input_artifact": "C:/Users/Nehal Jois/Documents/SIH/ml/extract/extracted_job_skills.json",
+    "taxonomy_version": "1",
+    "total_jobs": 295,
+    "jobs_with_skills": 211,
+    "zero_skill_jobs": 84,
+    "total_skill_mentions": 536,
+    "unique_skills_detected": 30,
+    "scope_note": "Observed demand metrics calculated across the deduplicated Phase 3 evaluation corpus."
+  },
+  "skills": [
+    {
+      "skill_id": "SK_SQL",
+      "skill_name": "SQL Database Management",
+      "category": "IT / Data",
+      "job_count": 99,
+      "demand_share": 0.3356,
+      "demand_percentage": 33.56,
+      "average_confidence": 0.96,
+      "source_coverage_count": 3,
+      "sources_present": [
+        "linkedin_india",
+        "naukri",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_PYTHON",
+      "skill_name": "Python Programming",
+      "category": "IT / Data",
+      "job_count": 98,
+      "demand_share": 0.3322,
+      "demand_percentage": 33.22,
+      "average_confidence": 0.96,
+      "source_coverage_count": 3,
+      "sources_present": [
+        "linkedin_india",
+        "naukri",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_AWS",
+      "skill_name": "AWS Cloud Services",
+      "category": "IT / Data",
+      "job_count": 51,
+      "demand_share": 0.1729,
+      "demand_percentage": 17.29,
+      "average_confidence": 0.96,
+      "source_coverage_count": 3,
+      "sources_present": [
+        "linkedin_india",
+        "naukri",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_JAVASCRIPT",
+      "skill_name": "JavaScript Programming",
+      "category": "IT / Data",
+      "job_count": 37,
+      "demand_share": 0.1254,
+      "demand_percentage": 12.54,
+      "average_confidence": 0.96,
+      "source_coverage_count": 3,
+      "sources_present": [
+        "linkedin_india",
+        "naukri",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_REST_API",
+      "skill_name": "RESTful API Design",
+      "category": "IT / Data",
+      "job_count": 31,
+      "demand_share": 0.1051,
+      "demand_percentage": 10.51,
+      "average_confidence": 0.96,
+      "source_coverage_count": 2,
+      "sources_present": [
+        "linkedin_india",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_GIT",
+      "skill_name": "Git Version Control",
+      "category": "IT / Data",
+      "job_count": 30,
+      "demand_share": 0.1017,
+      "demand_percentage": 10.17,
+      "average_confidence": 0.96,
+      "source_coverage_count": 3,
+      "sources_present": [
+        "linkedin_india",
+        "naukri",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_DATA_VIZ",
+      "skill_name": "Data Visualization",
+      "category": "IT / Data",
+      "job_count": 21,
+      "demand_share": 0.0712,
+      "demand_percentage": 7.12,
+      "average_confidence": 0.97,
+      "source_coverage_count": 2,
+      "sources_present": [
+        "linkedin_india",
+        "naukri"
+      ]
+    },
+    {
+      "skill_id": "SK_LINUX",
+      "skill_name": "Linux System Administration",
+      "category": "IT / Data",
+      "job_count": 21,
+      "demand_share": 0.0712,
+      "demand_percentage": 7.12,
+      "average_confidence": 0.96,
+      "source_coverage_count": 3,
+      "sources_present": [
+        "linkedin_india",
+        "naukri",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_SPARK",
+      "skill_name": "Apache Spark Big Data",
+      "category": "IT / Data",
+      "job_count": 21,
+      "demand_share": 0.0712,
+      "demand_percentage": 7.12,
+      "average_confidence": 0.96,
+      "source_coverage_count": 3,
+      "sources_present": [
+        "linkedin_india",
+        "naukri",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_DOCKER",
+      "skill_name": "Docker Containerization",
+      "category": "IT / Data",
+      "job_count": 17,
+      "demand_share": 0.0576,
+      "demand_percentage": 5.76,
+      "average_confidence": 0.96,
+      "source_coverage_count": 3,
+      "sources_present": [
+        "linkedin_india",
+        "naukri",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_KUBERNETES",
+      "skill_name": "Kubernetes Orchestration",
+      "category": "IT / Data",
+      "job_count": 14,
+      "demand_share": 0.0475,
+      "demand_percentage": 4.75,
+      "average_confidence": 0.96,
+      "source_coverage_count": 2,
+      "sources_present": [
+        "linkedin_india",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_NODEJS",
+      "skill_name": "Node.js Backend",
+      "category": "IT / Data",
+      "job_count": 12,
+      "demand_share": 0.0407,
+      "demand_percentage": 4.07,
+      "average_confidence": 0.96,
+      "source_coverage_count": 2,
+      "sources_present": [
+        "linkedin_india",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_AIRFLOW",
+      "skill_name": "Apache Airflow",
+      "category": "IT / Data",
+      "job_count": 11,
+      "demand_share": 0.0373,
+      "demand_percentage": 3.73,
+      "average_confidence": 0.96,
+      "source_coverage_count": 2,
+      "sources_present": [
+        "linkedin_india",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_CUSTOMER_SERVICE",
+      "skill_name": "Customer Relationship & Service",
+      "category": "Retail / Sales",
+      "job_count": 11,
+      "demand_share": 0.0373,
+      "demand_percentage": 3.73,
+      "average_confidence": 0.95,
+      "source_coverage_count": 2,
+      "sources_present": [
+        "linkedin_india",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_REACT",
+      "skill_name": "React.js Frontend",
+      "category": "IT / Data",
+      "job_count": 11,
+      "demand_share": 0.0373,
+      "demand_percentage": 3.73,
+      "average_confidence": 0.96,
+      "source_coverage_count": 2,
+      "sources_present": [
+        "linkedin_india",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_CRM_RETAIL",
+      "skill_name": "Retail CRM Software",
+      "category": "Retail / Sales",
+      "job_count": 9,
+      "demand_share": 0.0305,
+      "demand_percentage": 3.05,
+      "average_confidence": 0.96,
+      "source_coverage_count": 2,
+      "sources_present": [
+        "linkedin_india",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_TENSORFLOW",
+      "skill_name": "TensorFlow Framework",
+      "category": "IT / Data",
+      "job_count": 8,
+      "demand_share": 0.0271,
+      "demand_percentage": 2.71,
+      "average_confidence": 0.96,
+      "source_coverage_count": 2,
+      "sources_present": [
+        "naukri",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_EHR",
+      "skill_name": "Electronic Health Records (EHR)",
+      "category": "Healthcare Support",
+      "job_count": 7,
+      "demand_share": 0.0237,
+      "demand_percentage": 2.37,
+      "average_confidence": 0.96,
+      "source_coverage_count": 2,
+      "sources_present": [
+        "linkedin_india",
+        "naukri"
+      ]
+    },
+    {
+      "skill_id": "SK_SUPPLY_CHAIN",
+      "skill_name": "Supply Chain Coordination",
+      "category": "Retail / Sales",
+      "job_count": 6,
+      "demand_share": 0.0203,
+      "demand_percentage": 2.03,
+      "average_confidence": 0.96,
+      "source_coverage_count": 3,
+      "sources_present": [
+        "linkedin_india",
+        "naukri",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_PYTORCH",
+      "skill_name": "PyTorch Framework",
+      "category": "IT / Data",
+      "job_count": 5,
+      "demand_share": 0.0169,
+      "demand_percentage": 1.69,
+      "average_confidence": 0.96,
+      "source_coverage_count": 2,
+      "sources_present": [
+        "naukri",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_PANDAS",
+      "skill_name": "Pandas Data Analysis",
+      "category": "IT / Data",
+      "job_count": 3,
+      "demand_share": 0.0102,
+      "demand_percentage": 1.02,
+      "average_confidence": 0.96,
+      "source_coverage_count": 2,
+      "sources_present": [
+        "naukri",
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_UPSELLING",
+      "skill_name": "Upselling and Cross-selling",
+      "category": "Retail / Sales",
+      "job_count": 3,
+      "demand_share": 0.0102,
+      "demand_percentage": 1.02,
+      "average_confidence": 0.97,
+      "source_coverage_count": 1,
+      "sources_present": [
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_INVENTORY_MGMT",
+      "skill_name": "Inventory Management",
+      "category": "Retail / Sales",
+      "job_count": 2,
+      "demand_share": 0.0068,
+      "demand_percentage": 0.68,
+      "average_confidence": 0.99,
+      "source_coverage_count": 1,
+      "sources_present": [
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_SCIKIT_LEARN",
+      "skill_name": "Scikit-Learn ML",
+      "category": "IT / Data",
+      "job_count": 2,
+      "demand_share": 0.0068,
+      "demand_percentage": 0.68,
+      "average_confidence": 0.96,
+      "source_coverage_count": 1,
+      "sources_present": [
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_BMS",
+      "skill_name": "Battery Management Systems",
+      "category": "EV / Automotive",
+      "job_count": 1,
+      "demand_share": 0.0034,
+      "demand_percentage": 0.34,
+      "average_confidence": 0.96,
+      "source_coverage_count": 1,
+      "sources_present": [
+        "linkedin_india"
+      ]
+    },
+    {
+      "skill_id": "SK_FASTAPI",
+      "skill_name": "FastAPI Framework",
+      "category": "IT / Data",
+      "job_count": 1,
+      "demand_share": 0.0034,
+      "demand_percentage": 0.34,
+      "average_confidence": 0.96,
+      "source_coverage_count": 1,
+      "sources_present": [
+        "linkedin_india"
+      ]
+    },
+    {
+      "skill_id": "SK_NUMPY",
+      "skill_name": "NumPy Numerical Computing",
+      "category": "IT / Data",
+      "job_count": 1,
+      "demand_share": 0.0034,
+      "demand_percentage": 0.34,
+      "average_confidence": 0.96,
+      "source_coverage_count": 1,
+      "sources_present": [
+        "naukri"
+      ]
+    },
+    {
+      "skill_id": "SK_POS_SYSTEMS",
+      "skill_name": "Point of Sale (POS) Systems",
+      "category": "Retail / Sales",
+      "job_count": 1,
+      "demand_share": 0.0034,
+      "demand_percentage": 0.34,
+      "average_confidence": 0.96,
+      "source_coverage_count": 1,
+      "sources_present": [
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_SCADA",
+      "skill_name": "SCADA Industrial Systems",
+      "category": "Electrician / Electronics",
+      "job_count": 1,
+      "demand_share": 0.0034,
+      "demand_percentage": 0.34,
+      "average_confidence": 0.96,
+      "source_coverage_count": 1,
+      "sources_present": [
+        "parquet"
+      ]
+    },
+    {
+      "skill_id": "SK_TELEMATICS",
+      "skill_name": "Vehicle Telematics & IoT",
+      "category": "EV / Automotive",
+      "job_count": 1,
+      "demand_share": 0.0034,
+      "demand_percentage": 0.34,
+      "average_confidence": 0.96,
+      "source_coverage_count": 1,
+      "sources_present": [
+        "parquet"
+      ]
+    }
+  ],
+  "source_demand": {
+    "linkedin_india": {
+      "source_total_jobs": 99,
+      "skills_detected_count": 20,
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "skill_name": "SQL Database Management",
+          "category": "IT / Data",
+          "source_job_count": 52,
+          "source_demand_share": 0.5253,
+          "source_demand_percentage": 52.53,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "skill_name": "Python Programming",
+          "category": "IT / Data",
+          "source_job_count": 26,
+          "source_demand_share": 0.2626,
+          "source_demand_percentage": 26.26,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "skill_name": "RESTful API Design",
+          "category": "IT / Data",
+          "source_job_count": 21,
+          "source_demand_share": 0.2121,
+          "source_demand_percentage": 21.21,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_AWS",
+          "skill_name": "AWS Cloud Services",
+          "category": "IT / Data",
+          "source_job_count": 19,
+          "source_demand_share": 0.1919,
+          "source_demand_percentage": 19.19,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "skill_name": "Apache Spark Big Data",
+          "category": "IT / Data",
+          "source_job_count": 14,
+          "source_demand_share": 0.1414,
+          "source_demand_percentage": 14.14,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "skill_name": "JavaScript Programming",
+          "category": "IT / Data",
+          "source_job_count": 13,
+          "source_demand_share": 0.1313,
+          "source_demand_percentage": 13.13,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "skill_name": "Git Version Control",
+          "category": "IT / Data",
+          "source_job_count": 12,
+          "source_demand_share": 0.1212,
+          "source_demand_percentage": 12.12,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_AIRFLOW",
+          "skill_name": "Apache Airflow",
+          "category": "IT / Data",
+          "source_job_count": 8,
+          "source_demand_share": 0.0808,
+          "source_demand_percentage": 8.08,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_EHR",
+          "skill_name": "Electronic Health Records (EHR)",
+          "category": "Healthcare Support",
+          "source_job_count": 6,
+          "source_demand_share": 0.0606,
+          "source_demand_percentage": 6.06,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "skill_name": "Linux System Administration",
+          "category": "IT / Data",
+          "source_job_count": 5,
+          "source_demand_share": 0.0505,
+          "source_demand_percentage": 5.05,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_CRM_RETAIL",
+          "skill_name": "Retail CRM Software",
+          "category": "Retail / Sales",
+          "source_job_count": 4,
+          "source_demand_share": 0.0404,
+          "source_demand_percentage": 4.04,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "skill_name": "Data Visualization",
+          "category": "IT / Data",
+          "source_job_count": 4,
+          "source_demand_share": 0.0404,
+          "source_demand_percentage": 4.04,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_DOCKER",
+          "skill_name": "Docker Containerization",
+          "category": "IT / Data",
+          "source_job_count": 3,
+          "source_demand_share": 0.0303,
+          "source_demand_percentage": 3.03,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_NODEJS",
+          "skill_name": "Node.js Backend",
+          "category": "IT / Data",
+          "source_job_count": 3,
+          "source_demand_share": 0.0303,
+          "source_demand_percentage": 3.03,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_CUSTOMER_SERVICE",
+          "skill_name": "Customer Relationship & Service",
+          "category": "Retail / Sales",
+          "source_job_count": 2,
+          "source_demand_share": 0.0202,
+          "source_demand_percentage": 2.02,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_KUBERNETES",
+          "skill_name": "Kubernetes Orchestration",
+          "category": "IT / Data",
+          "source_job_count": 2,
+          "source_demand_share": 0.0202,
+          "source_demand_percentage": 2.02,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_BMS",
+          "skill_name": "Battery Management Systems",
+          "category": "EV / Automotive",
+          "source_job_count": 1,
+          "source_demand_share": 0.0101,
+          "source_demand_percentage": 1.01,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_FASTAPI",
+          "skill_name": "FastAPI Framework",
+          "category": "IT / Data",
+          "source_job_count": 1,
+          "source_demand_share": 0.0101,
+          "source_demand_percentage": 1.01,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_REACT",
+          "skill_name": "React.js Frontend",
+          "category": "IT / Data",
+          "source_job_count": 1,
+          "source_demand_share": 0.0101,
+          "source_demand_percentage": 1.01,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_SUPPLY_CHAIN",
+          "skill_name": "Supply Chain Coordination",
+          "category": "Retail / Sales",
+          "source_job_count": 1,
+          "source_demand_share": 0.0101,
+          "source_demand_percentage": 1.01,
+          "source_average_confidence": 0.96
+        }
+      ]
+    },
+    "naukri": {
+      "source_total_jobs": 99,
+      "skills_detected_count": 15,
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "skill_name": "Python Programming",
+          "category": "IT / Data",
+          "source_job_count": 49,
+          "source_demand_share": 0.4949,
+          "source_demand_percentage": 49.49,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "skill_name": "SQL Database Management",
+          "category": "IT / Data",
+          "source_job_count": 21,
+          "source_demand_share": 0.2121,
+          "source_demand_percentage": 21.21,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "skill_name": "Data Visualization",
+          "category": "IT / Data",
+          "source_job_count": 17,
+          "source_demand_share": 0.1717,
+          "source_demand_percentage": 17.17,
+          "source_average_confidence": 0.97
+        },
+        {
+          "skill_id": "SK_AWS",
+          "skill_name": "AWS Cloud Services",
+          "category": "IT / Data",
+          "source_job_count": 12,
+          "source_demand_share": 0.1212,
+          "source_demand_percentage": 12.12,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_TENSORFLOW",
+          "skill_name": "TensorFlow Framework",
+          "category": "IT / Data",
+          "source_job_count": 5,
+          "source_demand_share": 0.0505,
+          "source_demand_percentage": 5.05,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_PYTORCH",
+          "skill_name": "PyTorch Framework",
+          "category": "IT / Data",
+          "source_job_count": 4,
+          "source_demand_share": 0.0404,
+          "source_demand_percentage": 4.04,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "skill_name": "Apache Spark Big Data",
+          "category": "IT / Data",
+          "source_job_count": 4,
+          "source_demand_share": 0.0404,
+          "source_demand_percentage": 4.04,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "skill_name": "JavaScript Programming",
+          "category": "IT / Data",
+          "source_job_count": 3,
+          "source_demand_share": 0.0303,
+          "source_demand_percentage": 3.03,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_SUPPLY_CHAIN",
+          "skill_name": "Supply Chain Coordination",
+          "category": "Retail / Sales",
+          "source_job_count": 3,
+          "source_demand_share": 0.0303,
+          "source_demand_percentage": 3.03,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "skill_name": "Git Version Control",
+          "category": "IT / Data",
+          "source_job_count": 2,
+          "source_demand_share": 0.0202,
+          "source_demand_percentage": 2.02,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_PANDAS",
+          "skill_name": "Pandas Data Analysis",
+          "category": "IT / Data",
+          "source_job_count": 2,
+          "source_demand_share": 0.0202,
+          "source_demand_percentage": 2.02,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_DOCKER",
+          "skill_name": "Docker Containerization",
+          "category": "IT / Data",
+          "source_job_count": 1,
+          "source_demand_share": 0.0101,
+          "source_demand_percentage": 1.01,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_EHR",
+          "skill_name": "Electronic Health Records (EHR)",
+          "category": "Healthcare Support",
+          "source_job_count": 1,
+          "source_demand_share": 0.0101,
+          "source_demand_percentage": 1.01,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "skill_name": "Linux System Administration",
+          "category": "IT / Data",
+          "source_job_count": 1,
+          "source_demand_share": 0.0101,
+          "source_demand_percentage": 1.01,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_NUMPY",
+          "skill_name": "NumPy Numerical Computing",
+          "category": "IT / Data",
+          "source_job_count": 1,
+          "source_demand_share": 0.0101,
+          "source_demand_percentage": 1.01,
+          "source_average_confidence": 0.96
+        }
+      ]
+    },
+    "parquet": {
+      "source_total_jobs": 97,
+      "skills_detected_count": 25,
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "skill_name": "SQL Database Management",
+          "category": "IT / Data",
+          "source_job_count": 26,
+          "source_demand_share": 0.268,
+          "source_demand_percentage": 26.8,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "skill_name": "Python Programming",
+          "category": "IT / Data",
+          "source_job_count": 23,
+          "source_demand_share": 0.2371,
+          "source_demand_percentage": 23.71,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "skill_name": "JavaScript Programming",
+          "category": "IT / Data",
+          "source_job_count": 21,
+          "source_demand_share": 0.2165,
+          "source_demand_percentage": 21.65,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_AWS",
+          "skill_name": "AWS Cloud Services",
+          "category": "IT / Data",
+          "source_job_count": 20,
+          "source_demand_share": 0.2062,
+          "source_demand_percentage": 20.62,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "skill_name": "Git Version Control",
+          "category": "IT / Data",
+          "source_job_count": 16,
+          "source_demand_share": 0.1649,
+          "source_demand_percentage": 16.49,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "skill_name": "Linux System Administration",
+          "category": "IT / Data",
+          "source_job_count": 15,
+          "source_demand_share": 0.1546,
+          "source_demand_percentage": 15.46,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_DOCKER",
+          "skill_name": "Docker Containerization",
+          "category": "IT / Data",
+          "source_job_count": 13,
+          "source_demand_share": 0.134,
+          "source_demand_percentage": 13.4,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_KUBERNETES",
+          "skill_name": "Kubernetes Orchestration",
+          "category": "IT / Data",
+          "source_job_count": 12,
+          "source_demand_share": 0.1237,
+          "source_demand_percentage": 12.37,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_REACT",
+          "skill_name": "React.js Frontend",
+          "category": "IT / Data",
+          "source_job_count": 10,
+          "source_demand_share": 0.1031,
+          "source_demand_percentage": 10.31,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "skill_name": "RESTful API Design",
+          "category": "IT / Data",
+          "source_job_count": 10,
+          "source_demand_share": 0.1031,
+          "source_demand_percentage": 10.31,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_CUSTOMER_SERVICE",
+          "skill_name": "Customer Relationship & Service",
+          "category": "Retail / Sales",
+          "source_job_count": 9,
+          "source_demand_share": 0.0928,
+          "source_demand_percentage": 9.28,
+          "source_average_confidence": 0.94
+        },
+        {
+          "skill_id": "SK_NODEJS",
+          "skill_name": "Node.js Backend",
+          "category": "IT / Data",
+          "source_job_count": 9,
+          "source_demand_share": 0.0928,
+          "source_demand_percentage": 9.28,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_CRM_RETAIL",
+          "skill_name": "Retail CRM Software",
+          "category": "Retail / Sales",
+          "source_job_count": 5,
+          "source_demand_share": 0.0515,
+          "source_demand_percentage": 5.15,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_AIRFLOW",
+          "skill_name": "Apache Airflow",
+          "category": "IT / Data",
+          "source_job_count": 3,
+          "source_demand_share": 0.0309,
+          "source_demand_percentage": 3.09,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "skill_name": "Apache Spark Big Data",
+          "category": "IT / Data",
+          "source_job_count": 3,
+          "source_demand_share": 0.0309,
+          "source_demand_percentage": 3.09,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_TENSORFLOW",
+          "skill_name": "TensorFlow Framework",
+          "category": "IT / Data",
+          "source_job_count": 3,
+          "source_demand_share": 0.0309,
+          "source_demand_percentage": 3.09,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_UPSELLING",
+          "skill_name": "Upselling and Cross-selling",
+          "category": "Retail / Sales",
+          "source_job_count": 3,
+          "source_demand_share": 0.0309,
+          "source_demand_percentage": 3.09,
+          "source_average_confidence": 0.97
+        },
+        {
+          "skill_id": "SK_INVENTORY_MGMT",
+          "skill_name": "Inventory Management",
+          "category": "Retail / Sales",
+          "source_job_count": 2,
+          "source_demand_share": 0.0206,
+          "source_demand_percentage": 2.06,
+          "source_average_confidence": 0.99
+        },
+        {
+          "skill_id": "SK_SCIKIT_LEARN",
+          "skill_name": "Scikit-Learn ML",
+          "category": "IT / Data",
+          "source_job_count": 2,
+          "source_demand_share": 0.0206,
+          "source_demand_percentage": 2.06,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_SUPPLY_CHAIN",
+          "skill_name": "Supply Chain Coordination",
+          "category": "Retail / Sales",
+          "source_job_count": 2,
+          "source_demand_share": 0.0206,
+          "source_demand_percentage": 2.06,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_PANDAS",
+          "skill_name": "Pandas Data Analysis",
+          "category": "IT / Data",
+          "source_job_count": 1,
+          "source_demand_share": 0.0103,
+          "source_demand_percentage": 1.03,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_POS_SYSTEMS",
+          "skill_name": "Point of Sale (POS) Systems",
+          "category": "Retail / Sales",
+          "source_job_count": 1,
+          "source_demand_share": 0.0103,
+          "source_demand_percentage": 1.03,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_PYTORCH",
+          "skill_name": "PyTorch Framework",
+          "category": "IT / Data",
+          "source_job_count": 1,
+          "source_demand_share": 0.0103,
+          "source_demand_percentage": 1.03,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_SCADA",
+          "skill_name": "SCADA Industrial Systems",
+          "category": "Electrician / Electronics",
+          "source_job_count": 1,
+          "source_demand_share": 0.0103,
+          "source_demand_percentage": 1.03,
+          "source_average_confidence": 0.96
+        },
+        {
+          "skill_id": "SK_TELEMATICS",
+          "skill_name": "Vehicle Telematics & IoT",
+          "category": "EV / Automotive",
+          "source_job_count": 1,
+          "source_demand_share": 0.0103,
+          "source_demand_percentage": 1.03,
+          "source_average_confidence": 0.96
+        }
+      ]
+    }
+  },
+  "categories": [
+    {
+      "category": "EV / Automotive",
+      "number_of_skills_detected": 2,
+      "total_skill_job_assignments": 2,
+      "unique_jobs_with_category_skill": 2,
+      "percentage_of_jobs_with_any_category_skill": 0.68,
+      "average_skill_job_count": 1.0
+    },
+    {
+      "category": "Electrician / Electronics",
+      "number_of_skills_detected": 1,
+      "total_skill_job_assignments": 1,
+      "unique_jobs_with_category_skill": 1,
+      "percentage_of_jobs_with_any_category_skill": 0.34,
+      "average_skill_job_count": 1.0
+    },
+    {
+      "category": "Healthcare Support",
+      "number_of_skills_detected": 1,
+      "total_skill_job_assignments": 7,
+      "unique_jobs_with_category_skill": 7,
+      "percentage_of_jobs_with_any_category_skill": 2.37,
+      "average_skill_job_count": 7.0
+    },
+    {
+      "category": "IT / Data",
+      "number_of_skills_detected": 20,
+      "total_skill_job_assignments": 494,
+      "unique_jobs_with_category_skill": 199,
+      "percentage_of_jobs_with_any_category_skill": 67.46,
+      "average_skill_job_count": 24.7
+    },
+    {
+      "category": "Retail / Sales",
+      "number_of_skills_detected": 6,
+      "total_skill_job_assignments": 32,
+      "unique_jobs_with_category_skill": 24,
+      "percentage_of_jobs_with_any_category_skill": 8.14,
+      "average_skill_job_count": 5.33
+    }
+  ],
+  "co_occurrence": [
+    {
+      "skill_a_id": "SK_PYTHON",
+      "skill_a_name": "Python Programming",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 46,
+      "co_occurrence_percentage": 15.59
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_PYTHON",
+      "skill_b_name": "Python Programming",
+      "co_occurrence_count": 33,
+      "co_occurrence_percentage": 11.19
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 21,
+      "co_occurrence_percentage": 7.12
+    },
+    {
+      "skill_a_id": "SK_PYTHON",
+      "skill_a_name": "Python Programming",
+      "skill_b_id": "SK_SPARK",
+      "skill_b_name": "Apache Spark Big Data",
+      "co_occurrence_count": 19,
+      "co_occurrence_percentage": 6.44
+    },
+    {
+      "skill_a_id": "SK_REST_API",
+      "skill_a_name": "RESTful API Design",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 17,
+      "co_occurrence_percentage": 5.76
+    },
+    {
+      "skill_a_id": "SK_JAVASCRIPT",
+      "skill_a_name": "JavaScript Programming",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 16,
+      "co_occurrence_percentage": 5.42
+    },
+    {
+      "skill_a_id": "SK_SPARK",
+      "skill_a_name": "Apache Spark Big Data",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 14,
+      "co_occurrence_percentage": 4.75
+    },
+    {
+      "skill_a_id": "SK_GIT",
+      "skill_a_name": "Git Version Control",
+      "skill_b_id": "SK_PYTHON",
+      "skill_b_name": "Python Programming",
+      "co_occurrence_count": 13,
+      "co_occurrence_percentage": 4.41
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_SPARK",
+      "skill_b_name": "Apache Spark Big Data",
+      "co_occurrence_count": 12,
+      "co_occurrence_percentage": 4.07
+    },
+    {
+      "skill_a_id": "SK_GIT",
+      "skill_a_name": "Git Version Control",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 12,
+      "co_occurrence_percentage": 4.07
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_GIT",
+      "skill_b_name": "Git Version Control",
+      "co_occurrence_count": 11,
+      "co_occurrence_percentage": 3.73
+    },
+    {
+      "skill_a_id": "SK_DATA_VIZ",
+      "skill_a_name": "Data Visualization",
+      "skill_b_id": "SK_PYTHON",
+      "skill_b_name": "Python Programming",
+      "co_occurrence_count": 11,
+      "co_occurrence_percentage": 3.73
+    },
+    {
+      "skill_a_id": "SK_DOCKER",
+      "skill_a_name": "Docker Containerization",
+      "skill_b_id": "SK_PYTHON",
+      "skill_b_name": "Python Programming",
+      "co_occurrence_count": 11,
+      "co_occurrence_percentage": 3.73
+    },
+    {
+      "skill_a_id": "SK_JAVASCRIPT",
+      "skill_a_name": "JavaScript Programming",
+      "skill_b_id": "SK_NODEJS",
+      "skill_b_name": "Node.js Backend",
+      "co_occurrence_count": 11,
+      "co_occurrence_percentage": 3.73
+    },
+    {
+      "skill_a_id": "SK_JAVASCRIPT",
+      "skill_a_name": "JavaScript Programming",
+      "skill_b_id": "SK_REST_API",
+      "skill_b_name": "RESTful API Design",
+      "co_occurrence_count": 11,
+      "co_occurrence_percentage": 3.73
+    },
+    {
+      "skill_a_id": "SK_AIRFLOW",
+      "skill_a_name": "Apache Airflow",
+      "skill_b_id": "SK_PYTHON",
+      "skill_b_name": "Python Programming",
+      "co_occurrence_count": 10,
+      "co_occurrence_percentage": 3.39
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_LINUX",
+      "skill_b_name": "Linux System Administration",
+      "co_occurrence_count": 10,
+      "co_occurrence_percentage": 3.39
+    },
+    {
+      "skill_a_id": "SK_DATA_VIZ",
+      "skill_a_name": "Data Visualization",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 10,
+      "co_occurrence_percentage": 3.39
+    },
+    {
+      "skill_a_id": "SK_DOCKER",
+      "skill_a_name": "Docker Containerization",
+      "skill_b_id": "SK_KUBERNETES",
+      "skill_b_name": "Kubernetes Orchestration",
+      "co_occurrence_count": 10,
+      "co_occurrence_percentage": 3.39
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_DOCKER",
+      "skill_b_name": "Docker Containerization",
+      "co_occurrence_count": 9,
+      "co_occurrence_percentage": 3.05
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_REST_API",
+      "skill_b_name": "RESTful API Design",
+      "co_occurrence_count": 9,
+      "co_occurrence_percentage": 3.05
+    },
+    {
+      "skill_a_id": "SK_DOCKER",
+      "skill_a_name": "Docker Containerization",
+      "skill_b_id": "SK_GIT",
+      "skill_b_name": "Git Version Control",
+      "co_occurrence_count": 9,
+      "co_occurrence_percentage": 3.05
+    },
+    {
+      "skill_a_id": "SK_GIT",
+      "skill_a_name": "Git Version Control",
+      "skill_b_id": "SK_LINUX",
+      "skill_b_name": "Linux System Administration",
+      "co_occurrence_count": 9,
+      "co_occurrence_percentage": 3.05
+    },
+    {
+      "skill_a_id": "SK_JAVASCRIPT",
+      "skill_a_name": "JavaScript Programming",
+      "skill_b_id": "SK_PYTHON",
+      "skill_b_name": "Python Programming",
+      "co_occurrence_count": 9,
+      "co_occurrence_percentage": 3.05
+    },
+    {
+      "skill_a_id": "SK_KUBERNETES",
+      "skill_a_name": "Kubernetes Orchestration",
+      "skill_b_id": "SK_PYTHON",
+      "skill_b_name": "Python Programming",
+      "co_occurrence_count": 9,
+      "co_occurrence_percentage": 3.05
+    },
+    {
+      "skill_a_id": "SK_LINUX",
+      "skill_a_name": "Linux System Administration",
+      "skill_b_id": "SK_PYTHON",
+      "skill_b_name": "Python Programming",
+      "co_occurrence_count": 9,
+      "co_occurrence_percentage": 3.05
+    },
+    {
+      "skill_a_id": "SK_GIT",
+      "skill_a_name": "Git Version Control",
+      "skill_b_id": "SK_JAVASCRIPT",
+      "skill_b_name": "JavaScript Programming",
+      "co_occurrence_count": 8,
+      "co_occurrence_percentage": 2.71
+    },
+    {
+      "skill_a_id": "SK_GIT",
+      "skill_a_name": "Git Version Control",
+      "skill_b_id": "SK_KUBERNETES",
+      "skill_b_name": "Kubernetes Orchestration",
+      "co_occurrence_count": 8,
+      "co_occurrence_percentage": 2.71
+    },
+    {
+      "skill_a_id": "SK_GIT",
+      "skill_a_name": "Git Version Control",
+      "skill_b_id": "SK_REST_API",
+      "skill_b_name": "RESTful API Design",
+      "co_occurrence_count": 8,
+      "co_occurrence_percentage": 2.71
+    },
+    {
+      "skill_a_id": "SK_JAVASCRIPT",
+      "skill_a_name": "JavaScript Programming",
+      "skill_b_id": "SK_REACT",
+      "skill_b_name": "React.js Frontend",
+      "co_occurrence_count": 8,
+      "co_occurrence_percentage": 2.71
+    },
+    {
+      "skill_a_id": "SK_AIRFLOW",
+      "skill_a_name": "Apache Airflow",
+      "skill_b_id": "SK_SPARK",
+      "skill_b_name": "Apache Spark Big Data",
+      "co_occurrence_count": 7,
+      "co_occurrence_percentage": 2.37
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_KUBERNETES",
+      "skill_b_name": "Kubernetes Orchestration",
+      "co_occurrence_count": 7,
+      "co_occurrence_percentage": 2.37
+    },
+    {
+      "skill_a_id": "SK_EHR",
+      "skill_a_name": "Electronic Health Records (EHR)",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 7,
+      "co_occurrence_percentage": 2.37
+    },
+    {
+      "skill_a_id": "SK_PYTHON",
+      "skill_a_name": "Python Programming",
+      "skill_b_id": "SK_REST_API",
+      "skill_b_name": "RESTful API Design",
+      "co_occurrence_count": 7,
+      "co_occurrence_percentage": 2.37
+    },
+    {
+      "skill_a_id": "SK_AIRFLOW",
+      "skill_a_name": "Apache Airflow",
+      "skill_b_id": "SK_AWS",
+      "skill_b_name": "AWS Cloud Services",
+      "co_occurrence_count": 6,
+      "co_occurrence_percentage": 2.03
+    },
+    {
+      "skill_a_id": "SK_AIRFLOW",
+      "skill_a_name": "Apache Airflow",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 6,
+      "co_occurrence_percentage": 2.03
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_EHR",
+      "skill_b_name": "Electronic Health Records (EHR)",
+      "co_occurrence_count": 6,
+      "co_occurrence_percentage": 2.03
+    },
+    {
+      "skill_a_id": "SK_EHR",
+      "skill_a_name": "Electronic Health Records (EHR)",
+      "skill_b_id": "SK_PYTHON",
+      "skill_b_name": "Python Programming",
+      "co_occurrence_count": 6,
+      "co_occurrence_percentage": 2.03
+    },
+    {
+      "skill_a_id": "SK_EHR",
+      "skill_a_name": "Electronic Health Records (EHR)",
+      "skill_b_id": "SK_SPARK",
+      "skill_b_name": "Apache Spark Big Data",
+      "co_occurrence_count": 6,
+      "co_occurrence_percentage": 2.03
+    },
+    {
+      "skill_a_id": "SK_LINUX",
+      "skill_a_name": "Linux System Administration",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 6,
+      "co_occurrence_percentage": 2.03
+    },
+    {
+      "skill_a_id": "SK_PYTHON",
+      "skill_a_name": "Python Programming",
+      "skill_b_id": "SK_TENSORFLOW",
+      "skill_b_name": "TensorFlow Framework",
+      "co_occurrence_count": 6,
+      "co_occurrence_percentage": 2.03
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_JAVASCRIPT",
+      "skill_b_name": "JavaScript Programming",
+      "co_occurrence_count": 5,
+      "co_occurrence_percentage": 1.69
+    },
+    {
+      "skill_a_id": "SK_DOCKER",
+      "skill_a_name": "Docker Containerization",
+      "skill_b_id": "SK_LINUX",
+      "skill_b_name": "Linux System Administration",
+      "co_occurrence_count": 5,
+      "co_occurrence_percentage": 1.69
+    },
+    {
+      "skill_a_id": "SK_DOCKER",
+      "skill_a_name": "Docker Containerization",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 5,
+      "co_occurrence_percentage": 1.69
+    },
+    {
+      "skill_a_id": "SK_GIT",
+      "skill_a_name": "Git Version Control",
+      "skill_b_id": "SK_NODEJS",
+      "skill_b_name": "Node.js Backend",
+      "co_occurrence_count": 5,
+      "co_occurrence_percentage": 1.69
+    },
+    {
+      "skill_a_id": "SK_GIT",
+      "skill_a_name": "Git Version Control",
+      "skill_b_id": "SK_SPARK",
+      "skill_b_name": "Apache Spark Big Data",
+      "co_occurrence_count": 5,
+      "co_occurrence_percentage": 1.69
+    },
+    {
+      "skill_a_id": "SK_REACT",
+      "skill_a_name": "React.js Frontend",
+      "skill_b_id": "SK_REST_API",
+      "skill_b_name": "RESTful API Design",
+      "co_occurrence_count": 5,
+      "co_occurrence_percentage": 1.69
+    },
+    {
+      "skill_a_id": "SK_CRM_RETAIL",
+      "skill_a_name": "Retail CRM Software",
+      "skill_b_id": "SK_JAVASCRIPT",
+      "skill_b_name": "JavaScript Programming",
+      "co_occurrence_count": 4,
+      "co_occurrence_percentage": 1.36
+    },
+    {
+      "skill_a_id": "SK_CRM_RETAIL",
+      "skill_a_name": "Retail CRM Software",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 4,
+      "co_occurrence_percentage": 1.36
+    },
+    {
+      "skill_a_id": "SK_GIT",
+      "skill_a_name": "Git Version Control",
+      "skill_b_id": "SK_REACT",
+      "skill_b_name": "React.js Frontend",
+      "co_occurrence_count": 4,
+      "co_occurrence_percentage": 1.36
+    },
+    {
+      "skill_a_id": "SK_JAVASCRIPT",
+      "skill_a_name": "JavaScript Programming",
+      "skill_b_id": "SK_LINUX",
+      "skill_b_name": "Linux System Administration",
+      "co_occurrence_count": 4,
+      "co_occurrence_percentage": 1.36
+    },
+    {
+      "skill_a_id": "SK_KUBERNETES",
+      "skill_a_name": "Kubernetes Orchestration",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 4,
+      "co_occurrence_percentage": 1.36
+    },
+    {
+      "skill_a_id": "SK_NODEJS",
+      "skill_a_name": "Node.js Backend",
+      "skill_b_id": "SK_PYTHON",
+      "skill_b_name": "Python Programming",
+      "co_occurrence_count": 4,
+      "co_occurrence_percentage": 1.36
+    },
+    {
+      "skill_a_id": "SK_NODEJS",
+      "skill_a_name": "Node.js Backend",
+      "skill_b_id": "SK_REST_API",
+      "skill_b_name": "RESTful API Design",
+      "co_occurrence_count": 4,
+      "co_occurrence_percentage": 1.36
+    },
+    {
+      "skill_a_id": "SK_REACT",
+      "skill_a_name": "React.js Frontend",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 4,
+      "co_occurrence_percentage": 1.36
+    },
+    {
+      "skill_a_id": "SK_SPARK",
+      "skill_a_name": "Apache Spark Big Data",
+      "skill_b_id": "SK_TENSORFLOW",
+      "skill_b_name": "TensorFlow Framework",
+      "co_occurrence_count": 4,
+      "co_occurrence_percentage": 1.36
+    },
+    {
+      "skill_a_id": "SK_AIRFLOW",
+      "skill_a_name": "Apache Airflow",
+      "skill_b_id": "SK_EHR",
+      "skill_b_name": "Electronic Health Records (EHR)",
+      "co_occurrence_count": 3,
+      "co_occurrence_percentage": 1.02
+    },
+    {
+      "skill_a_id": "SK_AIRFLOW",
+      "skill_a_name": "Apache Airflow",
+      "skill_b_id": "SK_KUBERNETES",
+      "skill_b_name": "Kubernetes Orchestration",
+      "co_occurrence_count": 3,
+      "co_occurrence_percentage": 1.02
+    },
+    {
+      "skill_a_id": "SK_CUSTOMER_SERVICE",
+      "skill_a_name": "Customer Relationship & Service",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 3,
+      "co_occurrence_percentage": 1.02
+    },
+    {
+      "skill_a_id": "SK_DOCKER",
+      "skill_a_name": "Docker Containerization",
+      "skill_b_id": "SK_JAVASCRIPT",
+      "skill_b_name": "JavaScript Programming",
+      "co_occurrence_count": 3,
+      "co_occurrence_percentage": 1.02
+    },
+    {
+      "skill_a_id": "SK_DOCKER",
+      "skill_a_name": "Docker Containerization",
+      "skill_b_id": "SK_SPARK",
+      "skill_b_name": "Apache Spark Big Data",
+      "co_occurrence_count": 3,
+      "co_occurrence_percentage": 1.02
+    },
+    {
+      "skill_a_id": "SK_KUBERNETES",
+      "skill_a_name": "Kubernetes Orchestration",
+      "skill_b_id": "SK_LINUX",
+      "skill_b_name": "Linux System Administration",
+      "co_occurrence_count": 3,
+      "co_occurrence_percentage": 1.02
+    },
+    {
+      "skill_a_id": "SK_KUBERNETES",
+      "skill_a_name": "Kubernetes Orchestration",
+      "skill_b_id": "SK_SPARK",
+      "skill_b_name": "Apache Spark Big Data",
+      "co_occurrence_count": 3,
+      "co_occurrence_percentage": 1.02
+    },
+    {
+      "skill_a_id": "SK_KUBERNETES",
+      "skill_a_name": "Kubernetes Orchestration",
+      "skill_b_id": "SK_TENSORFLOW",
+      "skill_b_name": "TensorFlow Framework",
+      "co_occurrence_count": 3,
+      "co_occurrence_percentage": 1.02
+    },
+    {
+      "skill_a_id": "SK_NODEJS",
+      "skill_a_name": "Node.js Backend",
+      "skill_b_id": "SK_REACT",
+      "skill_b_name": "React.js Frontend",
+      "co_occurrence_count": 3,
+      "co_occurrence_percentage": 1.02
+    },
+    {
+      "skill_a_id": "SK_NODEJS",
+      "skill_a_name": "Node.js Backend",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 3,
+      "co_occurrence_percentage": 1.02
+    },
+    {
+      "skill_a_id": "SK_PYTHON",
+      "skill_a_name": "Python Programming",
+      "skill_b_id": "SK_PYTORCH",
+      "skill_b_name": "PyTorch Framework",
+      "co_occurrence_count": 3,
+      "co_occurrence_percentage": 1.02
+    },
+    {
+      "skill_a_id": "SK_PYTHON",
+      "skill_a_name": "Python Programming",
+      "skill_b_id": "SK_REACT",
+      "skill_b_name": "React.js Frontend",
+      "co_occurrence_count": 3,
+      "co_occurrence_percentage": 1.02
+    },
+    {
+      "skill_a_id": "SK_PYTORCH",
+      "skill_a_name": "PyTorch Framework",
+      "skill_b_id": "SK_TENSORFLOW",
+      "skill_b_name": "TensorFlow Framework",
+      "co_occurrence_count": 3,
+      "co_occurrence_percentage": 1.02
+    },
+    {
+      "skill_a_id": "SK_AIRFLOW",
+      "skill_a_name": "Apache Airflow",
+      "skill_b_id": "SK_DOCKER",
+      "skill_b_name": "Docker Containerization",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_AIRFLOW",
+      "skill_a_name": "Apache Airflow",
+      "skill_b_id": "SK_GIT",
+      "skill_b_name": "Git Version Control",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_AIRFLOW",
+      "skill_a_name": "Apache Airflow",
+      "skill_b_id": "SK_SCIKIT_LEARN",
+      "skill_b_name": "Scikit-Learn ML",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_AIRFLOW",
+      "skill_a_name": "Apache Airflow",
+      "skill_b_id": "SK_TENSORFLOW",
+      "skill_b_name": "TensorFlow Framework",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_DATA_VIZ",
+      "skill_b_name": "Data Visualization",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_NODEJS",
+      "skill_b_name": "Node.js Backend",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_REACT",
+      "skill_b_name": "React.js Frontend",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_CRM_RETAIL",
+      "skill_a_name": "Retail CRM Software",
+      "skill_b_id": "SK_CUSTOMER_SERVICE",
+      "skill_b_name": "Customer Relationship & Service",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_CRM_RETAIL",
+      "skill_a_name": "Retail CRM Software",
+      "skill_b_id": "SK_GIT",
+      "skill_b_name": "Git Version Control",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_CRM_RETAIL",
+      "skill_a_name": "Retail CRM Software",
+      "skill_b_id": "SK_UPSELLING",
+      "skill_b_name": "Upselling and Cross-selling",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_CUSTOMER_SERVICE",
+      "skill_a_name": "Customer Relationship & Service",
+      "skill_b_id": "SK_GIT",
+      "skill_b_name": "Git Version Control",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_CUSTOMER_SERVICE",
+      "skill_a_name": "Customer Relationship & Service",
+      "skill_b_id": "SK_INVENTORY_MGMT",
+      "skill_b_name": "Inventory Management",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_CUSTOMER_SERVICE",
+      "skill_a_name": "Customer Relationship & Service",
+      "skill_b_id": "SK_JAVASCRIPT",
+      "skill_b_name": "JavaScript Programming",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_CUSTOMER_SERVICE",
+      "skill_a_name": "Customer Relationship & Service",
+      "skill_b_id": "SK_LINUX",
+      "skill_b_name": "Linux System Administration",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_CUSTOMER_SERVICE",
+      "skill_a_name": "Customer Relationship & Service",
+      "skill_b_id": "SK_PYTHON",
+      "skill_b_name": "Python Programming",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_CUSTOMER_SERVICE",
+      "skill_a_name": "Customer Relationship & Service",
+      "skill_b_id": "SK_SUPPLY_CHAIN",
+      "skill_b_name": "Supply Chain Coordination",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_CUSTOMER_SERVICE",
+      "skill_a_name": "Customer Relationship & Service",
+      "skill_b_id": "SK_UPSELLING",
+      "skill_b_name": "Upselling and Cross-selling",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_DOCKER",
+      "skill_a_name": "Docker Containerization",
+      "skill_b_id": "SK_NODEJS",
+      "skill_b_name": "Node.js Backend",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_DOCKER",
+      "skill_a_name": "Docker Containerization",
+      "skill_b_id": "SK_PANDAS",
+      "skill_b_name": "Pandas Data Analysis",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_DOCKER",
+      "skill_a_name": "Docker Containerization",
+      "skill_b_id": "SK_REACT",
+      "skill_b_name": "React.js Frontend",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_DOCKER",
+      "skill_a_name": "Docker Containerization",
+      "skill_b_id": "SK_TENSORFLOW",
+      "skill_b_name": "TensorFlow Framework",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_GIT",
+      "skill_a_name": "Git Version Control",
+      "skill_b_id": "SK_PANDAS",
+      "skill_b_name": "Pandas Data Analysis",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_INVENTORY_MGMT",
+      "skill_a_name": "Inventory Management",
+      "skill_b_id": "SK_SUPPLY_CHAIN",
+      "skill_b_name": "Supply Chain Coordination",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_JAVASCRIPT",
+      "skill_a_name": "JavaScript Programming",
+      "skill_b_id": "SK_UPSELLING",
+      "skill_b_name": "Upselling and Cross-selling",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_KUBERNETES",
+      "skill_a_name": "Kubernetes Orchestration",
+      "skill_b_id": "SK_REST_API",
+      "skill_b_name": "RESTful API Design",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_KUBERNETES",
+      "skill_a_name": "Kubernetes Orchestration",
+      "skill_b_id": "SK_SCIKIT_LEARN",
+      "skill_b_name": "Scikit-Learn ML",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_LINUX",
+      "skill_a_name": "Linux System Administration",
+      "skill_b_id": "SK_NODEJS",
+      "skill_b_name": "Node.js Backend",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_LINUX",
+      "skill_a_name": "Linux System Administration",
+      "skill_b_id": "SK_REST_API",
+      "skill_b_name": "RESTful API Design",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_PANDAS",
+      "skill_a_name": "Pandas Data Analysis",
+      "skill_b_id": "SK_PYTHON",
+      "skill_b_name": "Python Programming",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_PYTHON",
+      "skill_a_name": "Python Programming",
+      "skill_b_id": "SK_SCIKIT_LEARN",
+      "skill_b_name": "Scikit-Learn ML",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_SCIKIT_LEARN",
+      "skill_a_name": "Scikit-Learn ML",
+      "skill_b_id": "SK_SPARK",
+      "skill_b_name": "Apache Spark Big Data",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_SCIKIT_LEARN",
+      "skill_a_name": "Scikit-Learn ML",
+      "skill_b_id": "SK_TENSORFLOW",
+      "skill_b_name": "TensorFlow Framework",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_SQL",
+      "skill_a_name": "SQL Database Management",
+      "skill_b_id": "SK_SUPPLY_CHAIN",
+      "skill_b_name": "Supply Chain Coordination",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_SQL",
+      "skill_a_name": "SQL Database Management",
+      "skill_b_id": "SK_UPSELLING",
+      "skill_b_name": "Upselling and Cross-selling",
+      "co_occurrence_count": 2,
+      "co_occurrence_percentage": 0.68
+    },
+    {
+      "skill_a_id": "SK_AIRFLOW",
+      "skill_a_name": "Apache Airflow",
+      "skill_b_id": "SK_DATA_VIZ",
+      "skill_b_name": "Data Visualization",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_AIRFLOW",
+      "skill_a_name": "Apache Airflow",
+      "skill_b_id": "SK_LINUX",
+      "skill_b_name": "Linux System Administration",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_AIRFLOW",
+      "skill_a_name": "Apache Airflow",
+      "skill_b_id": "SK_PANDAS",
+      "skill_b_name": "Pandas Data Analysis",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_AIRFLOW",
+      "skill_a_name": "Apache Airflow",
+      "skill_b_id": "SK_REST_API",
+      "skill_b_name": "RESTful API Design",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_BMS",
+      "skill_b_name": "Battery Management Systems",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_CRM_RETAIL",
+      "skill_b_name": "Retail CRM Software",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_CUSTOMER_SERVICE",
+      "skill_b_name": "Customer Relationship & Service",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_FASTAPI",
+      "skill_b_name": "FastAPI Framework",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_POS_SYSTEMS",
+      "skill_b_name": "Point of Sale (POS) Systems",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_SUPPLY_CHAIN",
+      "skill_b_name": "Supply Chain Coordination",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_AWS",
+      "skill_a_name": "AWS Cloud Services",
+      "skill_b_id": "SK_TELEMATICS",
+      "skill_b_name": "Vehicle Telematics & IoT",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_BMS",
+      "skill_a_name": "Battery Management Systems",
+      "skill_b_id": "SK_CRM_RETAIL",
+      "skill_b_name": "Retail CRM Software",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_BMS",
+      "skill_a_name": "Battery Management Systems",
+      "skill_b_id": "SK_FASTAPI",
+      "skill_b_name": "FastAPI Framework",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_BMS",
+      "skill_a_name": "Battery Management Systems",
+      "skill_b_id": "SK_GIT",
+      "skill_b_name": "Git Version Control",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_BMS",
+      "skill_a_name": "Battery Management Systems",
+      "skill_b_id": "SK_LINUX",
+      "skill_b_name": "Linux System Administration",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_BMS",
+      "skill_a_name": "Battery Management Systems",
+      "skill_b_id": "SK_PYTHON",
+      "skill_b_name": "Python Programming",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_BMS",
+      "skill_a_name": "Battery Management Systems",
+      "skill_b_id": "SK_REST_API",
+      "skill_b_name": "RESTful API Design",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_BMS",
+      "skill_a_name": "Battery Management Systems",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_CRM_RETAIL",
+      "skill_a_name": "Retail CRM Software",
+      "skill_b_id": "SK_FASTAPI",
+      "skill_b_name": "FastAPI Framework",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_CRM_RETAIL",
+      "skill_a_name": "Retail CRM Software",
+      "skill_b_id": "SK_LINUX",
+      "skill_b_name": "Linux System Administration",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_CRM_RETAIL",
+      "skill_a_name": "Retail CRM Software",
+      "skill_b_id": "SK_PYTHON",
+      "skill_b_name": "Python Programming",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_CRM_RETAIL",
+      "skill_a_name": "Retail CRM Software",
+      "skill_b_id": "SK_REST_API",
+      "skill_b_name": "RESTful API Design",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_CUSTOMER_SERVICE",
+      "skill_a_name": "Customer Relationship & Service",
+      "skill_b_id": "SK_DOCKER",
+      "skill_b_name": "Docker Containerization",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_CUSTOMER_SERVICE",
+      "skill_a_name": "Customer Relationship & Service",
+      "skill_b_id": "SK_SPARK",
+      "skill_b_name": "Apache Spark Big Data",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_DATA_VIZ",
+      "skill_a_name": "Data Visualization",
+      "skill_b_id": "SK_DOCKER",
+      "skill_b_name": "Docker Containerization",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_DATA_VIZ",
+      "skill_a_name": "Data Visualization",
+      "skill_b_id": "SK_EHR",
+      "skill_b_name": "Electronic Health Records (EHR)",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_DATA_VIZ",
+      "skill_a_name": "Data Visualization",
+      "skill_b_id": "SK_GIT",
+      "skill_b_name": "Git Version Control",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_DATA_VIZ",
+      "skill_a_name": "Data Visualization",
+      "skill_b_id": "SK_LINUX",
+      "skill_b_name": "Linux System Administration",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_DATA_VIZ",
+      "skill_a_name": "Data Visualization",
+      "skill_b_id": "SK_PANDAS",
+      "skill_b_name": "Pandas Data Analysis",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_DATA_VIZ",
+      "skill_a_name": "Data Visualization",
+      "skill_b_id": "SK_REST_API",
+      "skill_b_name": "RESTful API Design",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_DATA_VIZ",
+      "skill_a_name": "Data Visualization",
+      "skill_b_id": "SK_SPARK",
+      "skill_b_name": "Apache Spark Big Data",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_DATA_VIZ",
+      "skill_a_name": "Data Visualization",
+      "skill_b_id": "SK_TENSORFLOW",
+      "skill_b_name": "TensorFlow Framework",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_DOCKER",
+      "skill_a_name": "Docker Containerization",
+      "skill_b_id": "SK_EHR",
+      "skill_b_name": "Electronic Health Records (EHR)",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_DOCKER",
+      "skill_a_name": "Docker Containerization",
+      "skill_b_id": "SK_PYTORCH",
+      "skill_b_name": "PyTorch Framework",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_DOCKER",
+      "skill_a_name": "Docker Containerization",
+      "skill_b_id": "SK_REST_API",
+      "skill_b_name": "RESTful API Design",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_DOCKER",
+      "skill_a_name": "Docker Containerization",
+      "skill_b_id": "SK_SCIKIT_LEARN",
+      "skill_b_name": "Scikit-Learn ML",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_DOCKER",
+      "skill_a_name": "Docker Containerization",
+      "skill_b_id": "SK_TELEMATICS",
+      "skill_b_name": "Vehicle Telematics & IoT",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_EHR",
+      "skill_a_name": "Electronic Health Records (EHR)",
+      "skill_b_id": "SK_REST_API",
+      "skill_b_name": "RESTful API Design",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_FASTAPI",
+      "skill_a_name": "FastAPI Framework",
+      "skill_b_id": "SK_GIT",
+      "skill_b_name": "Git Version Control",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_FASTAPI",
+      "skill_a_name": "FastAPI Framework",
+      "skill_b_id": "SK_LINUX",
+      "skill_b_name": "Linux System Administration",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_FASTAPI",
+      "skill_a_name": "FastAPI Framework",
+      "skill_b_id": "SK_PYTHON",
+      "skill_b_name": "Python Programming",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_FASTAPI",
+      "skill_a_name": "FastAPI Framework",
+      "skill_b_id": "SK_REST_API",
+      "skill_b_name": "RESTful API Design",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_FASTAPI",
+      "skill_a_name": "FastAPI Framework",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_GIT",
+      "skill_a_name": "Git Version Control",
+      "skill_b_id": "SK_POS_SYSTEMS",
+      "skill_b_name": "Point of Sale (POS) Systems",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_GIT",
+      "skill_a_name": "Git Version Control",
+      "skill_b_id": "SK_SCIKIT_LEARN",
+      "skill_b_name": "Scikit-Learn ML",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_GIT",
+      "skill_a_name": "Git Version Control",
+      "skill_b_id": "SK_TELEMATICS",
+      "skill_b_name": "Vehicle Telematics & IoT",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_GIT",
+      "skill_a_name": "Git Version Control",
+      "skill_b_id": "SK_TENSORFLOW",
+      "skill_b_name": "TensorFlow Framework",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_JAVASCRIPT",
+      "skill_a_name": "JavaScript Programming",
+      "skill_b_id": "SK_KUBERNETES",
+      "skill_b_name": "Kubernetes Orchestration",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_KUBERNETES",
+      "skill_a_name": "Kubernetes Orchestration",
+      "skill_b_id": "SK_NODEJS",
+      "skill_b_name": "Node.js Backend",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_KUBERNETES",
+      "skill_a_name": "Kubernetes Orchestration",
+      "skill_b_id": "SK_PANDAS",
+      "skill_b_name": "Pandas Data Analysis",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_KUBERNETES",
+      "skill_a_name": "Kubernetes Orchestration",
+      "skill_b_id": "SK_PYTORCH",
+      "skill_b_name": "PyTorch Framework",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_KUBERNETES",
+      "skill_a_name": "Kubernetes Orchestration",
+      "skill_b_id": "SK_TELEMATICS",
+      "skill_b_name": "Vehicle Telematics & IoT",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_LINUX",
+      "skill_a_name": "Linux System Administration",
+      "skill_b_id": "SK_PANDAS",
+      "skill_b_name": "Pandas Data Analysis",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_LINUX",
+      "skill_a_name": "Linux System Administration",
+      "skill_b_id": "SK_POS_SYSTEMS",
+      "skill_b_name": "Point of Sale (POS) Systems",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_LINUX",
+      "skill_a_name": "Linux System Administration",
+      "skill_b_id": "SK_REACT",
+      "skill_b_name": "React.js Frontend",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_LINUX",
+      "skill_a_name": "Linux System Administration",
+      "skill_b_id": "SK_SCADA",
+      "skill_b_name": "SCADA Industrial Systems",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_LINUX",
+      "skill_a_name": "Linux System Administration",
+      "skill_b_id": "SK_SPARK",
+      "skill_b_name": "Apache Spark Big Data",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_NUMPY",
+      "skill_a_name": "NumPy Numerical Computing",
+      "skill_b_id": "SK_PANDAS",
+      "skill_b_name": "Pandas Data Analysis",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_NUMPY",
+      "skill_a_name": "NumPy Numerical Computing",
+      "skill_b_id": "SK_PYTORCH",
+      "skill_b_name": "PyTorch Framework",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_PANDAS",
+      "skill_a_name": "Pandas Data Analysis",
+      "skill_b_id": "SK_PYTORCH",
+      "skill_b_name": "PyTorch Framework",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_PANDAS",
+      "skill_a_name": "Pandas Data Analysis",
+      "skill_b_id": "SK_SCIKIT_LEARN",
+      "skill_b_name": "Scikit-Learn ML",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_PANDAS",
+      "skill_a_name": "Pandas Data Analysis",
+      "skill_b_id": "SK_SPARK",
+      "skill_b_name": "Apache Spark Big Data",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_PANDAS",
+      "skill_a_name": "Pandas Data Analysis",
+      "skill_b_id": "SK_TENSORFLOW",
+      "skill_b_name": "TensorFlow Framework",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_PYTHON",
+      "skill_a_name": "Python Programming",
+      "skill_b_id": "SK_SUPPLY_CHAIN",
+      "skill_b_name": "Supply Chain Coordination",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_PYTORCH",
+      "skill_a_name": "PyTorch Framework",
+      "skill_b_id": "SK_SPARK",
+      "skill_b_name": "Apache Spark Big Data",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_PYTORCH",
+      "skill_a_name": "PyTorch Framework",
+      "skill_b_id": "SK_SQL",
+      "skill_b_name": "SQL Database Management",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_REST_API",
+      "skill_a_name": "RESTful API Design",
+      "skill_b_id": "SK_SPARK",
+      "skill_b_name": "Apache Spark Big Data",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_REST_API",
+      "skill_a_name": "RESTful API Design",
+      "skill_b_id": "SK_TELEMATICS",
+      "skill_b_name": "Vehicle Telematics & IoT",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_SQL",
+      "skill_a_name": "SQL Database Management",
+      "skill_b_id": "SK_TELEMATICS",
+      "skill_b_name": "Vehicle Telematics & IoT",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    },
+    {
+      "skill_a_id": "SK_SQL",
+      "skill_a_name": "SQL Database Management",
+      "skill_b_id": "SK_TENSORFLOW",
+      "skill_b_name": "TensorFlow Framework",
+      "co_occurrence_count": 1,
+      "co_occurrence_percentage": 0.34
+    }
+  ],
+  "temporal_analysis": {
+    "status": "not_available",
+    "reason": "Phase 2 batch artifact retains minimal provenance schema and does not store posting dates."
+  }
+}

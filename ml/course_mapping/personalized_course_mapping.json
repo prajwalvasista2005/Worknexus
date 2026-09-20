@@ -1,0 +1,759 @@
+{
+  "metadata": {
+    "phase": "7D",
+    "pipeline": "personalized_course_skill_mapping",
+    "personalized_recommendation_input": "C:/Users/Nehal Jois/Documents/SIH/ml/personalized/student_skill_recommendations.json",
+    "course_input": "C:/Users/Nehal Jois/Documents/SIH/ml/data/sample_courses.json",
+    "taxonomy_input": "C:/Users/Nehal Jois/Documents/SIH/ml/data/skills.json",
+    "taxonomy_version": "1",
+    "total_students": 5,
+    "total_personalized_skills": 8,
+    "total_covered_personalized_skills": 4,
+    "total_not_covered_personalized_skills": 4,
+    "scope_note": "Deterministic mapping of Phase 7C personalized skill recommendations to existing catalog courses without ranking, scoring, or learning path generation."
+  },
+  "students": [
+    {
+      "student_id": "STU_001",
+      "role": {
+        "role_id": "ROLE_DATA_ENGINEER",
+        "role_name": "Data Engineer"
+      },
+      "summary": {
+        "total_personalized_skills": 2,
+        "covered_personalized_skills": 1,
+        "not_covered_personalized_skills": 1
+      },
+      "skill_course_mapping": [
+        {
+          "skill_id": "SK_AIRFLOW",
+          "skill_name": "Apache Airflow",
+          "category": "IT / Data",
+          "coverage_status": "covered",
+          "matching_courses": [
+            {
+              "course_id": 102,
+              "course_name": "Data Engineering Associate"
+            }
+          ]
+        },
+        {
+          "skill_id": "SK_AWS",
+          "skill_name": "AWS Cloud Services",
+          "category": "IT / Data",
+          "coverage_status": "not_covered",
+          "matching_courses": []
+        }
+      ]
+    },
+    {
+      "student_id": "STU_002",
+      "role": {
+        "role_id": "ROLE_EV_TECHNICIAN",
+        "role_name": "EV Technician"
+      },
+      "summary": {
+        "total_personalized_skills": 3,
+        "covered_personalized_skills": 2,
+        "not_covered_personalized_skills": 1
+      },
+      "skill_course_mapping": [
+        {
+          "skill_id": "SK_CAN",
+          "skill_name": "CAN Bus",
+          "category": "EV / Automotive",
+          "coverage_status": "not_covered",
+          "matching_courses": []
+        },
+        {
+          "skill_id": "SK_DIAG",
+          "skill_name": "Vehicle Diagnostics",
+          "category": "EV / Automotive",
+          "coverage_status": "covered",
+          "matching_courses": [
+            {
+              "course_id": 42,
+              "course_name": "EV Technician"
+            }
+          ]
+        },
+        {
+          "skill_id": "SK_THERMAL",
+          "skill_name": "Thermal Management",
+          "category": "EV / Automotive",
+          "coverage_status": "covered",
+          "matching_courses": [
+            {
+              "course_id": 42,
+              "course_name": "EV Technician"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "student_id": "STU_003",
+      "role": {
+        "role_id": "ROLE_FULL_STACK_DEV",
+        "role_name": "Full Stack Developer"
+      },
+      "summary": {
+        "total_personalized_skills": 1,
+        "covered_personalized_skills": 1,
+        "not_covered_personalized_skills": 0
+      },
+      "skill_course_mapping": [
+        {
+          "skill_id": "SK_SQL",
+          "skill_name": "SQL Database Management",
+          "category": "IT / Data",
+          "coverage_status": "covered",
+          "matching_courses": [
+            {
+              "course_id": 101,
+              "course_name": "Full Stack Python Developer"
+            },
+            {
+              "course_id": 102,
+              "course_name": "Data Engineering Associate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "student_id": "STU_004",
+      "role": {
+        "role_id": "ROLE_HEALTHCARE_ASST",
+        "role_name": "General Duty Healthcare Assistant"
+      },
+      "summary": {
+        "total_personalized_skills": 1,
+        "covered_personalized_skills": 0,
+        "not_covered_personalized_skills": 1
+      },
+      "skill_course_mapping": [
+        {
+          "skill_id": "SK_EHR",
+          "skill_name": "Electronic Health Records (EHR)",
+          "category": "Healthcare Support",
+          "coverage_status": "not_covered",
+          "matching_courses": []
+        }
+      ]
+    },
+    {
+      "student_id": "STU_005",
+      "role": {
+        "role_id": "ROLE_INDUSTRIAL_AUTO",
+        "role_name": "Industrial Automation Technician"
+      },
+      "summary": {
+        "total_personalized_skills": 1,
+        "covered_personalized_skills": 0,
+        "not_covered_personalized_skills": 1
+      },
+      "skill_course_mapping": [
+        {
+          "skill_id": "SK_SCADA",
+          "skill_name": "SCADA Industrial Systems",
+          "category": "Electrician / Electronics",
+          "coverage_status": "not_covered",
+          "matching_courses": []
+        }
+      ]
+    }
+  ],
+  "global_skill_course_mapping": [
+    {
+      "skill_id": "SK_AIRFLOW",
+      "skill_name": "Apache Airflow",
+      "category": "IT / Data",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 102,
+          "course_name": "Data Engineering Associate"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_AUTOSAR",
+      "skill_name": "AUTOSAR Architecture",
+      "category": "EV / Automotive",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_AWS",
+      "skill_name": "AWS Cloud Services",
+      "category": "IT / Data",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_BARCODE_SCANNING",
+      "skill_name": "Barcode & RFID Scanning",
+      "category": "Retail / Sales",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_BATTERY_CELL",
+      "skill_name": "Cell Balancing and Testing",
+      "category": "EV / Automotive",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_BMS",
+      "skill_name": "Battery Management Systems",
+      "category": "EV / Automotive",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 42,
+          "course_name": "EV Technician"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_CAD_ELECTRICAL",
+      "skill_name": "AutoCAD Electrical",
+      "category": "Electrician / Electronics",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_CAN",
+      "skill_name": "CAN Bus",
+      "category": "EV / Automotive",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_CASH_HANDLING",
+      "skill_name": "Cash Handling & Reconciliation",
+      "category": "Retail / Sales",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_CHARGING_INFRA",
+      "skill_name": "EV Charging Systems",
+      "category": "EV / Automotive",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_CIRCUIT_DESIGN",
+      "skill_name": "Circuit Design & Schematic",
+      "category": "Electrician / Electronics",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 103,
+          "course_name": "Industrial Automation & Electricals"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_CPR_BLS",
+      "skill_name": "CPR and Basic Life Support",
+      "category": "Healthcare Support",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 104,
+          "course_name": "General Duty Healthcare Assistant"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_CRM_RETAIL",
+      "skill_name": "Retail CRM Software",
+      "category": "Retail / Sales",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_CUSTOMER_SERVICE",
+      "skill_name": "Customer Relationship & Service",
+      "category": "Retail / Sales",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_DATA_VIZ",
+      "skill_name": "Data Visualization",
+      "category": "IT / Data",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_DIAG",
+      "skill_name": "Vehicle Diagnostics",
+      "category": "EV / Automotive",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 42,
+          "course_name": "EV Technician"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_DOCKER",
+      "skill_name": "Docker Containerization",
+      "category": "IT / Data",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 101,
+          "course_name": "Full Stack Python Developer"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_EARTHING",
+      "skill_name": "Earthing & Grounding",
+      "category": "Electrician / Electronics",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 103,
+          "course_name": "Industrial Automation & Electricals"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_ECG",
+      "skill_name": "ECG Operation & Recording",
+      "category": "Healthcare Support",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_EHR",
+      "skill_name": "Electronic Health Records (EHR)",
+      "category": "Healthcare Support",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_EV_POWERTRAIN",
+      "skill_name": "Electric Powertrain",
+      "category": "EV / Automotive",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_FASTAPI",
+      "skill_name": "FastAPI Framework",
+      "category": "IT / Data",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 101,
+          "course_name": "Full Stack Python Developer"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_FIRST_AID",
+      "skill_name": "First Aid and Emergency Response",
+      "category": "Healthcare Support",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 104,
+          "course_name": "General Duty Healthcare Assistant"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_GIT",
+      "skill_name": "Git Version Control",
+      "category": "IT / Data",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 101,
+          "course_name": "Full Stack Python Developer"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_HIGH_VOLTAGE",
+      "skill_name": "High Voltage Safety",
+      "category": "EV / Automotive",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_INFECTION_CONTROL",
+      "skill_name": "Infection Control & Sanitization",
+      "category": "Healthcare Support",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 104,
+          "course_name": "General Duty Healthcare Assistant"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_INVENTORY_MGMT",
+      "skill_name": "Inventory Management",
+      "category": "Retail / Sales",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_INVERTER",
+      "skill_name": "Traction Inverters",
+      "category": "EV / Automotive",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_JAVASCRIPT",
+      "skill_name": "JavaScript Programming",
+      "category": "IT / Data",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_KUBERNETES",
+      "skill_name": "Kubernetes Orchestration",
+      "category": "IT / Data",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_LINUX",
+      "skill_name": "Linux System Administration",
+      "category": "IT / Data",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_LOSS_PREVENTION",
+      "skill_name": "Loss Prevention & Asset Protection",
+      "category": "Retail / Sales",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_MEDICAL_TERMINOLOGY",
+      "skill_name": "Medical Terminology",
+      "category": "Healthcare Support",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_MED_ADMIN",
+      "skill_name": "Medication Administration",
+      "category": "Healthcare Support",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_MERCHANDISING",
+      "skill_name": "Visual Merchandising & Display",
+      "category": "Retail / Sales",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_MOTOR_CONTROL",
+      "skill_name": "AC/DC Motor Drives & Controls",
+      "category": "Electrician / Electronics",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_MULTIMETER",
+      "skill_name": "Digital Multimeter Measurement",
+      "category": "Electrician / Electronics",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 103,
+          "course_name": "Industrial Automation & Electricals"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_NODEJS",
+      "skill_name": "Node.js Backend",
+      "category": "IT / Data",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_NUMPY",
+      "skill_name": "NumPy Numerical Computing",
+      "category": "IT / Data",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_ORDER_FULFILLMENT",
+      "skill_name": "E-commerce Order Fulfillment",
+      "category": "Retail / Sales",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_OSCILLOSCOPE",
+      "skill_name": "Oscilloscope Testing & Measurement",
+      "category": "Electrician / Electronics",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_PANDAS",
+      "skill_name": "Pandas Data Analysis",
+      "category": "IT / Data",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 102,
+          "course_name": "Data Engineering Associate"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_PANEL_WIRING",
+      "skill_name": "Electrical Panel Wiring",
+      "category": "Electrician / Electronics",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 103,
+          "course_name": "Industrial Automation & Electricals"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_PATIENT_CARE",
+      "skill_name": "Patient Care & Bedside Assistance",
+      "category": "Healthcare Support",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 104,
+          "course_name": "General Duty Healthcare Assistant"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_PATIENT_TRANSFER",
+      "skill_name": "Patient Mobility & Transfer",
+      "category": "Healthcare Support",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_PHLEBOTOMY",
+      "skill_name": "Phlebotomy & Blood Sample Collection",
+      "category": "Healthcare Support",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_PLC",
+      "skill_name": "PLC Programming",
+      "category": "Electrician / Electronics",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 103,
+          "course_name": "Industrial Automation & Electricals"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_POS_SYSTEMS",
+      "skill_name": "Point of Sale (POS) Systems",
+      "category": "Retail / Sales",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_PYTHON",
+      "skill_name": "Python Programming",
+      "category": "IT / Data",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 101,
+          "course_name": "Full Stack Python Developer"
+        },
+        {
+          "course_id": 102,
+          "course_name": "Data Engineering Associate"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_PYTORCH",
+      "skill_name": "PyTorch Framework",
+      "category": "IT / Data",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_REACT",
+      "skill_name": "React.js Frontend",
+      "category": "IT / Data",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_REGEN_BRAKING",
+      "skill_name": "Regenerative Braking",
+      "category": "EV / Automotive",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_RELAYS",
+      "skill_name": "Relays & Protection Systems",
+      "category": "Electrician / Electronics",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_REST_API",
+      "skill_name": "RESTful API Design",
+      "category": "IT / Data",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_SCADA",
+      "skill_name": "SCADA Industrial Systems",
+      "category": "Electrician / Electronics",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_SCIKIT_LEARN",
+      "skill_name": "Scikit-Learn ML",
+      "category": "IT / Data",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_SOLDERING",
+      "skill_name": "Soldering & Desoldering",
+      "category": "Electrician / Electronics",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_SPARK",
+      "skill_name": "Apache Spark Big Data",
+      "category": "IT / Data",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 102,
+          "course_name": "Data Engineering Associate"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_SQL",
+      "skill_name": "SQL Database Management",
+      "category": "IT / Data",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 101,
+          "course_name": "Full Stack Python Developer"
+        },
+        {
+          "course_id": 102,
+          "course_name": "Data Engineering Associate"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_STORE_OPS",
+      "skill_name": "Store Operations & Opening/Closing",
+      "category": "Retail / Sales",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_SUPPLY_CHAIN",
+      "skill_name": "Supply Chain Coordination",
+      "category": "Retail / Sales",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_TELEMATICS",
+      "skill_name": "Vehicle Telematics & IoT",
+      "category": "EV / Automotive",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_TENSORFLOW",
+      "skill_name": "TensorFlow Framework",
+      "category": "IT / Data",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_THERMAL",
+      "skill_name": "Thermal Management",
+      "category": "EV / Automotive",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 42,
+          "course_name": "EV Technician"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_TRANSFORMER",
+      "skill_name": "Transformer Maintenance",
+      "category": "Electrician / Electronics",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_UPSELLING",
+      "skill_name": "Upselling and Cross-selling",
+      "category": "Retail / Sales",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    },
+    {
+      "skill_id": "SK_VITAL_SIGNS",
+      "skill_name": "Vital Signs Monitoring",
+      "category": "Healthcare Support",
+      "coverage_status": "covered",
+      "courses_containing_skill": [
+        {
+          "course_id": 104,
+          "course_name": "General Duty Healthcare Assistant"
+        }
+      ]
+    },
+    {
+      "skill_id": "SK_WOUND_CARE",
+      "skill_name": "Wound Dressing and Care",
+      "category": "Healthcare Support",
+      "coverage_status": "not_covered",
+      "courses_containing_skill": []
+    }
+  ],
+  "errors": []
+}

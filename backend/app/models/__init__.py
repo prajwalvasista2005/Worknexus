@@ -1,19 +1,23 @@
-from app.models.users import User
-from app.models.skills import Skill
-from app.models.courses import Course
-from app.models.user_skills import UserSkill
-from app.models.course_skills import CourseSkill
-from app.models.refresh_tokens import RefreshToken
-from app.models.job_postings import JobPosting
-from app.models.jobSkill import JobSkill
+﻿from .entities import (
+    User,
+    Skill,
+    Course,
+    CourseSkill,
+    Employer,
+    JobPosting,
+    JobSkill,
+    EmployerFeedback,
+    EmployerFeedbackSignal
+)
 
 __all__ = [
     "User",
     "Skill",
     "Course",
-    "UserSkill",
     "CourseSkill",
-    "RefreshToken",
+    "Employer",
     "JobPosting",
     "JobSkill",
+    "EmployerFeedback",
+    "EmployerFeedbackSignal"
 ]

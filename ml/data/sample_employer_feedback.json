@@ -1,0 +1,32 @@
+[
+  {
+    "employer_id": 17,
+    "trust_weight": 0.9,
+    "comment": "Candidate was good with battery testing but had no experience with CAN bus.",
+    "course_id": 42
+  },
+  {
+    "employer_id": 22,
+    "trust_weight": 1.0,
+    "comment": "Graduate understood BMS well, but completely lacked knowledge of CAN-Bus protocols and automotive networking.",
+    "course_id": 42
+  },
+  {
+    "employer_id": 31,
+    "trust_weight": 0.7,
+    "comment": "Student struggled during vehicle diagnostics because they had never worked with Controller Area Network before.",
+    "course_id": 42
+  },
+  {
+    "employer_id": 15,
+    "trust_weight": 0.85,
+    "comment": "Great foundational understanding of thermal management and high voltage safety.",
+    "course_id": 42
+  },
+  {
+    "employer_id": 44,
+    "trust_weight": 0.95,
+    "comment": "The hire was solid in Python and SQL, but we had to train them on Apache Airflow orchestration from scratch.",
+    "course_id": 102
+  }
+]

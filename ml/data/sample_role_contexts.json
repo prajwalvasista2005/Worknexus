@@ -1,0 +1,58 @@
+[
+  {
+    "role_id": "ROLE_DATA_ENGINEER",
+    "role_name": "Data Engineer",
+    "target_skill_ids": [
+      "SK_PYTHON",
+      "SK_SQL",
+      "SK_AIRFLOW",
+      "SK_SPARK",
+      "SK_AWS"
+    ]
+  },
+  {
+    "role_id": "ROLE_EV_TECHNICIAN",
+    "role_name": "EV Technician",
+    "target_skill_ids": [
+      "SK_BMS",
+      "SK_CAN",
+      "SK_BATTERY_CELL",
+      "SK_DIAG",
+      "SK_HIGH_VOLTAGE",
+      "SK_THERMAL"
+    ]
+  },
+  {
+    "role_id": "ROLE_FULL_STACK_DEV",
+    "role_name": "Full Stack Developer",
+    "target_skill_ids": [
+      "SK_PYTHON",
+      "SK_JAVASCRIPT",
+      "SK_REACT",
+      "SK_SQL",
+      "SK_GIT",
+      "SK_DOCKER"
+    ]
+  },
+  {
+    "role_id": "ROLE_HEALTHCARE_ASST",
+    "role_name": "General Duty Healthcare Assistant",
+    "target_skill_ids": [
+      "SK_PATIENT_CARE",
+      "SK_VITAL_SIGNS",
+      "SK_CPR_BLS",
+      "SK_EHR",
+      "SK_FIRST_AID"
+    ]
+  },
+  {
+    "role_id": "ROLE_INDUSTRIAL_AUTO",
+    "role_name": "Industrial Automation Technician",
+    "target_skill_ids": [
+      "SK_PLC",
+      "SK_SCADA",
+      "SK_PANEL_WIRING",
+      "SK_CIRCUIT_DESIGN"
+    ]
+  }
+]

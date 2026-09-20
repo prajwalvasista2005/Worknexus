@@ -1,0 +1,24 @@
+{
+  "assignments": [
+    {
+      "student_id": "STU_001",
+      "role_id": "ROLE_DATA_ENGINEER"
+    },
+    {
+      "student_id": "STU_002",
+      "role_id": "ROLE_EV_TECHNICIAN"
+    },
+    {
+      "student_id": "STU_003",
+      "role_id": "ROLE_FULL_STACK_DEV"
+    },
+    {
+      "student_id": "STU_004",
+      "role_id": "ROLE_HEALTHCARE_ASST"
+    },
+    {
+      "student_id": "STU_005",
+      "role_id": "ROLE_INDUSTRIAL_AUTO"
+    }
+  ]
+}
