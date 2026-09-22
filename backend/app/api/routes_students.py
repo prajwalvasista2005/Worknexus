@@ -1,4 +1,4 @@
-# routes_students.py
+from typing import Any, List
 try:
     from fastapi import APIRouter, Depends, status, HTTPException
 except ImportError:
@@ -27,7 +27,6 @@ except ImportError:
 
     from ..services.ml_adapter import HTTPException
 
-from typing import List
 from ..db.session import get_db
 from ..schemas.schemas import (
     StudentProfileResponseSchema,
@@ -39,18 +38,25 @@ from ..auth.rbac import CurrentUser, require_role, get_current_user
 
 router = APIRouter()
 
+def _resolve_db(db: Any):
+    if hasattr(db, "__next__") or (isinstance(db, type(get_db())) and hasattr(db, "send")):
+        return next(db)
+    elif hasattr(db, "dependency"):
+        return next(get_db())
+    return db
+
 @router.get(
     "/{user_id}/profile",
+    response_model=StudentProfileResponseSchema,
     status_code=status.HTTP_200_OK,
     summary="Retrieve student profile and associated skill evidence"
 )
 def get_student_profile(
     user_id: int,
-    db = None,
-    _user: CurrentUser = None
+    db: Any = Depends(get_db),
+    _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = db or next(get_db())
-    # RBAC check: Student can view own profile; Institute and Admin can view any
+    actual_db = _resolve_db(db)
     if _user and _user.role == "Student" and _user.user_id != user_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Students are not authorized to view other students' profiles.")
 
@@ -61,17 +67,17 @@ def get_student_profile(
 
 @router.post(
     "/{user_id}/evidence",
+    response_model=StudentSkillEvidenceResponseSchema,
     status_code=status.HTTP_201_CREATED,
     summary="Submit a skill evidence record for a student"
 )
 def add_student_skill_evidence(
     user_id: int,
     evidence_in: StudentSkillEvidenceCreateSchema,
-    db = None,
-    _user: CurrentUser = None
+    db: Any = Depends(get_db),
+    _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = db or next(get_db())
-    # RBAC check: Student can add own evidence; Institute and Admin can add
+    actual_db = _resolve_db(db)
     if _user and _user.role == "Student" and _user.user_id != user_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Students are not authorized to add evidence for other students.")
 
@@ -82,15 +88,16 @@ def add_student_skill_evidence(
 
 @router.get(
     "/{user_id}/evidence",
+    response_model=List[StudentSkillEvidenceResponseSchema],
     status_code=status.HTTP_200_OK,
     summary="List all skill evidence records for a student"
 )
 def list_student_skill_evidence(
     user_id: int,
-    db = None,
-    _user: CurrentUser = None
+    db: Any = Depends(get_db),
+    _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = db or next(get_db())
+    actual_db = _resolve_db(db)
     if _user and _user.role == "Student" and _user.user_id != user_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Students are not authorized to view other students' evidence.")
 

@@ -1,3 +1,4 @@
+from typing import Any, Optional
 try:
     from fastapi import APIRouter, Depends, status, Query
 except ImportError:
@@ -31,17 +32,30 @@ from ..auth.rbac import get_current_user, CurrentUser
 
 router = APIRouter()
 
+def _resolve_db(db: Any):
+    if hasattr(db, "__next__") or (isinstance(db, type(get_db())) and hasattr(db, "send")):
+        return next(db)
+    elif hasattr(db, "dependency"):
+        return next(get_db())
+    return db
+
+def _resolve_adapter(ml_adapter: Any) -> MLAdapter:
+    if hasattr(ml_adapter, "dependency"):
+        return get_ml_adapter()
+    return ml_adapter or get_ml_adapter()
+
 @router.post(
     "/extract-skills",
+    response_model=SkillExtractionResponse,
     status_code=status.HTTP_200_OK,
     summary="Extract canonical skills from free-form text"
 )
 def extract_skills_endpoint(
     request: SkillExtractionRequest,
-    ml_adapter: MLAdapter = None,
-    _user: CurrentUser = None
+    ml_adapter: MLAdapter = Depends(get_ml_adapter),
+    _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_adapter = ml_adapter or get_ml_adapter()
+    actual_adapter = _resolve_adapter(ml_adapter)
     results = actual_adapter.extract_skills(request.text)
     items = [
         SkillExtractionItem(
@@ -59,12 +73,12 @@ def extract_skills_endpoint(
 )
 def get_demand_endpoint(
     mode: str = "live",
-    db = None,
-    ml_adapter: MLAdapter = None,
-    _user: CurrentUser = None
+    db: Any = Depends(get_db),
+    ml_adapter: MLAdapter = Depends(get_ml_adapter),
+    _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = db or next(get_db())
-    actual_adapter = ml_adapter or get_ml_adapter()
+    actual_db = _resolve_db(db)
+    actual_adapter = _resolve_adapter(ml_adapter)
     res = actual_adapter.get_skill_demand(db=actual_db, mode=mode)
     return res.to_dict()
 
@@ -75,12 +89,12 @@ def get_demand_endpoint(
 )
 def get_course_gaps_endpoint(
     mode: str = "live",
-    db = None,
-    ml_adapter: MLAdapter = None,
-    _user: CurrentUser = None
+    db: Any = Depends(get_db),
+    ml_adapter: MLAdapter = Depends(get_ml_adapter),
+    _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = db or next(get_db())
-    actual_adapter = ml_adapter or get_ml_adapter()
+    actual_db = _resolve_db(db)
+    actual_adapter = _resolve_adapter(ml_adapter)
     res = actual_adapter.get_course_skill_gaps(db=actual_db, mode=mode)
     return res.to_dict()
 
@@ -91,12 +105,12 @@ def get_course_gaps_endpoint(
 )
 def get_evidence_endpoint(
     mode: str = "live",
-    db = None,
-    ml_adapter: MLAdapter = None,
-    _user: CurrentUser = None
+    db: Any = Depends(get_db),
+    ml_adapter: MLAdapter = Depends(get_ml_adapter),
+    _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = db or next(get_db())
-    actual_adapter = ml_adapter or get_ml_adapter()
+    actual_db = _resolve_db(db)
+    actual_adapter = _resolve_adapter(ml_adapter)
     res = actual_adapter.get_skill_evidence(db=actual_db, mode=mode)
     return res.to_dict()
 
@@ -107,12 +121,12 @@ def get_evidence_endpoint(
 )
 def get_recommendations_endpoint(
     mode: str = "live",
-    db = None,
-    ml_adapter: MLAdapter = None,
-    _user: CurrentUser = None
+    db: Any = Depends(get_db),
+    ml_adapter: MLAdapter = Depends(get_ml_adapter),
+    _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = db or next(get_db())
-    actual_adapter = ml_adapter or get_ml_adapter()
+    actual_db = _resolve_db(db)
+    actual_adapter = _resolve_adapter(ml_adapter)
     res = actual_adapter.get_skill_recommendations(db=actual_db, mode=mode)
     return res.to_dict()
 
@@ -124,12 +138,12 @@ def get_recommendations_endpoint(
 def get_role_context_endpoint(
     role_id: str,
     mode: str = "live",
-    db = None,
-    ml_adapter: MLAdapter = None,
-    _user: CurrentUser = None
+    db: Any = Depends(get_db),
+    ml_adapter: MLAdapter = Depends(get_ml_adapter),
+    _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = db or next(get_db())
-    actual_adapter = ml_adapter or get_ml_adapter()
+    actual_db = _resolve_db(db)
+    actual_adapter = _resolve_adapter(ml_adapter)
     res = actual_adapter.get_role_skill_context(role_id=role_id, db=actual_db, mode=mode)
     return res.to_dict()
 
@@ -141,12 +155,12 @@ def get_role_context_endpoint(
 def get_student_profile_endpoint(
     student_id: str,
     mode: str = "live",
-    db = None,
-    ml_adapter: MLAdapter = None,
-    _user: CurrentUser = None
+    db: Any = Depends(get_db),
+    ml_adapter: MLAdapter = Depends(get_ml_adapter),
+    _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = db or next(get_db())
-    actual_adapter = ml_adapter or get_ml_adapter()
+    actual_db = _resolve_db(db)
+    actual_adapter = _resolve_adapter(ml_adapter)
     res = actual_adapter.get_student_skill_profile(student_id=student_id, db=actual_db, mode=mode)
     return res.to_dict()
 
@@ -159,12 +173,12 @@ def get_student_gap_endpoint(
     student_id: str,
     role_id: str,
     mode: str = "live",
-    db = None,
-    ml_adapter: MLAdapter = None,
-    _user: CurrentUser = None
+    db: Any = Depends(get_db),
+    ml_adapter: MLAdapter = Depends(get_ml_adapter),
+    _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = db or next(get_db())
-    actual_adapter = ml_adapter or get_ml_adapter()
+    actual_db = _resolve_db(db)
+    actual_adapter = _resolve_adapter(ml_adapter)
     res = actual_adapter.get_student_skill_gap(student_id=student_id, role_id=role_id, db=actual_db, mode=mode)
     return res.to_dict()
 
@@ -177,12 +191,12 @@ def get_personalized_recommendations_endpoint(
     student_id: str,
     role_id: str,
     mode: str = "live",
-    db = None,
-    ml_adapter: MLAdapter = None,
-    _user: CurrentUser = None
+    db: Any = Depends(get_db),
+    ml_adapter: MLAdapter = Depends(get_ml_adapter),
+    _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = db or next(get_db())
-    actual_adapter = ml_adapter or get_ml_adapter()
+    actual_db = _resolve_db(db)
+    actual_adapter = _resolve_adapter(ml_adapter)
     res = actual_adapter.get_personalized_recommendations(student_id=student_id, role_id=role_id, db=actual_db, mode=mode)
     return res.to_dict()
 
@@ -195,11 +209,11 @@ def get_course_candidates_endpoint(
     student_id: str,
     role_id: str,
     mode: str = "live",
-    db = None,
-    ml_adapter: MLAdapter = None,
-    _user: CurrentUser = None
+    db: Any = Depends(get_db),
+    ml_adapter: MLAdapter = Depends(get_ml_adapter),
+    _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = db or next(get_db())
-    actual_adapter = ml_adapter or get_ml_adapter()
+    actual_db = _resolve_db(db)
+    actual_adapter = _resolve_adapter(ml_adapter)
     res = actual_adapter.get_course_candidates(student_id=student_id, role_id=role_id, db=actual_db, mode=mode)
     return res.to_dict()

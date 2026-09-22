@@ -4,12 +4,11 @@ import csv
 import zipfile
 from pathlib import Path
 from typing import List, Optional
-import pyarrow.parquet as pq
 
 from ml.ingestion.schema import JobRecord
 
-# Default data directory pointing to the real datasets in SIH/Data
-DEFAULT_DATA_DIR = Path(r"C:\Users\Nehal Jois\Documents\SIH\Data")
+# Default data directory pointing to the datasets directory in repository root or fallback
+DEFAULT_DATA_DIR = Path(__file__).resolve().parent.parent.parent / "datasets"
 
 def get_data_dir(custom_path: Optional[str] = None) -> Path:
     if custom_path:

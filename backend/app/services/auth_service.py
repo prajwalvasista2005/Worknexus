@@ -116,7 +116,10 @@ class AuthService:
             return None
 
         now = datetime.now(timezone.utc)
-        if db_token.expires_at < now:
+        expires_at = db_token.expires_at
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=timezone.utc)
+        if expires_at < now:
             return None
 
         # Revoke old token
