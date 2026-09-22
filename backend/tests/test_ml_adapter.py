@@ -1,5 +1,5 @@
 import unittest
-from backend.app.services.ml_adapter import MLAdapter, get_ml_adapter, HTTPException
+from app.services.ml_adapter import MLAdapter, get_ml_adapter, HTTPException
 
 class TestMLAdapter(unittest.TestCase):
 

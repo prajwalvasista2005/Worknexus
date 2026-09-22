@@ -169,5 +169,11 @@ class QueryBuilder:
 
 _global_session = MockDatabaseSession()
 
+try:
+    from .seed import seed_all
+    seed_all(_global_session)
+except Exception:
+    pass
+
 def get_db():
     yield _global_session

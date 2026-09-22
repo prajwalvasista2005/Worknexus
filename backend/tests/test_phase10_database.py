@@ -1,14 +1,14 @@
 import unittest
-from backend.app.db.session import MockDatabaseSession
-from backend.app.models.entities import User, Skill, TargetRole, RoleSkill, StudentProfile, StudentSkillEvidence
-from backend.app.schemas.schemas import (
+from app.db.session import MockDatabaseSession
+from app.models.entities import User, Skill, TargetRole, RoleSkill, StudentProfile, StudentSkillEvidence
+from app.schemas.schemas import (
     TargetRoleCreateSchema,
     StudentProfileCreateSchema,
     StudentSkillEvidenceCreateSchema
 )
-from backend.app.services.role_service import RoleService
-from backend.app.services.student_service import StudentService
-from backend.app.db.seed import seed_canonical_skills, seed_benchmark_roles, seed_demo_students
+from app.services.role_service import RoleService
+from app.services.student_service import StudentService
+from app.db.seed import seed_canonical_skills, seed_benchmark_roles, seed_demo_students
 
 class TestPhase10DatabaseFoundation(unittest.TestCase):
 

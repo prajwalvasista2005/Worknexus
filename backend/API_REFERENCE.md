@@ -1,729 +1,266 @@
 # WorkNexus API Reference Documentation
 
 > **Base URL:** `http://127.0.0.1:8000`  
+> **API v1 Prefix:** `http://127.0.0.1:8000/api/v1`  
 > **Interactive Documentation (Swagger UI):** `http://127.0.0.1:8000/docs`  
 > **Alternative Documentation (ReDoc):** `http://127.0.0.1:8000/redoc`  
 > **Current Version:** `1.0.0`  
-> **Platform:** WorkNexus (Labour Market Intelligence & Curriculum Alignment Platform)
+> **Platform:** WorkNexus / SkillMesh (Labour Market Intelligence & Curriculum Alignment Platform)
 
 ---
 
 ## 1. Global Headers & Conventions
 
-All endpoints follow standard RESTful HTTP semantics.
+All endpoints adhere to RESTful HTTP semantics.
 
 ### Standard Request Headers
 | Header | Required For | Format / Value | Description |
 | :--- | :--- | :--- | :--- |
-| `Content-Type` | `POST`, `PUT`, `PATCH` | `application/json` | Specifies JSON body payload. |
-| `Accept` | All Requests | `application/json` | Informs server of accepted response format. |
-| `Authorization` | Protected Routes | `Bearer <access_token>` | OAuth2 Bearer token obtained from `/auth/login` or `/auth/token`. |
-
-### Standard Response Structure
-- Successful requests return JSON objects or lists corresponding to defined Pydantic schemas.
-- Error responses return a JSON object with a `detail` key:
-  ```json
-  {
-    "detail": "Error description message"
-  }
-  ```
+| `Content-Type` | `POST`, `PUT`, `PATCH` | `application/json` | Specifies JSON payload format. |
+| `Accept` | All Requests | `application/json` | Requested response format. |
+| `Authorization` | Protected Routes | `Bearer <access_token>` | OAuth2 Bearer token obtained from `/auth/login` or `/api/v1/auth/login`. |
+| `X-User-Id` | Role-Emulation / Dev | Integer (e.g. `1`) | Header-based user context identifier. |
+| `X-User-Role` | Role-Emulation / Dev | String (`Admin`, `Institute`, `Employer`, `Trainer`, `Student`) | Header-based RBAC role context. |
 
 ---
 
 ## 2. JWT Authentication & Token Lifecycle
 
-WorkNexus secures private endpoints using signed JSON Web Tokens (JWT) adhering to RFC 7519.
-
-### Token Specifications
-- **Algorithm:** `HS256` (HMAC-SHA256)
-- **Token Type:** `bearer`
-- **Access Token Lifetime:** 30 minutes (configurable via `ACCESS_TOKEN_EXPIRE_MINUTES`)
-- **Refresh Token Lifetime:** 7 days (configurable via `REFRESH_TOKEN_EXPIRE_DAYS`)
-- **Token Rotation:** Every call to `POST /auth/refresh` revokes the submitted refresh token in the database and issues a new access token paired with a newly rotated refresh token.
-- **Revocation & Logout:** `POST /auth/logout` immediately invalidates the refresh token in PostgreSQL.
-
-### Access Token Claims
-```json
-{
-  "sub": "user@example.com",
-  "role": "student",
-  "user_id": 1,
-  "type": "access",
-  "jti": "550e8400-e29b-41d4-a716-446655440000",
-  "iat": 1773449400,
-  "exp": 1773451200
-}
-```
-
-### Refresh Token Claims
-```json
-{
-  "sub": "user@example.com",
-  "user_id": 1,
-  "type": "refresh",
-  "jti": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
-  "iat": 1773449400,
-  "exp": 1774054200
-}
-```
+- **Algorithm:** `HS256`
+- **Access Token Expiry:** 30 minutes (configurable via `ACCESS_TOKEN_EXPIRE_MINUTES`)
+- **Refresh Token Expiry:** 7 days (configurable via `REFRESH_TOKEN_EXPIRE_DAYS`)
+- **Token Rotation:** Every call to `POST /auth/refresh` revokes the old refresh token in the database and issues a new access/refresh token pair.
+- **Revocation / Logout:** `POST /auth/revoke` invalidates the active refresh token.
 
 ---
 
-## 3. System Health Check
+## 3. Core Authentication & Profile Endpoints
 
-### `GET /`
-Returns the operational health status and platform metadata.
-
-- **Authentication:** None
-- **Request Body:** None
-- **Response Body (`200 OK`):**
+### 3.1 Register User
+- **Route:** `POST /auth/register` (also `/api/v1/auth/register`)
+- **Status:** `201 Created`
+- **Request Body:**
   ```json
   {
-    "status": "healthy",
-    "platform": "WorkNexus",
-    "version": "1.0.0",
-    "message": "WorkNexus Labour Market Intelligence API is up and running!"
-  }
-  ```
-
----
-
-## 4. Authentication Endpoints
-
-### 4.1 Register User
-#### `POST /auth/register`
-Creates a new user account, securely hashes password using bcrypt, and returns the profile details.
-
-- **Authentication:** None
-- **Status Code:** `201 Created`
-- **Request Body (`UserCreate`):**
-  ```json
-  {
-    "email": "student@example.com",
-    "password": "SecurePassword123!",
-    "full_name": "Prajwal Vasista",
+    "email": "student@worknexus.org",
+    "password": "StrongPassword123!",
+    "full_name": "Aarav Sharma",
     "role": "student"
   }
   ```
-- **Response Body (`UserResponse`):**
+- **Response Body (`201 Created`):**
   ```json
   {
     "id": 1,
-    "email": "student@example.com",
-    "full_name": "Prajwal Vasista",
+    "email": "student@worknexus.org",
+    "full_name": "Aarav Sharma",
     "role": "student",
     "is_active": true,
-    "created_at": "2026-09-16T18:00:00Z"
+    "created_at": "2026-09-22T12:00:00Z"
   }
   ```
-- **Possible Errors:**
-  - `400 Bad Request`: Email already registered.
-  - `422 Unprocessable Entity`: Password < 6 chars, invalid email format, or missing fields.
 
----
-
-### 4.2 User Login (JSON)
-#### `POST /auth/login`
-Authenticates user credentials and returns an access token and refresh token.
-
-- **Authentication:** None
-- **Status Code:** `200 OK`
-- **Request Body (`UserLogin`):**
+### 3.2 Login (JSON Credentials)
+- **Route:** `POST /auth/login` (also `/api/v1/auth/login`)
+- **Status:** `200 OK`
+- **Request Body:**
   ```json
   {
-    "email": "student@example.com",
-    "password": "SecurePassword123!"
-  }
-  ```
-- **Response Body (`Token`):**
-  ```json
-  {
-    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "token_type": "bearer"
-  }
-  ```
-- **Possible Errors:**
-  - `401 Unauthorized`: Incorrect email or password (`WWW-Authenticate: Bearer`).
-  - `400 Bad Request`: Inactive user account.
-  - `422 Unprocessable Entity`: Missing email or password.
-
----
-
-### 4.3 OAuth2 Form Login (Swagger UI)
-#### `POST /auth/token`
-Accepts `application/x-www-form-urlencoded` credentials (`username`, `password`) for Swagger UI authorization.
-
-- **Authentication:** None
-- **Status Code:** `200 OK`
-- **Request Body:** Form data `username=<email>&password=<password>`
-- **Response Body (`Token`):** Same as `POST /auth/login`.
-- **Possible Errors:** `401 Unauthorized`, `400 Bad Request`.
-
----
-
-### 4.4 Refresh Token (Token Rotation)
-#### `POST /auth/refresh`
-Rotates a valid refresh token, revoking the previous token and issuing a fresh access token and new refresh token.
-
-- **Authentication:** None (requires valid `refresh_token` in body)
-- **Status Code:** `200 OK`
-- **Request Body (`TokenRefreshRequest`):**
-  ```json
-  {
-    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-  }
-  ```
-- **Response Body (`Token`):**
-  ```json
-  {
-    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "token_type": "bearer"
-  }
-  ```
-- **Possible Errors:**
-  - `401 Unauthorized`: Invalid, expired, or previously revoked refresh token.
-  - `422 Unprocessable Entity`: Missing `refresh_token` field.
-
----
-
-### 4.5 Logout (Token Revocation)
-#### `POST /auth/logout`
-Revokes the refresh token in PostgreSQL, terminating the active session.
-
-- **Authentication:** None
-- **Status Code:** `200 OK`
-- **Request Body (`TokenRefreshRequest`):**
-  ```json
-  {
-    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    "email": "student@worknexus.org",
+    "password": "StrongPassword123!"
   }
   ```
 - **Response Body:**
   ```json
   {
-    "message": "Successfully logged out"
+    "access_token": "eyJhbGciOi...",
+    "refresh_token": "eyJhbGciOi...",
+    "token_type": "bearer"
   }
   ```
-- **Possible Errors:**
-  - `400 Bad Request`: Invalid or unknown refresh token.
 
----
-
-### 4.6 Current User Profile
-#### `GET /auth/me`
-Retrieves authenticated user profile.
-
-- **Authentication:** Required (`Authorization: Bearer <access_token>`)
-- **Status Code:** `200 OK`
-- **Request Body:** None
-- **Response Body (`UserResponse`):**
+### 3.3 Get Current User Profile
+- **Route:** `GET /auth/me` (also `/api/v1/auth/me`)
+- **Status:** `200 OK`
+- **Headers:** `Authorization: Bearer <access_token>`
+- **Response Body:**
   ```json
   {
     "id": 1,
-    "email": "student@example.com",
-    "full_name": "Prajwal Vasista",
+    "email": "student@worknexus.org",
+    "full_name": "Aarav Sharma",
     "role": "student",
     "is_active": true,
-    "created_at": "2026-09-16T18:00:00Z"
+    "created_at": "2026-09-22T12:00:00Z"
   }
   ```
-- **Possible Errors:**
-  - `401 Unauthorized`: Missing, expired, or invalid bearer token.
-  - `400 Bad Request`: Inactive account.
 
----
-
-## 5. Skills Taxonomy Endpoints
-
-### 5.1 List All Skills
-#### `GET /skills/`
-Retrieves all registered skills, with optional query filtering.
-
-- **Authentication:** Optional
-- **Query Parameters:**
-  - `category` (string, optional): Filter by category (e.g. `IT & Software`)
-  - `is_active` (boolean, optional): Filter active status (`true`/`false`)
-- **Response Body (`200 OK`):**
-  ```json
-  [
-    {
-      "id": 1,
-      "skill_id": "SKL-PY-01",
-      "name": "Python",
-      "category": "IT & Software",
-      "description": "Python programming language for data & web",
-      "is_active": true,
-      "created_at": "2026-09-16T18:00:00Z"
-    }
-  ]
-  ```
-
----
-
-### 5.2 Get Skill by ID
-#### `GET /skills/{skill_id}`
-- **Authentication:** Optional
-- **Path Parameter:** `skill_id` (integer)
-- **Response Body (`200 OK`):** `SkillResponse` object.
-- **Possible Errors:**
-  - `404 Not Found`: Skill not found.
-
----
-
-### 5.3 Create Skill
-#### `POST /skills/`
-Registers a new skill in the taxonomy.
-
-- **Authentication:** Optional
-- **Status Code:** `201 Created`
-- **Request Body (`SkillCreate`):**
+### 3.4 Rotate Refresh Token
+- **Route:** `POST /auth/refresh` (also `/api/v1/auth/refresh`)
+- **Status:** `200 OK`
+- **Request Body:**
   ```json
   {
-    "skill_id": "SKL-AI-01",
-    "name": "Machine Learning Fundamentals",
-    "category": "AI & Data Science",
-    "description": "Supervised & unsupervised ML principles"
+    "refresh_token": "eyJhbGciOi..."
   }
   ```
-- **Response Body (`SkillResponse`):** Created skill object.
-- **Possible Errors:**
-  - `400 Bad Request`: Skill code `skill_id` already exists.
-  - `422 Unprocessable Entity`: Validation failure.
-
----
-
-### 5.4 Update Skill
-#### `PUT /skills/{skill_id}`
-Updates details of an existing skill.
-
-- **Authentication:** Optional
-- **Path Parameter:** `skill_id` (integer)
-- **Request Body (`SkillUpdate`):**
+- **Response Body:**
   ```json
   {
-    "name": "Advanced Python & Microservices",
-    "description": "Updated syllabus description",
-    "is_active": true
+    "access_token": "eyJhbGciOi...",
+    "refresh_token": "eyJhbGciOi...",
+    "token_type": "bearer"
   }
   ```
-- **Response Body (`200 OK`):** Updated `SkillResponse`.
-- **Possible Errors:** `404 Not Found`.
 
 ---
 
-### 5.5 Delete Skill
-#### `DELETE /skills/{skill_id}`
-Permanently deletes a skill from the taxonomy.
+## 4. Skills Taxonomy & Curriculum Courses
 
-- **Path Parameter:** `skill_id` (integer)
-- **Response Body (`200 OK`):**
+### 4.1 List Skills
+- **Route:** `GET /skills/` (also `/api/v1/skills/`)
+- **Query Params:** `category`, `is_active`
+- **Response:** List of `SkillResponse` (`id`, `skill_id`, `name`, `category`, `is_active`, `created_at`).
+
+### 4.2 List Curriculum Courses
+- **Route:** `GET /courses/` (also `/api/v1/courses/`)
+- **Query Params:** `department`, `is_active`, `skip`, `limit`
+- **Response:** List of `CourseResponse` (`id`, `course_id`, `name`, `department`, `semester`, `is_active`).
+
+### 4.3 Get Course Skills Mapping
+- **Route:** `GET /courses/{id}/skills` (also `/api/v1/courses/{id}/skills`)
+- **Response:** List of `CourseSkillResponse` (`id`, `course_id`, `skill_id`, `coverage_percentage`).
+
+---
+
+## 5. Job Intake & Automated ML Skill Extraction
+
+### 5.1 Create Job Posting (with ML Extraction)
+- **Route:** `POST /api/v1/jobs/`
+- **RBAC:** `Employer`, `Admin`
+- **Status:** `201 Created`
+- **Request Body:**
   ```json
   {
-    "message": "Skill deleted successfully"
+    "title": "Full Stack Cloud Developer",
+    "company": "Tata Motors",
+    "location": "Pune",
+    "description": "Seeking engineer skilled in Python, FastAPI, Docker, and SQL.",
+    "employer_id": 1
   }
   ```
-- **Possible Errors:** `404 Not Found`.
-
----
-
-## 6. Courses Endpoints
-
-### 6.1 List Courses
-#### `GET /courses/`
-Lists curriculum courses with optional filtering and pagination.
-
-- **Authentication:** Optional
-- **Query Parameters:**
-  - `department` (string, optional): Filter by department (e.g. `Computer Science`)
-  - `is_active` (boolean, optional): Filter active courses
-  - `skip` (integer, default `0`): Pagination offset
-  - `limit` (integer, default `100`): Pagination limit
-- **Response Body (`200 OK`):**
-  ```json
-  [
-    {
-      "id": 1,
-      "course_id": "CRS-DS-101",
-      "name": "Data Analytics & Business Intelligence",
-      "description": "Comprehensive course covering SQL, Power BI, and Python",
-      "department": "IT & Software",
-      "semester": "Semester 1",
-      "is_active": true,
-      "created_at": "2026-09-16T18:00:00Z"
-    }
-  ]
-  ```
-
----
-
-### 6.2 Get Course by ID
-#### `GET /courses/{id}`
-- **Path Parameter:** `id` (integer)
-- **Response Body (`200 OK`):** `CourseResponse` object.
-- **Possible Errors:** `404 Not Found`.
-
----
-
-### 6.3 Create Course
-#### `POST /courses/`
-Creates a curriculum course.
-
-- **Status Code:** `201 Created`
-- **Request Body (`CourseCreate`):**
-  ```json
-  {
-    "course_id": "CRS-EV-201",
-    "name": "Electric Vehicle Powertrain & Battery Tech",
-    "description": "Vocational course for EV battery diagnostics",
-    "department": "Automotive",
-    "semester": "Term 2",
-    "is_active": true
-  }
-  ```
-- **Response Body (`CourseResponse`):** Created course object.
-- **Possible Errors:**
-  - `400 Bad Request`: `course_id` already exists.
-  - `422 Unprocessable Entity`: Validation failure.
-
----
-
-### 6.4 Update Course
-#### `PUT /courses/{id}`
-- **Path Parameter:** `id` (integer)
-- **Request Body (`CourseUpdate`):**
-  ```json
-  {
-    "name": "Advanced EV Powertrain Tech",
-    "is_active": true
-  }
-  ```
-- **Response Body (`200 OK`):** Updated `CourseResponse`.
-- **Possible Errors:** `404 Not Found`.
-
----
-
-### 6.5 Delete Course
-#### `DELETE /courses/{id}`
-- **Path Parameter:** `id` (integer)
-- **Response Body (`200 OK`):** `{"message": "Course deleted successfully"}`.
-- **Possible Errors:** `404 Not Found`.
-
----
-
-### 6.6 Get Skills Taught by Course
-#### `GET /courses/{id}/skills`
-Retrieves all skills mapped to a course curriculum.
-
-- **Path Parameter:** `id` (integer)
-- **Response Body (`200 OK`):**
-  ```json
-  [
-    {
-      "id": 1,
-      "course_id": 1,
-      "skill_id": 5,
-      "created_at": "2026-09-16T18:00:00Z"
-    }
-  ]
-  ```
-- **Possible Errors:** `404 Not Found`.
-
----
-
-## 7. User Skills Endpoints
-
-### 7.1 Get Current User Skills
-#### `GET /user-skills/me`
-Retrieves skills possessed by the currently authenticated user.
-
-- **Authentication:** Required (`Bearer <access_token>`)
-- **Response Body (`200 OK`):**
-  ```json
-  [
-    {
-      "id": 1,
-      "user_id": 1,
-      "skill_id": 5,
-      "proficiency_level": "intermediate",
-      "source": "assessment",
-      "created_at": "2026-09-16T18:00:00Z"
-    }
-  ]
-  ```
-- **Possible Errors:** `401 Unauthorized`.
-
----
-
-### 7.2 List User Skills
-#### `GET /user-skills/`
-Lists skills for a specified user (or current user if omitted).
-
-- **Authentication:** Required (`Bearer <access_token>`)
-- **Query Parameters:** `user_id` (integer, optional)
-- **Response Body (`200 OK`):** List of `UserSkillResponse` items.
-
----
-
-### 7.3 Add Skill to Profile
-#### `POST /user-skills/`
-Associates an acquired skill to the authenticated user's profile.
-
-- **Authentication:** Required (`Bearer <access_token>`)
-- **Status Code:** `201 Created`
-- **Request Body (`UserSkillCreate`):**
-  ```json
-  {
-    "skill_id": 5,
-    "proficiency_level": "advanced",
-    "source": "course_completion"
-  }
-  ```
-- **Response Body (`UserSkillResponse`):** Created record.
-- **Possible Errors:**
-  - `404 Not Found`: Skill ID does not exist.
-  - `400 Bad Request`: Skill already added to user profile.
-  - `401 Unauthorized`: Not authenticated.
-
----
-
-### 7.4 Update User Skill
-#### `PUT /user-skills/{id}`
-Updates proficiency level or source of a user skill.
-
-- **Authentication:** Required (`Bearer <access_token>`)
-- **Path Parameter:** `id` (integer)
-- **Request Body (`UserSkillUpdate`):**
-  ```json
-  {
-    "proficiency_level": "expert"
-  }
-  ```
-- **Response Body (`200 OK`):** Updated `UserSkillResponse`.
-- **Possible Errors:**
-  - `404 Not Found`: Record not found.
-  - `403 Forbidden`: Not authorized to edit another user's skill.
-
----
-
-### 7.5 Delete User Skill
-#### `DELETE /user-skills/{id}`
-Removes a skill from the user's profile.
-
-- **Authentication:** Required (`Bearer <access_token>`)
-- **Path Parameter:** `id` (integer)
-- **Response Body (`200 OK`):** `{"message": "User skill removed successfully"}`.
-- **Possible Errors:** `404 Not Found`, `403 Forbidden`.
-
----
-
-## 8. Course Skills (Curriculum Mapping) Endpoints
-
-### 8.1 List Course-Skill Mappings
-#### `GET /course-skills/`
-- **Query Parameters:**
-  - `course_id` (integer, optional)
-  - `skill_id` (integer, optional)
-- **Response Body (`200 OK`):** List of `CourseSkillResponse` objects.
-
----
-
-### 8.2 Map Skill to Course
-#### `POST /course-skills/`
-Links a skill to a curriculum course.
-
-- **Status Code:** `201 Created`
-- **Request Body (`CourseSkillCreate`):**
-  ```json
-  {
-    "course_id": 1,
-    "skill_id": 5
-  }
-  ```
-- **Response Body (`CourseSkillResponse`):**
+- **Response Body (`201 Created`):**
   ```json
   {
     "id": 1,
-    "course_id": 1,
-    "skill_id": 5,
-    "created_at": "2026-09-16T18:00:00Z"
+    "title": "Full Stack Cloud Developer",
+    "company": "Tata Motors",
+    "location": "Pune",
+    "description": "Seeking engineer skilled in Python, FastAPI, Docker, and SQL.",
+    "employer_id": 1,
+    "extracted_skills": [
+      { "skill_id": "SK_PYTHON", "confidence_score": 0.98 },
+      { "skill_id": "SK_FASTAPI", "confidence_score": 0.97 },
+      { "skill_id": "SK_DOCKER", "confidence_score": 0.95 },
+      { "skill_id": "SK_SQL", "confidence_score": 0.94 }
+    ],
+    "created_at": "2026-09-22T12:05:00Z"
   }
   ```
-- **Possible Errors:**
-  - `404 Not Found`: Course or Skill ID not found.
-  - `400 Bad Request`: Skill is already mapped to this course.
+
+### 5.2 List Job Postings
+- **Route:** `GET /api/v1/jobs/`
+- **Response:** List of `JobResponseSchema`.
 
 ---
 
-### 8.3 Delete Course-Skill Mapping
-#### `DELETE /course-skills/{id}`
-Removes a skill mapping from a curriculum course.
+## 6. Employer Feedback & Qualitative Signal Detection
 
-- **Path Parameter:** `id` (integer)
-- **Response Body (`200 OK`):** `{"message": "Skill mapping removed from course successfully"}`.
-- **Possible Errors:** `404 Not Found`.
-
----
-
-## 9. Job Postings Endpoints
-
-### 9.1 List All Job Postings
-#### `GET /job-postings`
-Lists market vacancy postings with optional pagination.
-
-- **Authentication:** Optional
-- **Query Parameters:**
-  - `skip` (integer, default `0`): Pagination offset
-  - `limit` (integer, default `100`): Pagination limit
-- **Response Body (`200 OK`):**
-  ```json
-  [
-    {
-      "id": 1,
-      "title": "Lead AI Engineer",
-      "company_name": "NexTech Global",
-      "description": "Building next-gen curriculum platforms",
-      "location": "Bengaluru",
-      "source": "Direct",
-      "posted_date": "2026-09-17T08:00:00Z",
-      "created_at": "2026-09-17T08:00:00Z"
-    }
-  ]
-  ```
-
----
-
-### 9.2 Get Job Posting by ID
-#### `GET /job-postings/{job_id}`
-Retrieves full details of a specific job posting.
-
-- **Authentication:** Optional
-- **Path Parameter:** `job_id` (integer)
-- **Response Body (`200 OK`):** `JobPostingResponse` object.
-- **Possible Errors:**
-  - `404 Not Found`: Job posting not found.
-
----
-
-### 9.3 Create Job Posting
-#### `POST /job-postings`
-Creates a new market vacancy posting.
-
-- **Authentication:** Optional
-- **Status Code:** `201 Created`
-- **Request Body (`JobPostingCreate`):**
+### 6.1 Submit Feedback
+- **Route:** `POST /api/v1/employers/feedback`
+- **RBAC:** `Employer`, `Admin`
+- **Status:** `201 Created`
+- **Request Body:**
   ```json
   {
-    "title": "Lead AI Engineer",
-    "company_name": "NexTech Global",
-    "description": "Building next-gen curriculum platforms",
-    "location": "Bengaluru",
-    "source": "Direct",
-    "posted_date": "2026-09-17T08:00:00Z"
+    "employer_id": 1,
+    "course_id": 101,
+    "comments": "Graduates demonstrate good fundamentals but lack practical Docker containerization and CAN bus diagnostics.",
+    "rating": 4
   }
   ```
-- **Response Body (`JobPostingResponse`):** Created job posting record.
-- **Possible Errors:**
-  - `422 Unprocessable Entity`: Missing required fields (`title`, `company_name`, `description`).
-
----
-
-### 9.4 Delete Job Posting
-#### `DELETE /job-postings/{job_id}`
-Removes a job vacancy from the system.
-
-- **Authentication:** Optional
-- **Path Parameter:** `job_id` (integer)
-- **Response Body (`200 OK`):**
-  ```json
-  {
-    "message": "Job posting deleted successfully"
-  }
-  ```
-- **Possible Errors:**
-  - `404 Not Found`: Job posting not found.
-
----
-
-## 10. Job Skills Endpoints
-
-### 10.1 List Job Skills
-#### `GET /job-skills`
-Lists skills associated with industry job postings, with optional filtering.
-
-- **Authentication:** Optional
-- **Query Parameters:**
-  - `job_id` (integer, optional): Filter by job posting ID
-  - `skill_id` (string, optional): Filter by skill code (e.g. `SKL-PY-01`)
-  - `skip` (integer, default `0`): Pagination offset
-  - `limit` (integer, default `100`): Pagination limit
-- **Response Body (`200 OK`):**
-  ```json
-  [
-    {
-      "id": 1,
-      "job_id": 1,
-      "skill_id": "SKL-PY-01",
-      "created_at": "2026-09-17T08:00:00Z"
-    }
-  ]
-  ```
-
----
-
-### 10.2 Get Job Skill Mapping by ID
-#### `GET /job-skills/{job_skill_id}`
-Retrieves a specific job-skill mapping record.
-
-- **Authentication:** Optional
-- **Path Parameter:** `job_skill_id` (integer)
-- **Response Body (`200 OK`):** `JobSkillResponse` object.
-- **Possible Errors:**
-  - `404 Not Found`: Job skill mapping not found.
-
----
-
-### 10.3 Map Skill to Job Posting
-#### `POST /job-skills`
-Maps a required skill to a job vacancy posting.
-
-- **Authentication:** Optional
-- **Status Code:** `201 Created`
-- **Request Body (`JobSkillCreate`):**
-  ```json
-  {
-    "job_id": 1,
-    "skill_id": "SKL-PY-01"
-  }
-  ```
-- **Response Body (`JobSkillResponse`):**
+- **Response Body (`201 Created`):**
   ```json
   {
     "id": 1,
-    "job_id": 1,
-    "skill_id": "SKL-PY-01",
-    "created_at": "2026-09-17T08:00:00Z"
+    "employer_id": 1,
+    "course_id": 101,
+    "comments": "...",
+    "rating": 4,
+    "signals": [
+      {
+        "skill_id": "SK_DOCKER",
+        "confidence_score": 0.96,
+        "trust_weight": 1.0,
+        "weighted_signal": 0.96
+      },
+      {
+        "skill_id": "SK_CAN",
+        "confidence_score": 0.94,
+        "trust_weight": 1.0,
+        "weighted_signal": 0.94
+      }
+    ],
+    "created_at": "2026-09-22T12:10:00Z"
   }
   ```
-- **Possible Errors:**
-  - `404 Not Found`: Job posting with `job_id` not found or skill with `skill_id` not found.
-  - `400 Bad Request`: Skill is already mapped to this job posting.
-  - `422 Unprocessable Entity`: Invalid request structure.
 
 ---
 
-### 10.4 Delete Job Skill Mapping
-#### `DELETE /job-skills/{job_skill_id}`
-Deletes a skill association from a job posting.
+## 7. Career Target Roles & Student Profiles
 
-- **Authentication:** Optional
-- **Path Parameter:** `job_skill_id` (integer)
-- **Response Body (`200 OK`):**
+### 7.1 List Target Roles
+- **Route:** `GET /api/v1/roles/`
+- **Response:** List of `TargetRoleResponseSchema` (`id`, `name`, `description`, `is_active`, `required_skills`).
+
+### 7.2 Get Target Role Detail
+- **Route:** `GET /api/v1/roles/{role_id}`
+- **Response:** `TargetRoleResponseSchema`.
+
+### 7.3 Get Student Profile
+- **Route:** `GET /api/v1/students/{user_id}/profile`
+- **RBAC:** `Student` (own), `Institute`, `Admin`
+- **Response:** `StudentProfileResponseSchema` (`id`, `user_id`, `target_role_id`, `evidence_records`, `created_at`).
+
+### 7.4 Submit Student Skill Evidence
+- **Route:** `POST /api/v1/students/{user_id}/evidence`
+- **Request Body:**
   ```json
   {
-    "message": "Job skill mapping deleted successfully"
+    "skill_id": "SK_PYTHON",
+    "evidence_type": "project",
+    "strength": "high",
+    "metadata": {
+      "repo_url": "https://github.com/student/worknexus-project",
+      "verified_by": "Dr. Suresh Patil"
+    }
   }
   ```
-- **Possible Errors:**
-  - `404 Not Found`: Job skill mapping not found.
+- **Response:** `StudentSkillEvidenceResponseSchema`.
+
+---
+
+## 8. ML Intelligence Engine Endpoints
+
+| Endpoint | Method | Query Parameters | Description |
+|---|---|---|---|
+| `/api/v1/ml/extract-skills` | `POST` | None | Extract canonical skills from arbitrary free text (`{ "text": "..." }`). |
+| `/api/v1/ml/demand` | `GET` | `mode=live\|benchmark` | Macro labour market skill demand ranking and growth rates. |
+| `/api/v1/ml/course-gaps` | `GET` | `mode=live\|benchmark` | Curriculum course-skill gap analysis, coverage gaps, and recommendations. |
+| `/api/v1/ml/evidence` | `GET` | `mode=live\|benchmark` | Multi-signal synthesized evidence across industry demand, curriculum, and feedback. |
+| `/api/v1/ml/recommendations` | `GET` | `mode=live\|benchmark` | Prioritized skill policy and curriculum intervention recommendations. |
+| `/api/v1/ml/roles/{role_id}` | `GET` | `mode=live\|benchmark` | Skill context, mandatory vs optional skills for a career target role. |
+| `/api/v1/ml/students/{student_id}/profile` | `GET` | `mode=live\|benchmark` | Normalized student skill profile synthesized from multi-source evidence. |
+| `/api/v1/ml/students/{student_id}/gap/{role_id}` | `GET` | `mode=live\|benchmark` | Student personal skill gap against the target career role. |
+| `/api/v1/ml/students/{student_id}/recommendations/{role_id}` | `GET` | `mode=live\|benchmark` | Personalized skill acquisition recommendations for a student. |
+| `/api/v1/ml/students/{student_id}/course-candidates/{role_id}` | `GET` | `mode=live\|benchmark` | Matching courses to bridge the student's personal skill gap for the role. |

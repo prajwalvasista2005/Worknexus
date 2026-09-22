@@ -1,9 +1,9 @@
 import unittest
-from backend.app.db.session import MockDatabaseSession
-from backend.app.db.seed import seed_all
-from backend.app.models.entities import TargetRole, RoleSkill, StudentProfile, StudentSkillEvidence
-from backend.app.services.ml_adapter import MLAdapter, HTTPException
-from backend.app.api.routes_ml import (
+from app.db.session import MockDatabaseSession
+from app.db.seed import seed_all
+from app.models.entities import TargetRole, RoleSkill, StudentProfile, StudentSkillEvidence
+from app.services.ml_adapter import MLAdapter, HTTPException
+from app.api.routes_ml import (
     get_role_context_endpoint,
     get_student_profile_endpoint,
     get_student_gap_endpoint,

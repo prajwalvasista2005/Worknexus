@@ -1,9 +1,9 @@
-﻿import unittest
-from backend.app.db.session import MockDatabaseSession
-from backend.app.models.entities import JobPosting, JobSkill
-from backend.app.schemas.schemas import JobCreateSchema
-from backend.app.services.job_service import JobService
-from backend.app.services.ml_adapter import MLAdapter
+import unittest
+from app.db.session import MockDatabaseSession
+from app.models.entities import JobPosting, JobSkill
+from app.schemas.schemas import JobCreateSchema
+from app.services.job_service import JobService
+from app.services.ml_adapter import MLAdapter
 
 class TestJobIntegration(unittest.TestCase):
 

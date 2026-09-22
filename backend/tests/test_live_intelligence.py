@@ -1,7 +1,7 @@
 import unittest
-from backend.app.db.session import MockDatabaseSession
-from backend.app.models.entities import JobPosting, JobSkill, Course, CourseSkill, Employer, EmployerFeedback, EmployerFeedbackSignal
-from backend.app.services.ml_adapter import MLAdapter, get_ml_adapter, HTTPException
+from app.db.session import MockDatabaseSession
+from app.models.entities import JobPosting, JobSkill, Course, CourseSkill, Employer, EmployerFeedback, EmployerFeedbackSignal
+from app.services.ml_adapter import MLAdapter, get_ml_adapter, HTTPException
 
 class TestLiveIntelligenceIntegration(unittest.TestCase):
 

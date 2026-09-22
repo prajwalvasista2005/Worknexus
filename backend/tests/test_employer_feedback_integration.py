@@ -1,9 +1,9 @@
-﻿import unittest
-from backend.app.db.session import MockDatabaseSession
-from backend.app.models.entities import Employer, EmployerFeedback, EmployerFeedbackSignal
-from backend.app.schemas.schemas import EmployerFeedbackCreateSchema
-from backend.app.services.employer_service import EmployerService
-from backend.app.services.ml_adapter import MLAdapter
+import unittest
+from app.db.session import MockDatabaseSession
+from app.models.entities import Employer, EmployerFeedback, EmployerFeedbackSignal
+from app.schemas.schemas import EmployerFeedbackCreateSchema
+from app.services.employer_service import EmployerService
+from app.services.ml_adapter import MLAdapter
 
 class TestEmployerFeedbackIntegration(unittest.TestCase):
 

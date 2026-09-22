@@ -7,20 +7,20 @@ try:
     FASTAPI_AVAILABLE = True
 except ImportError:
     FASTAPI_AVAILABLE = False
-    from backend.app.services.ml_adapter import HTTPException
+    from app.services.ml_adapter import HTTPException
 
-from backend.app.main import app
-from backend.app.db.session import MockDatabaseSession, _global_session
-from backend.app.models.entities import Employer, User, JobPosting, JobSkill
-from backend.app.schemas.schemas import (
+from app.main import app
+from app.db.session import MockDatabaseSession, _global_session
+from app.models.entities import Employer, User, JobPosting, JobSkill
+from app.schemas.schemas import (
     SkillExtractionRequest,
     JobCreateSchema,
     EmployerFeedbackCreateSchema
 )
-from backend.app.auth.rbac import CurrentUser, require_role, get_current_user
-from backend.app.api.routes_jobs import create_job_posting
-from backend.app.api.routes_employers import submit_employer_feedback
-from backend.app.api.routes_ml import (
+from app.auth.rbac import CurrentUser, require_role, get_current_user
+from app.api.routes_jobs import create_job_posting
+from app.api.routes_employers import submit_employer_feedback
+from app.api.routes_ml import (
     extract_skills_endpoint,
     get_demand_endpoint,
     get_course_gaps_endpoint,
