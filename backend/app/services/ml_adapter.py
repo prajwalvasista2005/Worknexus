@@ -18,8 +18,11 @@ except ImportError:
         HTTP_403_FORBIDDEN = 403
         HTTP_404_NOT_FOUND = 404
         HTTP_422_UNPROCESSABLE_ENTITY = 422
+        HTTP_422_UNPROCESSABLE_CONTENT = 422
         HTTP_500_INTERNAL_SERVER_ERROR = 500
         HTTP_501_NOT_IMPLEMENTED = 501
+
+UNPROCESSABLE_STATUS = getattr(status, "HTTP_422_UNPROCESSABLE_CONTENT", 422)
 
 from ml.api import (
     MLService,
@@ -64,13 +67,13 @@ class MLAdapter:
         """Extract canonical skills and confidence tiers from raw text."""
         if not text or not isinstance(text, str):
             raise HTTPException(
-                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                status_code=UNPROCESSABLE_STATUS,
                 detail="Input text must be a non-empty string"
             )
         try:
             return self._service.extract_skills(text)
         except InvalidInputError as e:
-            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
+            raise HTTPException(status_code=UNPROCESSABLE_STATUS, detail=str(e))
         except MLError as e:
             logger.error(f"ML extraction error: {e}")
             raise HTTPException(
@@ -86,7 +89,7 @@ class MLAdapter:
         try:
             return self._service.process_job(job)
         except InvalidInputError as e:
-            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
+            raise HTTPException(status_code=UNPROCESSABLE_STATUS, detail=str(e))
         except MLError as e:
             logger.error(f"ML job processing error: {e}")
             raise HTTPException(
@@ -105,7 +108,7 @@ class MLAdapter:
         try:
             return self._service.analyze_employer_feedback(feedback)
         except InvalidInputError as e:
-            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
+            raise HTTPException(status_code=UNPROCESSABLE_STATUS, detail=str(e))
         except MLError as e:
             logger.error(f"ML employer feedback analysis error: {e}")
             raise HTTPException(

@@ -1,6 +1,6 @@
 import unittest
 from app.db.session import MockDatabaseSession
-from app.models.entities import JobPosting, JobSkill
+from app.models.entities import JobPosting, JobSkill, Employer
 from app.schemas.schemas import JobCreateSchema
 from app.services.job_service import JobService
 from app.services.ml_adapter import MLAdapter
@@ -10,6 +10,7 @@ class TestJobIntegration(unittest.TestCase):
     def setUp(self):
         self.db = MockDatabaseSession()
         self.adapter = MLAdapter()
+        self.db.add(Employer(id=1, company_name="Cloud Nexus", trust_weight=1.0, user_id=1))
 
     def test_job_creation_with_extracted_skills(self):
         """Test full job posting flow with ML extraction and persistence."""

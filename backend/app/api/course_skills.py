@@ -14,6 +14,22 @@ router = APIRouter(
 
 
 @router.get(
+    "/course/{course_id}",
+    response_model=list[CourseSkillResponse],
+    summary="Get course-skill mappings for a specific course",
+)
+def get_course_skills_by_course(
+    course_id: int,
+    db: Session = Depends(get_db),
+):
+    return CourseSkillService.get_course_skills(
+        db=db,
+        course_id=course_id,
+        skill_id=None,
+    )
+
+
+@router.get(
     "/",
     response_model=list[CourseSkillResponse],
     summary="List course-skill mappings",

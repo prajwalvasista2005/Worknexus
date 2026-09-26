@@ -919,10 +919,11 @@ class MLService:
                 reasons = ["already_present"]
                 already_present_count += 1
             else:
+                # Actual missing role gap is recommended
+                status = "recommended"
+                reasons = ["student_skill_gap", "role_requirement"]
                 if context_status == "recommended" or sk_id in generic_rec_map:
-                    status = "recommended"
-                    reasons = ["student_skill_gap", "role_requirement", "generic_evidence_recommended"]
-                    # Add specific evidence context reasons
+                    reasons.append("generic_evidence_recommended")
                     gen_rec = generic_rec_map.get(sk_id, {})
                     gen_reasons = gen_rec.get("recommendation", {}).get("reasons", [])
                     for gr in gen_reasons:
@@ -935,13 +936,7 @@ class MLService:
                                 reasons.append("multi_source_evidence")
                             elif gr == "course_coverage_gap":
                                 reasons.append("course_coverage_gap")
-                    recommended_count += 1
-                else:
-                    status = "not_recommended"
-                    reasons = ["student_skill_gap", "role_requirement"]
-                    if context_status == "not_available":
-                        reasons.append("contextual_evidence_unavailable")
-                    not_recommended_count += 1
+                recommended_count += 1
 
             personalized_recs.append({
                 "skill_id": sk_id,
@@ -978,18 +973,36 @@ class MLService:
     ) -> CourseCandidateResult:
         """
         Compute live candidate courses covering personalized skill recommendations (Phase 10B).
-        Preserves Phase 7E rule: candidate iff course covers >= 1 personalized recommended skill.
+        Preserves rule: candidate iff course covers >= 1 personalized recommended or missing gap skill.
         """
         stu_id = personalized_recommendations.student_id if isinstance(personalized_recommendations, PersonalizedRecommendationResult) else personalized_recommendations.get("student_id", "")
         role = personalized_recommendations.role if isinstance(personalized_recommendations, PersonalizedRecommendationResult) else personalized_recommendations.get("role", {})
         recs = personalized_recommendations.skill_recommendations if isinstance(personalized_recommendations, PersonalizedRecommendationResult) else personalized_recommendations.get("skill_recommendations", [])
 
-        # Filter skills with personalized_status == 'recommended'
+        # Collect target skill IDs: role gaps (missing skills) and recommended skills
         recommended_skill_ids = set()
         for r in recs:
             p_status = r.get("personalized_status", r.get("recommendation", {}).get("status"))
-            if p_status == "recommended":
-                recommended_skill_ids.add(r["skill_id"])
+            stu_status = r.get("student_status", r.get("status"))
+            sk_id = r.get("skill_id", r.get("id"))
+            if p_status == "recommended" or stu_status == "missing" or p_status not in ["already_present", "present"]:
+                if sk_id:
+                    recommended_skill_ids.add(str(sk_id))
+
+        # Also support direct missing_skills if passed in
+        raw_missing = []
+        if isinstance(personalized_recommendations, dict):
+            raw_missing = personalized_recommendations.get("missing_skills", personalized_recommendations.get("skills_missing", []))
+        elif hasattr(personalized_recommendations, "missing_skills"):
+            raw_missing = getattr(personalized_recommendations, "missing_skills", [])
+
+        for ms in raw_missing:
+            if isinstance(ms, str):
+                recommended_skill_ids.add(ms)
+            elif isinstance(ms, dict):
+                ms_id = ms.get("skill_id") or ms.get("id")
+                if ms_id:
+                    recommended_skill_ids.add(str(ms_id))
 
         candidate_courses = []
         globally_covered = set()
@@ -997,7 +1010,13 @@ class MLService:
         for c in courses:
             c_id = c.get("course_id", c.get("id"))
             c_name = c.get("course_name", c.get("name", f"Course {c_id}"))
-            taught = set(c.get("taught_skills", []))
+            raw_taught = c.get("taught_skills", c.get("skill_ids", []))
+            taught = set()
+            for s in raw_taught:
+                if isinstance(s, dict):
+                    taught.add(str(s.get("skill_id") or s.get("id", "")))
+                else:
+                    taught.add(str(s))
             covered_rec = sorted(list(taught & recommended_skill_ids))
 
             if len(covered_rec) >= 1:

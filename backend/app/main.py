@@ -1,42 +1,5 @@
-try:
-    from fastapi import FastAPI, APIRouter, Depends, status
-    from fastapi.middleware.cors import CORSMiddleware
-except ImportError:
-    class APIRouter:
-        def __init__(self, *args, **kwargs):
-            self.routes = []
-        def post(self, path, **kwargs):
-            def decorator(func):
-                self.routes.append(("POST", path, func))
-                return func
-            return decorator
-        def get(self, path, **kwargs):
-            def decorator(func):
-                self.routes.append(("GET", path, func))
-                return func
-            return decorator
-
-    class FastAPI:
-        def __init__(self, *args, **kwargs):
-            self.routers = []
-        def include_router(self, router, **kwargs):
-            self.routers.append(router)
-        def add_middleware(self, *args, **kwargs):
-            pass
-        def get(self, path, **kwargs):
-            def decorator(func):
-                return func
-            return decorator
-
-    class CORSMiddleware:
-        pass
-
-    def Depends(dep):
-        return dep
-
-    class status:
-        HTTP_200_OK = 200
-        HTTP_201_CREATED = 201
+from fastapi import FastAPI, APIRouter, Depends, status
+from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
 from .api import (
@@ -61,31 +24,51 @@ def create_app() -> FastAPI:
         description="WorkNexus / SkillMesh Core Backend API with Integrated ML Engine"
     )
 
-    # Initialize tables if using SQLite or dev database
+    # Initialize tables and seed canonical taxonomy
     try:
         from .db.base import Base
-        from .db.database import engine
+        from .db.session import engine, SessionLocal
         # Import all SQLAlchemy models to bind metadata
-        from .models import users, skills, courses, course_skills, job_postings, jobSkill, refresh_tokens, user_skills
+        from .models import users, skills, courses, course_skills, job_postings, jobSkill, refresh_tokens, user_skills, student_roles, employers
         Base.metadata.create_all(bind=engine)
-    except Exception:
-        pass
 
-    try:
-        app.add_middleware(
-            CORSMiddleware,
-            allow_origins=[
-                "http://localhost:3000",
-                "http://localhost:5173",
-                "http://127.0.0.1:3000",
-                "http://127.0.0.1:5173",
-            ],
-            allow_credentials=True,
-            allow_methods=["*"],
-            allow_headers=["*"],
-        )
-    except Exception:
-        pass
+        # Ensure user_id column exists on employers table for existing databases
+        from sqlalchemy import text
+        with engine.connect() as conn:
+            try:
+                if engine.dialect.name == "sqlite":
+                    cols = [row[1] for row in conn.execute(text("PRAGMA table_info(employers)")).fetchall()]
+                    if cols and "user_id" not in cols:
+                        conn.execute(text("ALTER TABLE employers ADD COLUMN user_id INTEGER REFERENCES users(id) ON DELETE CASCADE"))
+                        conn.commit()
+                elif engine.dialect.name == "postgresql":
+                    cols = [row[0] for row in conn.execute(text("SELECT column_name FROM information_schema.columns WHERE table_name = 'employers'")).fetchall()]
+                    if cols and "user_id" not in cols:
+                        conn.execute(text("ALTER TABLE employers ADD COLUMN user_id INTEGER REFERENCES users(id) ON DELETE CASCADE"))
+                        conn.commit()
+            except Exception:
+                pass
+
+        # Idempotent seed check for production / dev PostgreSQL database
+        from .db.seed import seed_all
+        with SessionLocal() as db_session:
+            seed_all(db_session)
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning(f"Database initialization warning: {e}")
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[
+            "http://localhost:3000",
+            "http://localhost:5173",
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:5173",
+        ],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     # Core Authentication & CRUD Routers (available at both root and /api/v1 for compatibility)
     for prefix in ["", settings.API_V1_STR]:

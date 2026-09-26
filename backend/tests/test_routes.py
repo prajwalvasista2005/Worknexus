@@ -31,6 +31,8 @@ from app.api.routes_ml import (
 )
 
 class TestResponse:
+    __test__ = False
+
     def __init__(self, status_code: int, data: Any):
         self.status_code = status_code
         self._data = data

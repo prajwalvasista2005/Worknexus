@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import DateTime, ForeignKey, UniqueConstraint, func
+from sqlalchemy import DateTime, Float, ForeignKey, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -10,10 +10,12 @@ if TYPE_CHECKING:
     from .job_postings import JobPosting
     from .skills import Skill
 
+
 class JobSkill(Base):
     __tablename__ = "job_skills"
     __table_args__ = (
         UniqueConstraint("job_id", "skill_id", name="uq_job_skills_job_skill"),
+        {"extend_existing": True}
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -26,6 +28,11 @@ class JobSkill(Base):
         ForeignKey("skills.skill_id"),
         nullable=False,
         index=True,
+    )
+    confidence_score: Mapped[float] = mapped_column(
+        Float,
+        default=1.0,
+        nullable=True,
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

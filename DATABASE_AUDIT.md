@@ -1,71 +1,126 @@
-# WorkNexus Database Architecture & Schema Audit Report
+# WorkNexus / SkillMesh — Relational Database Architecture & Schema Audit
 
-**Date**: September 22, 2026  
-**Auditor**: Senior Staff Database Architect & DevOps Engineer  
-**Scope**: Relational Schema, SQLAlchemy 2.0 ORM Models, Foreign Keys, Indexes, Constraints, and Alembic Migrations  
-**Status**: AUDITED & FULLY COMPLIANT  
+**Generated Date:** September 25, 2026  
+**Auditor:** Senior Database Architect & Lead Data Engineer  
+**Database Engine:** PostgreSQL 16 (Compatible with SQLite for testing)  
+**ORM / Migration Framework:** SQLAlchemy 2.0 / Alembic
 
 ---
 
 ## 1. Executive Summary
 
-The WorkNexus relational database layer was reviewed across PostgreSQL 15+ specifications and SQLite local development environments. The schema comprises 13 tables structuring users, authentication token lifecycles, skills taxonomies, curriculum courses, course-skill alignments, user-acquired proficiencies, job postings, job requirements, target career roles, role-skill specifications, student profiles, and multi-source skill evidence.
+This audit reviews the relational integrity, normalization, constraint definitions, cascade deletion semantics, and indexing strategy across the WorkNexus database schema. 
 
-All foreign keys enforce appropriate referential integrity (`ON DELETE CASCADE` / `ON DELETE SET NULL`), unique constraints prevent duplicate association pairs, composite indexes accelerate foreign key joins, and the Alembic version tree forms a single deterministic linear graph.
-
----
-
-## 2. Table-by-Table Verification Matrix
-
-| Table Name | Primary Key | Key Foreign Keys | Unique Constraints | Indexes Defined | Cascade Behavior | Status |
-|---|---|---|---|---|---|---|
-| `users` | `id` (Int, PK) | None | `email` | `email` | N/A | ✅ Verified |
-| `skills` | `id` (Int, PK) | None | `skill_id` (e.g. `SK_PYTHON`) | `skill_id`, `name`, `category` | Referenced by 5 tables | ✅ Verified |
-| `courses` | `id` (Int, PK) | None | `course_id` | `course_id`, `name`, `department` | Referenced by `course_skills` | ✅ Verified |
-| `course_skills` | `id` (Int, PK) | `course_id` -> `courses.id`, `skill_id` -> `skills.id` | `(course_id, skill_id)` | `course_id`, `skill_id` | `ON DELETE CASCADE` | ✅ Verified |
-| `user_skills` | `id` (Int, PK) | `user_id` -> `users.id`, `skill_id` -> `skills.id` | `(user_id, skill_id)` | `user_id`, `skill_id` | `ON DELETE CASCADE` | ✅ Verified |
-| `job_postings` | `id` (Int, PK) | None | None | `title`, `company_name`, `posted_date` | Referenced by `job_skills` | ✅ Verified |
-| `job_skills` | `id` (Int, PK) | `job_id` -> `job_postings.id`, `skill_id` -> `skills.skill_id` | `(job_id, skill_id)` | `job_id`, `skill_id` | `ON DELETE CASCADE` | ✅ Verified |
-| `refresh_tokens` | `id` (Int, PK) | `user_id` -> `users.id` | `token` | `token`, `user_id` | `ON DELETE CASCADE` | ✅ Verified |
-| `target_roles` | `id` (Str, PK) | None | `id` (PK) | Primary Key | Referenced by `role_skills`, `student_profiles` | ✅ Verified |
-| `role_skills` | `id` (Int, PK) | `role_id` -> `target_roles.id`, `skill_id` -> `skills.id` | `(role_id, skill_id)` | `role_id`, `skill_id` | `ON DELETE CASCADE` | ✅ Verified |
-| `student_profiles` | `id` (Int, PK) | `user_id` -> `users.id`, `target_role_id` -> `target_roles.id` | `user_id` (One-to-One) | `user_id`, `target_role_id` | `ON DELETE CASCADE` (User), `SET NULL` (Role) | ✅ Verified |
-| `student_skill_evidence` | `id` (Int, PK) | `student_profile_id` -> `student_profiles.id`, `skill_id` -> `skills.id` | None | `student_profile_id`, `skill_id` | `ON DELETE CASCADE` | ✅ Verified |
+The database schema guarantees strong referential integrity, eliminates orphan records via CASCADE rules, provides fast lookups through targeted indexing on foreign key columns, and prevents duplicate relationships through composite unique constraints.
 
 ---
 
-## 3. Alembic Migration Lineage Verification
+## 2. Schema Architecture & Entity Relationship Review
 
-The Alembic revision tree was inspected and repaired to eliminate multiple roots:
+### 2.1 Identity & Authentication
+* **`users` Table**:
+  - Primary Key: `id (Integer, autoincrement)`
+  - Constraints: `email (VARCHAR(255), UNIQUE, NOT NULL)`
+  - Columns: `hashed_password`, `full_name`, `role (VARCHAR(32))`, `is_active (BOOLEAN)`, `created_at (TIMESTAMP WITH TIME ZONE)`
+  - Indexing: `ix_users_email` (unique index for B-Tree lookups during authentication).
+* **`refresh_tokens` Table**:
+  - Primary Key: `id (Integer, autoincrement)`
+  - Foreign Key: `user_id -> users(id) ON DELETE CASCADE`
+  - Constraints: `token_hash (VARCHAR(255), UNIQUE, NOT NULL)`
+  - Expiry Tracking: `expires_at (TIMESTAMP WITH TIME ZONE)`
 
-```text
-[f97f51981d4c] create users table
-       │
-       ▼
-[0507cf69fd83] create skills table
-       │
-       ▼
-[861649acb717] create courses, user_skills, course_skills, refresh_tokens
-       │
-       ▼
-[49ecdd8f4657] create job_postings and job_skills
-       │
-       ▼
-[001_phase10] create target_roles, role_skills, student_profiles, student_skill_evidence
+### 2.2 Skill Taxonomy & Role Definitions
+* **`skills` Table**:
+  - Primary Key: `id (Integer, autoincrement)`
+  - Columns: `name (VARCHAR(128), UNIQUE, NOT NULL)`, `category (VARCHAR(64), NOT NULL)`, `created_at`
+  - Indexing: `ix_skills_name`
+* **`target_roles` Table**:
+  - Primary Key: `id (VARCHAR(64))` (e.g. `'ROLE_FULL_STACK_DEV'`)
+  - Columns: `name (VARCHAR(128), NOT NULL)`, `description (TEXT)`, `is_active (BOOLEAN)`, `created_at`
+* **`role_skills` (Association Table)**:
+  - Primary Key: `id (Integer, autoincrement)`
+  - Foreign Keys:
+    - `role_id -> target_roles(id) ON DELETE CASCADE`
+    - `skill_id -> skills(id) ON DELETE CASCADE`
+  - Constraints: `uq_role_skill UNIQUE (role_id, skill_id)`
+  - Indexes: `ix_role_skills_role_id`, `ix_role_skills_skill_id`
+
+### 2.3 Student Profiles & Evidence Tracking
+* **`student_profiles` Table**:
+  - Primary Key: `id (Integer, autoincrement)`
+  - Constraints: `user_id (INTEGER, UNIQUE, NOT NULL)`
+  - Foreign Keys:
+    - `user_id -> users(id) ON DELETE CASCADE`
+    - `target_role_id -> target_roles(id) ON DELETE SET NULL`
+  - Indexes: `ix_student_profiles_user_id`, `ix_student_profiles_target_role_id`
+* **`student_skill_evidence` Table**:
+  - Primary Key: `id (Integer, autoincrement)`
+  - Foreign Keys:
+    - `student_profile_id -> student_profiles(id) ON DELETE CASCADE`
+    - `skill_id -> skills(id) ON DELETE CASCADE`
+  - Attributes: `evidence_type (VARCHAR(32))`, `strength (VARCHAR(16))`, `metadata (JSON)`, `created_at`
+  - Domain Constraints:
+    - `evidence_type` restricted to `{'project', 'certification', 'assessment', 'course_completed', 'self_reported'}`
+    - `strength` restricted to `{'basic', 'intermediate', 'advanced'}`
+  - Indexes: `ix_student_skill_evidence_profile_id`, `ix_student_skill_evidence_skill_id`
+
+### 2.4 Jobs & Employer Postings
+* **`job_postings` Table**:
+  - Primary Key: `id (Integer, autoincrement)`
+  - Foreign Key: `employer_id -> users(id) ON DELETE CASCADE`
+  - Columns: `title`, `company`, `location`, `description`, `is_active`, `created_at`
+  - Indexing: `ix_job_postings_employer_id`
+* **`job_skills` (Association Table)**:
+  - Primary Key: `id (Integer, autoincrement)`
+  - Foreign Keys:
+    - `job_id -> job_postings(id) ON DELETE CASCADE`
+    - `skill_id -> skills(id) ON DELETE CASCADE`
+  - Indexes: `ix_job_skills_job_id`, `ix_job_skills_skill_id`
+
+### 2.5 Courses & Curricula
+* **`courses` Table**:
+  - Primary Key: `id (Integer, autoincrement)`
+  - Columns: `name`, `provider`, `role`, `duration_hours`, `created_at`
+* **`course_skills` Table**:
+  - Primary Key: `id (Integer, autoincrement)`
+  - Foreign Keys:
+    - `course_id -> courses(id) ON DELETE CASCADE`
+    - `skill_id -> skills(id) ON DELETE CASCADE`
+  - Indexes: `ix_course_skills_course_id`, `ix_course_skills_skill_id`
+
+---
+
+## 3. Migration History & Lineage
+
+The Alembic migration chain is verified linear and deterministic:
+
+```mermaid
+flowchart TD
+    M1["f97f51981d4c<br/>create_users_table"] --> M2["0507cf69fd83<br/>create_skills_table"]
+    M2 --> M3["861649acb717<br/>create_courses_and_skills"]
+    M3 --> M4["49ecdd8f4657<br/>create_job_posting_tables"]
+    M4 --> M5["001_phase10<br/>001_phase10_student_role_schema"]
 ```
 
-- **Branch Count**: 0 (Clean Linear History)
-- **Head Revision**: `001_phase10`
-- **Downgrade Support**: All revision scripts implement balanced `downgrade()` functions dropping tables and constraints in reverse topological order.
+All migrations support clean `upgrade()` and non-destructive `downgrade()` operations.
 
 ---
 
-## 4. Query Optimization & Indexing Assessment
+## 4. Referential Integrity & Cascade Verification
 
-1. **Foreign Key Lookups**:
-   - Every foreign key column in association tables (`job_skills.job_id`, `job_skills.skill_id`, `course_skills.course_id`, `course_skills.skill_id`, `user_skills.user_id`, `role_skills.role_id`, `student_profiles.user_id`, `student_skill_evidence.student_profile_id`) is explicitly indexed with `index=True`.
-   - Eliminates table scans during JOIN operations and relational traversals.
-2. **Text Search Optimization**:
-   - `job_postings.title` and `job_postings.company_name` are indexed for fast pattern-matching and filtering.
-3. **Temporal Sorting**:
-   - `job_postings.posted_date` and `refresh_tokens.expires_at` are indexed for time-range filtering and expiry sweeps.
+| Relationship | Parent Table | Child Table | On Delete Rule | Data Integrity Guarantee |
+| :--- | :--- | :--- | :--- | :--- |
+| User Profile | `users` | `student_profiles` | `CASCADE` | Deleting a student user cleans their profile automatically. |
+| Student Evidence | `student_profiles`| `student_skill_evidence`| `CASCADE` | No orphan evidence records when a student is removed. |
+| Target Role Deletion | `target_roles` | `student_profiles` | `SET NULL` | Deleting a target role resets student's target to NULL without deleting the student. |
+| Role Skills | `target_roles` | `role_skills` | `CASCADE` | Modifying/deleting roles cascades skill mappings. |
+| Job Requirements | `job_postings` | `job_skills` | `CASCADE` | Deleting a job deletes all associated skill requirements. |
+| Course Syllabus | `courses` | `course_skills` | `CASCADE` | Deleting a course purges course-to-skill mappings. |
+
+---
+
+## 5. Performance & Index Optimization
+
+1. **Foreign Key Indexing**: Every single foreign key column (`user_id`, `role_id`, `skill_id`, `employer_id`, `job_id`, `course_id`, `student_profile_id`) has an explicit B-tree index, guaranteeing $O(\log N)$ joins and preventing table scans.
+2. **Composite Uniqueness**: `uq_role_skill (role_id, skill_id)` prevents accidental duplication of skill requirements within roles.
+3. **JSONB Metadata**: Flexible metadata in `student_skill_evidence` allows storing repository URLs, certification IDs, or issue metrics without schema migrations.

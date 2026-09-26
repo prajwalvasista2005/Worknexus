@@ -110,14 +110,15 @@ class TestExtendedApiCoverage(unittest.TestCase):
 
     def test_08_ml_role_context_and_course_candidates(self):
         """Test ML diagnostic endpoints for role context and course candidates."""
+        headers = {"X-User-Role": "Student", "X-User-Id": "1"}
         # 1. Role context
-        role_res = self.client.get("/api/v1/ml/roles/ROLE_DATA_ENGINEER?mode=benchmark")
+        role_res = self.client.get("/api/v1/ml/roles/ROLE_DATA_ENGINEER?mode=benchmark", headers=headers)
         self.assertEqual(role_res.status_code, 200)
         role_json = role_res.json()
         self.assertIn("role_id", role_json)
 
         # 2. Course candidates
-        cand_res = self.client.get("/api/v1/ml/students/STU_001/course-candidates/ROLE_DATA_ENGINEER?mode=benchmark")
+        cand_res = self.client.get("/api/v1/ml/students/STU_001/course-candidates/ROLE_DATA_ENGINEER?mode=benchmark", headers=headers)
         self.assertEqual(cand_res.status_code, 200)
         cand_json = cand_res.json()
         self.assertIn("candidate_courses", cand_json)

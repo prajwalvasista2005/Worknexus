@@ -1,44 +1,14 @@
-from typing import Any, List
-try:
-    from fastapi import APIRouter, Depends, status, HTTPException
-except ImportError:
-    class APIRouter:
-        def __init__(self, *args, **kwargs):
-            self.routes = []
-        def post(self, path, **kwargs):
-            def decorator(func):
-                self.routes.append(("POST", path, func))
-                return func
-            return decorator
-        def get(self, path, **kwargs):
-            def decorator(func):
-                self.routes.append(("GET", path, func))
-                return func
-            return decorator
+from typing import List, Any
+from fastapi import APIRouter, Depends, status, HTTPException
+from sqlalchemy.orm import Session
 
-    def Depends(dep):
-        return dep
-
-    class status:
-        HTTP_200_OK = 200
-        HTTP_201_CREATED = 201
-        HTTP_404_NOT_FOUND = 404
-
-    from ..services.ml_adapter import HTTPException
-
-from ..db.session import get_db
-from ..schemas.schemas import TargetRoleCreateSchema, TargetRoleResponseSchema
-from ..services.role_service import RoleService
-from ..auth.rbac import CurrentUser, require_role, get_current_user
+from app.db.dependencies import get_db
+from app.schemas.schemas import TargetRoleCreateSchema, TargetRoleResponseSchema
+from app.services.role_service import RoleService
+from app.auth.rbac import CurrentUser, require_role, get_current_user
 
 router = APIRouter()
 
-def _resolve_db(db: Any):
-    if hasattr(db, "__next__") or (isinstance(db, type(get_db())) and hasattr(db, "send")):
-        return next(db)
-    elif hasattr(db, "dependency"):
-        return next(get_db())
-    return db
 
 @router.get(
     "/",
@@ -47,11 +17,12 @@ def _resolve_db(db: Any):
     summary="List all active target career roles"
 )
 def list_target_roles(
-    db: Any = Depends(get_db),
+    db: Session = Depends(get_db),
     _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = _resolve_db(db)
+    actual_db = next(db) if hasattr(db, "__next__") else db
     return RoleService.list_roles(actual_db)
+
 
 @router.get(
     "/{role_id}",
@@ -61,14 +32,15 @@ def list_target_roles(
 )
 def get_target_role(
     role_id: str,
-    db: Any = Depends(get_db),
+    db: Session = Depends(get_db),
     _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = _resolve_db(db)
+    actual_db = next(db) if hasattr(db, "__next__") else db
     role = RoleService.get_role(actual_db, role_id)
     if not role:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"TargetRole '{role_id}' not found.")
     return role
+
 
 @router.post(
     "/",
@@ -78,10 +50,10 @@ def get_target_role(
 )
 def create_target_role(
     role_in: TargetRoleCreateSchema,
-    db: Any = Depends(get_db),
+    db: Session = Depends(get_db),
     _user: CurrentUser = Depends(require_role(["Admin"]))
 ):
-    actual_db = _resolve_db(db)
+    actual_db = next(db) if hasattr(db, "__next__") else db
     try:
         return RoleService.create_role(actual_db, role_in)
     except ValueError as e:

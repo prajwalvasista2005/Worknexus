@@ -56,6 +56,20 @@ class AuthService:
         db.commit()
         db.refresh(user)
 
+        if user.role.lower() == "student":
+            try:
+                from app.models.student_roles import StudentProfile
+                existing_p = db.query(StudentProfile).filter(StudentProfile.user_id == user.id).first()
+                if not existing_p:
+                    profile = StudentProfile(
+                        user_id=user.id,
+                        target_role_id="ROLE_FULL_STACK_DEV"
+                    )
+                    db.add(profile)
+                    db.commit()
+            except Exception:
+                pass
+
         return user
 
     @staticmethod

@@ -1,49 +1,39 @@
-from typing import Any, List
-try:
-    from fastapi import APIRouter, Depends, status, HTTPException
-except ImportError:
-    class APIRouter:
-        def __init__(self, *args, **kwargs):
-            self.routes = []
-        def post(self, path, **kwargs):
-            def decorator(func):
-                self.routes.append(("POST", path, func))
-                return func
-            return decorator
-        def get(self, path, **kwargs):
-            def decorator(func):
-                self.routes.append(("GET", path, func))
-                return func
-            return decorator
+from typing import List, Any
+from fastapi import APIRouter, Depends, status, HTTPException
+from sqlalchemy.orm import Session
 
-    def Depends(dep):
-        return dep
-
-    class status:
-        HTTP_200_OK = 200
-        HTTP_201_CREATED = 201
-        HTTP_403_FORBIDDEN = 403
-        HTTP_404_NOT_FOUND = 404
-
-    from ..services.ml_adapter import HTTPException
-
-from ..db.session import get_db
-from ..schemas.schemas import (
+from app.db.dependencies import get_db
+from app.schemas.schemas import (
+    StudentProfileCreateSchema,
     StudentProfileResponseSchema,
     StudentSkillEvidenceCreateSchema,
     StudentSkillEvidenceResponseSchema
 )
-from ..services.student_service import StudentService
-from ..auth.rbac import CurrentUser, require_role, get_current_user
+from app.services.student_service import StudentService
+from app.auth.rbac import CurrentUser, require_role, get_current_user
 
 router = APIRouter()
 
-def _resolve_db(db: Any):
-    if hasattr(db, "__next__") or (isinstance(db, type(get_db())) and hasattr(db, "send")):
-        return next(db)
-    elif hasattr(db, "dependency"):
-        return next(get_db())
-    return db
+
+@router.post(
+    "/profile",
+    response_model=StudentProfileResponseSchema,
+    status_code=status.HTTP_200_OK,
+    summary="Create or update student profile target role"
+)
+def create_or_update_student_profile(
+    profile_in: StudentProfileCreateSchema,
+    db: Session = Depends(get_db),
+    _user: CurrentUser = Depends(get_current_user)
+):
+    actual_db = next(db) if hasattr(db, "__next__") else db
+    if _user and getattr(_user, "role", "").lower() == "student" and _user.user_id != profile_in.user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Students cannot modify other students' profiles.")
+    try:
+        return StudentService.create_or_get_profile(actual_db, profile_in)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
 
 @router.get(
     "/{user_id}/profile",
@@ -53,17 +43,18 @@ def _resolve_db(db: Any):
 )
 def get_student_profile(
     user_id: int,
-    db: Any = Depends(get_db),
+    db: Session = Depends(get_db),
     _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = _resolve_db(db)
-    if _user and _user.role == "Student" and _user.user_id != user_id:
+    actual_db = next(db) if hasattr(db, "__next__") else db
+    if _user and getattr(_user, "role", "").lower() == "student" and _user.user_id != user_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Students are not authorized to view other students' profiles.")
 
     profile = StudentService.get_profile_by_user_id(actual_db, user_id)
     if not profile:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"StudentProfile for User {user_id} not found.")
     return profile
+
 
 @router.post(
     "/{user_id}/evidence",
@@ -74,17 +65,18 @@ def get_student_profile(
 def add_student_skill_evidence(
     user_id: int,
     evidence_in: StudentSkillEvidenceCreateSchema,
-    db: Any = Depends(get_db),
+    db: Session = Depends(get_db),
     _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = _resolve_db(db)
-    if _user and _user.role == "Student" and _user.user_id != user_id:
+    actual_db = next(db) if hasattr(db, "__next__") else db
+    if _user and getattr(_user, "role", "").lower() == "student" and _user.user_id != user_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Students are not authorized to add evidence for other students.")
 
     try:
         return StudentService.add_skill_evidence(actual_db, user_id, evidence_in)
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
+
 
 @router.get(
     "/{user_id}/evidence",
@@ -94,11 +86,11 @@ def add_student_skill_evidence(
 )
 def list_student_skill_evidence(
     user_id: int,
-    db: Any = Depends(get_db),
+    db: Session = Depends(get_db),
     _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = _resolve_db(db)
-    if _user and _user.role == "Student" and _user.user_id != user_id:
+    actual_db = next(db) if hasattr(db, "__next__") else db
+    if _user and getattr(_user, "role", "").lower() == "student" and _user.user_id != user_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Students are not authorized to view other students' evidence.")
 
     return StudentService.get_student_evidence(actual_db, user_id)

@@ -28,5 +28,17 @@ class CourseResponse(BaseModel):
     semester: str | None = None
     is_active: bool
     created_at: datetime
+    title: str | None = None
+    code: str | None = None
+    provider: str | None = None
+    duration_weeks: int = 12
 
     model_config = ConfigDict(from_attributes=True)
+
+    def model_post_init(self, __context):
+        if self.title is None:
+            self.title = self.name
+        if self.code is None:
+            self.code = self.course_id
+        if self.provider is None:
+            self.provider = self.department
