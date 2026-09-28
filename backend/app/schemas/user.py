@@ -8,6 +8,13 @@ class UserCreate(BaseModel):
     full_name: str = Field(..., min_length=1, max_length=255)
     role: str = Field(default="student", description="Role: student, employer, institute, trainer")
 
+    @field_validator("email")
+    @classmethod
+    def normalize_email(cls, v: str) -> str:
+        if isinstance(v, str):
+            return v.strip().lower()
+        return v
+
     @field_validator("role")
     @classmethod
     def validate_role(cls, v: str) -> str:
@@ -23,6 +30,13 @@ class UserCreate(BaseModel):
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+    @field_validator("email")
+    @classmethod
+    def normalize_email(cls, v: str) -> str:
+        if isinstance(v, str):
+            return v.strip().lower()
+        return v
 
 
 class UserResponse(BaseModel):

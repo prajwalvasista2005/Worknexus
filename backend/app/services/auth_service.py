@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import select, update
+from sqlalchemy import select, update, func
 from sqlalchemy.orm import Session
 
 from app.models.users import User
@@ -16,7 +16,10 @@ class AuthService:
         db: Session,
         email: str,
     ) -> User | None:
-        stmt = select(User).where(User.email == email)
+        if not email:
+            return None
+        norm_email = email.strip().lower()
+        stmt = select(User).where(func.lower(User.email) == norm_email)
         return db.execute(stmt).scalar_one_or_none()
 
     @staticmethod

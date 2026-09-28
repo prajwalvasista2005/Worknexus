@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import String, Boolean, DateTime
+from sqlalchemy import String, Boolean, DateTime, Index, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -7,7 +7,10 @@ from app.db.base import Base
 
 class User(Base):
     __tablename__ = "users"
-    __table_args__ = {"extend_existing": True}
+    __table_args__ = (
+        Index("ix_users_email_lower", text("LOWER(email)"), unique=True),
+        {"extend_existing": True},
+    )
 
     def __init__(self, **kwargs):
         if "hashed_password" not in kwargs:

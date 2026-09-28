@@ -315,16 +315,11 @@ def test_postgres_migration_002_succeeds_and_enforces_fk_and_unique_index():
 # Real Migration Tests for Planned Hardening Phases (marked xfail until implemented)
 # ==============================================================================
 
-@pytest.mark.xfail(
-    raises=IntegrityError,
-    strict=True,
-    reason="Attempting to enforce case-insensitive uniqueness on duplicate-case legacy data must fail with IntegrityError at DB level until Phase 2 Task 15 migration reconciles duplicates"
-)
 def test_messy_legacy_data_duplicate_emails():
     """
     Calls real 'alembic upgrade head' on legacy database containing duplicate-case emails,
-    then attempts to apply the case-insensitive unique constraint.
-    PostgreSQL itself must reject the operation at the database level with IntegrityError.
+    verifies migration 003 reconciles duplicates and enforces case-insensitive unique constraint.
+    PostgreSQL itself must reject duplicate lowercased emails at the database level with IntegrityError.
     """
     if not is_postgres:
         pytest.skip("Requires PostgreSQL database for full migration validation")
@@ -353,11 +348,20 @@ def test_messy_legacy_data_duplicate_emails():
 
     try:
         run_alembic_upgrade(pg_target_url, "head")
-        # Attempt the actual database constraint operation against PostgreSQL
-        with engine.begin() as conn:
-            conn.execute(text(f"""
-                CREATE UNIQUE INDEX uq_users_lower_email ON {schema_name}.users (lower(email));
-            """))
+
+        # Verify deduplication occurred and email is normalized
+        with engine.connect() as conn:
+            users = conn.execute(text(f"SELECT id, email FROM {schema_name}.users ORDER BY id")).fetchall()
+            assert len(users) == 1
+            assert users[0][1] == "user@example.com"
+
+        # Attempting to insert a duplicate case-insensitive email must fail with IntegrityError
+        with pytest.raises(IntegrityError):
+            with engine.begin() as conn:
+                conn.execute(text(f"""
+                    INSERT INTO {schema_name}.users (email, hashed_password, role)
+                    VALUES ('USER@EXAMPLE.COM', 'hash2', 'student');
+                """))
     finally:
         with engine.begin() as conn:
             conn.execute(text(f"DROP SCHEMA IF EXISTS {schema_name} CASCADE;"))
