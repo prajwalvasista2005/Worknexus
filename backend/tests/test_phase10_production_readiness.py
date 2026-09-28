@@ -17,7 +17,7 @@ class TestPhase10ProductionReadiness(unittest.TestCase):
         with SessionLocal() as db:
             user = db.query(User).filter(User.id == 42).first()
             if not user:
-                user = User(id=42, email="enterprise42@worknexus.io", hashed_password="fake", role="Employer", full_name="Enterprise Recruiter")
+                user = User(id=42, email="enterprise42@worknexus.io", hashed_password="fake", role="employer", full_name="Enterprise Recruiter")
                 db.add(user)
                 db.commit()
             emp = db.query(Employer).filter(Employer.id == 42).first()
@@ -31,10 +31,6 @@ class TestPhase10ProductionReadiness(unittest.TestCase):
                 db.commit()
             except Exception:
                 pass
-        if 42 not in _global_session.users:
-            _global_session.add(User(id=42, email="enterprise42@worknexus.io", hashed_password="fake", role="Employer", full_name="Enterprise Recruiter"))
-        if 42 not in _global_session.employers:
-            _global_session.add(Employer(id=42, company_name="Enterprise Cloud", user_id=42, trust_weight=1.0))
 
     def test_01_admin_registration_rejected_prevents_privilege_escalation(self):
         """Verify that self-registration as admin is strictly blocked by schema validation."""

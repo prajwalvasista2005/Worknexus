@@ -20,7 +20,7 @@ def test_user():
                 email=email,
                 hashed_password=hash_password(PASSWORD),
                 full_name="Rotation Tester",
-                role="Student",
+                role="student",
                 is_active=True
             )
             db.add(user)

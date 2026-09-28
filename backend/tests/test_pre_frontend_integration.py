@@ -10,7 +10,7 @@ class TestPreFrontendIntegrationValidation(unittest.TestCase):
         with SessionLocal() as db:
             user = db.query(User).filter(User.id == 50).first()
             if not user:
-                user = User(id=50, email="recruiter50@tata.com", hashed_password="fake", role="Employer", full_name="Tata Recruiter")
+                user = User(id=50, email="recruiter50@tata.com", hashed_password="fake", role="employer", full_name="Tata Recruiter")
                 db.add(user)
                 db.commit()
             emp = db.query(Employer).filter(Employer.id == 50).first()
@@ -24,10 +24,6 @@ class TestPreFrontendIntegrationValidation(unittest.TestCase):
                 db.commit()
             except Exception:
                 pass
-        if 50 not in _global_session.users:
-            _global_session.add(User(id=50, email="recruiter50@tata.com", hashed_password="fake", role="Employer", full_name="Tata Recruiter"))
-        if 50 not in _global_session.employers:
-            _global_session.add(Employer(id=50, company_name="Tata Motors", user_id=50, trust_weight=1.0))
 
     # =========================================================================
     # FLOW 1: STUDENT END-TO-END FLOW

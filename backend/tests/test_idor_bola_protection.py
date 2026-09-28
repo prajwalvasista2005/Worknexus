@@ -34,7 +34,7 @@ def auth_users():
                 email="emp1_idor@worknexus.io",
                 hashed_password=hash_password(PASSWORD),
                 full_name="Employer One Corp",
-                role="Employer",
+                role="employer",
                 is_active=True
             )
             db.add(emp1_user)
@@ -58,7 +58,7 @@ def auth_users():
                 email="emp2_idor@worknexus.io",
                 hashed_password=hash_password(PASSWORD),
                 full_name="Employer Two Corp",
-                role="Employer",
+                role="employer",
                 is_active=True
             )
             db.add(emp2_user)
@@ -82,7 +82,7 @@ def auth_users():
                 email="stu1_idor@worknexus.io",
                 hashed_password=hash_password(PASSWORD),
                 full_name="Student One",
-                role="Student",
+                role="student",
                 is_active=True
             )
             db.add(stu1_user)
@@ -104,7 +104,7 @@ def auth_users():
                 email="stu2_idor@worknexus.io",
                 hashed_password=hash_password(PASSWORD),
                 full_name="Student Two",
-                role="Student",
+                role="student",
                 is_active=True
             )
             db.add(stu2_user)

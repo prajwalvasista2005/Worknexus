@@ -69,10 +69,7 @@ class JobService:
                 sk_obj = None
                 if isinstance(sk_code, int) or (isinstance(sk_code, str) and sk_code.isdigit()):
                     sk_obj = SkillService.get_skill_by_id(db, int(sk_code))
-                if not sk_obj and isinstance(sk_code, str):
-                    sk_obj = SkillService.get_skill_by_code(db, sk_code) or SkillService.get_skill_by_name(db, sk_code)
-
-                resolved_id = sk_obj.id if sk_obj else (int(sk_code) if str(sk_code).isdigit() else None)
+                resolved_id = sk_obj.id if sk_obj else (int(sk_code) if str(sk_code).isdigit() else sk_code)
                 if resolved_id is not None:
                     job_skill = JobSkill(
                         job_id=job.id,

@@ -8,8 +8,15 @@ class SkillExtractionRequest(BaseModel):
 
 class SkillExtractionItem(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, from_attributes=True)
-    skill_id: str
+    skill_id: Any
     confidence_score: float
+
+    @model_validator(mode="before")
+    @classmethod
+    def normalize_skill_id(cls, data: Any) -> Any:
+        if isinstance(data, dict) and "skill_id" in data and data["skill_id"] is not None:
+            data["skill_id"] = str(data["skill_id"])
+        return data
 
 class SkillExtractionResponse(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, from_attributes=True)

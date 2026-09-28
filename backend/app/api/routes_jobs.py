@@ -86,14 +86,14 @@ def list_job_postings(
         conf_scores = {}
         if job_skills:
             for js in job_skills:
-                sk_id = js.skill_id
+                sk_id = str(js.skill_id)
                 conf = float(js.confidence_score) if js.confidence_score is not None else 1.0
                 extracted.append(SkillExtractionItem(skill_id=sk_id, confidence_score=conf))
                 conf_scores[sk_id] = conf
         elif hasattr(actual_db, "query"):
             js_rows = actual_db.query(JobSkill).filter(JobSkill.job_id == p.id).all()
             for js in js_rows:
-                sk_id = js.skill_id
+                sk_id = str(js.skill_id)
                 conf = float(js.confidence_score) if js.confidence_score is not None else 1.0
                 extracted.append(SkillExtractionItem(skill_id=sk_id, confidence_score=conf))
                 conf_scores[sk_id] = conf
@@ -137,14 +137,14 @@ def get_job_posting_by_id(
     conf_scores = {}
     if job_skills:
         for js in job_skills:
-            sk_id = js.skill_id
+            sk_id = str(js.skill_id)
             conf = float(js.confidence_score) if js.confidence_score is not None else 1.0
             extracted.append(SkillExtractionItem(skill_id=sk_id, confidence_score=conf))
             conf_scores[sk_id] = conf
     elif hasattr(actual_db, "query"):
         js_rows = actual_db.query(JobSkill).filter(JobSkill.job_id == job.id).all()
         for js in js_rows:
-            sk_id = js.skill_id
+            sk_id = str(js.skill_id)
             conf = float(js.confidence_score) if js.confidence_score is not None else 1.0
             extracted.append(SkillExtractionItem(skill_id=sk_id, confidence_score=conf))
             conf_scores[sk_id] = conf

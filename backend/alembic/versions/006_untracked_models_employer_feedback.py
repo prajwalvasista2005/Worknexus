@@ -40,11 +40,13 @@ def upgrade() -> None:
 
     # 2. Create employer_feedback table if it doesn't exist
     if 'employer_feedback' not in tables:
+        emp_fk = [sa.ForeignKey('employers.id', ondelete='CASCADE')] if 'employers' in tables else []
+        course_fk = [sa.ForeignKey('courses.id', ondelete='SET NULL')] if 'courses' in tables else []
         op.create_table(
             'employer_feedback',
             sa.Column('id', sa.Integer(), primary_key=True, autoincrement=True, nullable=False),
-            sa.Column('employer_id', sa.Integer(), sa.ForeignKey('employers.id', ondelete='CASCADE'), nullable=False),
-            sa.Column('course_id', sa.Integer(), sa.ForeignKey('courses.id', ondelete='SET NULL'), nullable=True),
+            sa.Column('employer_id', sa.Integer(), *emp_fk, nullable=False),
+            sa.Column('course_id', sa.Integer(), *course_fk, nullable=True),
             sa.Column('comments', sa.Text(), nullable=False),
             sa.Column('rating', sa.Integer(), nullable=True),
             sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
