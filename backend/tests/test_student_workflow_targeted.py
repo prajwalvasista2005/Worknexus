@@ -13,27 +13,44 @@ def client():
     return TestClient(app)
 
 
-def _hash_password(password: str) -> str:
-    import hashlib
-    return hashlib.sha256(password.encode("utf-8")).hexdigest()
-
-
-@pytest.fixture(scope="module")
+@pytest.fixture
 def student_auth():
+    from app.auth.security import hash_password
     db = SessionLocal()
     try:
-        user = db.query(User).filter(User.role == "student").first()
+        # Ensure ROLE_EV_TECHNICIAN exists (needed by gap/course-candidates tests)
+        role = db.query(TargetRole).filter(TargetRole.id == "ROLE_EV_TECHNICIAN").first()
+        if not role:
+            role = TargetRole(
+                id="ROLE_EV_TECHNICIAN",
+                name="EV Technician",
+                description="Benchmark Role: EV battery diagnostics and powertrain electronics.",
+                is_active=True,
+            )
+            db.add(role)
+            db.commit()
+
+        # Get or create a student user with a valid bcrypt hash
+        user = db.query(User).filter(User.email == "test_student_workflow@worknexus.org").first()
         if not user:
             user = User(
                 email="test_student_workflow@worknexus.org",
-                hashed_password=_hash_password("Password123!"),
+                hashed_password=hash_password("Password123!"),
                 full_name="Targeted Test Student",
                 role="student",
-                is_active=True
+                is_active=True,
             )
             db.add(user)
             db.commit()
             db.refresh(user)
+
+        # Ensure student has a StudentProfile pointing at ROLE_EV_TECHNICIAN
+        from app.models.student_roles import StudentProfile
+        profile = db.query(StudentProfile).filter(StudentProfile.user_id == user.id).first()
+        if not profile:
+            profile = StudentProfile(user_id=user.id, target_role_id="ROLE_EV_TECHNICIAN")
+            db.add(profile)
+            db.commit()
 
         token = create_access_token(data={"sub": user.email, "user_id": user.id, "role": "Student"})
         headers = {
@@ -105,6 +122,16 @@ def test_03_view_evidence_history(client, student_auth):
     """Workflow Step 3: View Evidence History"""
     user_id = student_auth["user_id"]
     headers = student_auth["headers"]
+
+    # Ensure evidence is submitted in this transaction boundary
+    payload = {
+        "skill_id": "SK_CAN",
+        "evidence_type": "project",
+        "strength": "advanced",
+        "metadata": {"repo": "https://github.com/worknexus/can-bus-driver"}
+    }
+    sub_res = client.post(f"/api/v1/students/{user_id}/evidence", json=payload, headers=headers)
+    assert sub_res.status_code in [200, 201]
 
     response = client.get(f"/api/v1/students/{user_id}/evidence", headers=headers)
     assert response.status_code == 200, f"Evidence list failed: {response.text}"

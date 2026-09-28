@@ -23,7 +23,7 @@ def test_full_system_flow():
     password = "StrongPassword123!"
 
     reg_res = client.post(
-        "/auth/register",
+        "/api/v1/auth/register",
         json={
             "email": email,
             "password": password,
@@ -37,7 +37,7 @@ def test_full_system_flow():
 
     # 3. Login with JSON credentials
     login_res = client.post(
-        "/auth/login",
+        "/api/v1/auth/login",
         json={"email": email, "password": password},
     )
     assert login_res.status_code == 200
@@ -49,7 +49,7 @@ def test_full_system_flow():
 
     # 4. Authenticated profile inspection
     me_res = client.get(
-        "/auth/me",
+        "/api/v1/auth/me",
         headers={"Authorization": f"Bearer {access_token}"},
     )
     assert me_res.status_code == 200
@@ -57,7 +57,7 @@ def test_full_system_flow():
 
     # 5. Token Refresh
     ref_res = client.post(
-        "/auth/refresh",
+        "/api/v1/auth/refresh",
         json={"refresh_token": refresh_token},
     )
     assert ref_res.status_code == 200
@@ -69,15 +69,16 @@ def test_full_system_flow():
 
     # Old refresh token is revoked
     old_ref_res = client.post(
-        "/auth/refresh",
+        "/api/v1/auth/refresh",
         json={"refresh_token": refresh_token},
     )
     assert old_ref_res.status_code == 401
 
-    # 6. Create Skill
+    # 6. Create Skill (Admin header)
     skill_code = f"SKL-{uid}"
     skill_res = client.post(
-        "/skills/",
+        "/api/v1/skills/",
+        headers={"X-User-Role": "Admin", "X-User-Id": "1"},
         json={
             "skill_id": skill_code,
             "name": f"Skill {uid}",
@@ -91,7 +92,7 @@ def test_full_system_flow():
 
     # 7. Add skill to user profile
     user_skill_res = client.post(
-        "/user-skills/",
+        "/api/v1/user-skills/",
         headers={"Authorization": f"Bearer {new_access}"},
         json={
             "skill_id": skill_pk,
@@ -105,16 +106,17 @@ def test_full_system_flow():
 
     # 8. List my skills
     my_skills_res = client.get(
-        "/user-skills/me",
+        "/api/v1/user-skills/",
         headers={"Authorization": f"Bearer {new_access}"},
     )
     assert my_skills_res.status_code == 200
     assert any(s["skill_id"] == skill_pk for s in my_skills_res.json())
 
-    # 9. Create Course
+    # 9. Create Course (Institute header)
     course_code = f"CRS-{uid}"
     course_res = client.post(
-        "/courses/",
+        "/api/v1/courses/",
+        headers={"X-User-Role": "Institute", "X-User-Id": "1"},
         json={
             "course_id": course_code,
             "name": f"Course {uid}",
@@ -130,7 +132,8 @@ def test_full_system_flow():
 
     # 10. Map skill to course
     map_res = client.post(
-        "/course-skills/",
+        "/api/v1/course-skills/",
+        headers={"X-User-Role": "Institute", "X-User-Id": "1"},
         json={
             "course_id": course_pk,
             "skill_id": skill_pk,
@@ -139,13 +142,17 @@ def test_full_system_flow():
     assert map_res.status_code == 201
 
     # 11. Verify course skills
-    c_skills_res = client.get(f"/courses/{course_pk}/skills")
+    c_skills_res = client.get(
+        f"/api/v1/courses/{course_pk}/skills",
+        headers={"X-User-Role": "Student", "X-User-Id": "1"},
+    )
     assert c_skills_res.status_code == 200
     assert len(c_skills_res.json()) >= 1
 
-    # 12. Create Job Posting
+    # 12. Create Job Posting (job-postings simple CRUD router, no ML)
     job_res = client.post(
-        "/job-postings",
+        "/api/v1/job-postings",
+        headers={"X-User-Role": "Employer", "X-User-Id": "1"},
         json={
             "title": f"Lead AI Engineer {uid}",
             "company_name": "NexTech Global",
@@ -160,18 +167,25 @@ def test_full_system_flow():
     assert job_obj["title"] == f"Lead AI Engineer {uid}"
 
     # 13. Get Job Posting
-    get_job_res = client.get(f"/job-postings/{job_pk}")
+    get_job_res = client.get(
+        f"/api/v1/job-postings/{job_pk}",
+        headers={"X-User-Role": "Student", "X-User-Id": "1"},
+    )
     assert get_job_res.status_code == 200
     assert get_job_res.json()["id"] == job_pk
 
     # 14. List Job Postings
-    list_jobs_res = client.get("/job-postings")
+    list_jobs_res = client.get(
+        "/api/v1/job-postings",
+        headers={"X-User-Role": "Student", "X-User-Id": "1"},
+    )
     assert list_jobs_res.status_code == 200
     assert any(j["id"] == job_pk for j in list_jobs_res.json())
 
     # 15. Map Skill to Job Posting
     map_job_skill_res = client.post(
-        "/job-skills",
+        "/api/v1/job-skills",
+        headers={"X-User-Role": "Admin", "X-User-Id": "1"},
         json={
             "job_id": job_pk,
             "skill_id": skill_code,
@@ -184,26 +198,38 @@ def test_full_system_flow():
     assert js_obj["skill_id"] == skill_code
 
     # 16. Get Job Skill Mapping
-    get_js_res = client.get(f"/job-skills/{js_pk}")
+    get_js_res = client.get(
+        f"/api/v1/job-skills/{js_pk}",
+        headers={"X-User-Role": "Admin", "X-User-Id": "1"},
+    )
     assert get_js_res.status_code == 200
     assert get_js_res.json()["id"] == js_pk
 
     # 17. List Job Skills
-    list_js_res = client.get(f"/job-skills?job_id={job_pk}")
+    list_js_res = client.get(
+        f"/api/v1/job-skills?job_id={job_pk}",
+        headers={"X-User-Role": "Admin", "X-User-Id": "1"},
+    )
     assert list_js_res.status_code == 200
     assert any(m["id"] == js_pk for m in list_js_res.json())
 
     # 18. Delete Job Skill Mapping
-    del_js_res = client.delete(f"/job-skills/{js_pk}")
+    del_js_res = client.delete(
+        f"/api/v1/job-skills/{js_pk}",
+        headers={"X-User-Role": "Admin", "X-User-Id": "1"},
+    )
     assert del_js_res.status_code == 200
 
     # 19. Delete Job Posting
-    del_job_res = client.delete(f"/job-postings/{job_pk}")
+    del_job_res = client.delete(
+        f"/api/v1/job-postings/{job_pk}",
+        headers={"X-User-Role": "Admin", "X-User-Id": "1"},
+    )
     assert del_job_res.status_code == 200
 
     # 20. Logout
     logout_res = client.post(
-        "/auth/logout",
+        "/api/v1/auth/logout",
         json={"refresh_token": new_refresh},
     )
     assert logout_res.status_code == 200
@@ -211,7 +237,7 @@ def test_full_system_flow():
 
     # Revoked token cannot be refreshed
     after_logout_ref = client.post(
-        "/auth/refresh",
+        "/api/v1/auth/refresh",
         json={"refresh_token": new_refresh},
     )
     assert after_logout_ref.status_code == 401

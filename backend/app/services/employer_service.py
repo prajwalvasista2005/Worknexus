@@ -302,7 +302,9 @@ class EmployerService:
             # 1. Self-healing DDL: ensure user_id column exists
             bind = actual_db.get_bind() if hasattr(actual_db, "get_bind") else getattr(actual_db, "bind", None)
             if bind:
-                with bind.connect() as conn:
+                from contextlib import nullcontext
+                conn_cm = bind.connect() if hasattr(bind, "connect") else nullcontext(bind)
+                with conn_cm as conn:
                     if bind.dialect.name == "postgresql":
                         conn.execute(text("""
                             DO $$
@@ -315,12 +317,14 @@ class EmployerService:
                                 END IF;
                             END $$;
                         """))
-                        conn.commit()
+                        if hasattr(conn, "commit"):
+                            conn.commit()
                     elif bind.dialect.name == "sqlite":
                         cols = [r[1] for r in conn.execute(text("PRAGMA table_info(employers)")).fetchall()]
                         if cols and "user_id" not in cols:
                             conn.execute(text("ALTER TABLE employers ADD COLUMN user_id INTEGER;"))
-                            conn.commit()
+                            if hasattr(conn, "commit"):
+                                conn.commit()
 
             # 2. Check 2: Deduplicate profiles (if duplicate user_id exists)
             all_employers = actual_db.query(Employer).all()
@@ -429,7 +433,9 @@ class EmployerService:
 
             # 5. Ensure UNIQUE and FOREIGN KEY constraints on DB
             if bind:
-                with bind.connect() as conn:
+                from contextlib import nullcontext
+                conn_cm = bind.connect() if hasattr(bind, "connect") else nullcontext(bind)
+                with conn_cm as conn:
                     if bind.dialect.name == "postgresql":
                         conn.execute(text("""
                             CREATE UNIQUE INDEX IF NOT EXISTS ix_employers_user_id ON employers (user_id);
@@ -447,11 +453,13 @@ class EmployerService:
                             SELECT setval(pg_get_serial_sequence('users', 'id'), COALESCE(MAX(id), 1)) FROM users;
                             SELECT setval(pg_get_serial_sequence('employers', 'id'), COALESCE(MAX(id), 1)) FROM employers;
                         """))
-                        conn.commit()
+                        if hasattr(conn, "commit"):
+                            conn.commit()
                     elif bind.dialect.name == "sqlite":
                         try:
                             conn.execute(text("CREATE UNIQUE INDEX IF NOT EXISTS ix_employers_user_id ON employers (user_id);"))
-                            conn.commit()
+                            if hasattr(conn, "commit"):
+                                conn.commit()
                         except Exception:
                             pass
 
