@@ -175,8 +175,19 @@ def delete_job_posting_by_id(
 ):
     from fastapi import HTTPException
     actual_db = next(db) if hasattr(db, "__next__") else db
-    deleted = JobPostingService.delete_job_posting(db=actual_db, job_id=job_id)
-    if not deleted:
+    job = JobPostingService.get_job_posting(db=actual_db, job_id=job_id)
+    if not job:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job posting not found")
+
+    user_role = getattr(_user, "role", "").lower()
+    if user_role == "employer":
+        employer = EmployerService.get_employer_by_user_id(actual_db, _user.user_id)
+        if not employer or job.employer_id != employer.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have permission to delete this job posting"
+            )
+
+    deleted = JobPostingService.delete_job_posting(db=actual_db, job_id=job_id)
     return {"message": "Job posting deleted successfully"}
 

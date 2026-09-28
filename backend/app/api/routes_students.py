@@ -27,8 +27,12 @@ def create_or_update_student_profile(
     _user: CurrentUser = Depends(get_current_user)
 ):
     actual_db = next(db) if hasattr(db, "__next__") else db
-    if _user and getattr(_user, "role", "").lower() == "student" and _user.user_id != profile_in.user_id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Students cannot modify other students' profiles.")
+    user_role = getattr(_user, "role", "").lower() if _user else ""
+    if user_role != "admin" and getattr(_user, "user_id", None) != profile_in.user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You are not authorized to modify another user's student profile."
+        )
     try:
         return StudentService.create_or_get_profile(actual_db, profile_in)
     except ValueError as e:
@@ -47,8 +51,12 @@ def get_student_profile(
     _user: CurrentUser = Depends(get_current_user)
 ):
     actual_db = next(db) if hasattr(db, "__next__") else db
-    if _user and getattr(_user, "role", "").lower() == "student" and _user.user_id != user_id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Students are not authorized to view other students' profiles.")
+    user_role = getattr(_user, "role", "").lower() if _user else ""
+    if user_role == "student" and getattr(_user, "user_id", None) != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Students are not authorized to view other students' profiles."
+        )
 
     profile = StudentService.get_profile_by_user_id(actual_db, user_id)
     if not profile:
@@ -69,8 +77,12 @@ def add_student_skill_evidence(
     _user: CurrentUser = Depends(get_current_user)
 ):
     actual_db = next(db) if hasattr(db, "__next__") else db
-    if _user and getattr(_user, "role", "").lower() == "student" and _user.user_id != user_id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Students are not authorized to add evidence for other students.")
+    user_role = getattr(_user, "role", "").lower() if _user else ""
+    if user_role != "admin" and getattr(_user, "user_id", None) != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You are not authorized to add evidence for another user."
+        )
 
     try:
         return StudentService.add_skill_evidence(actual_db, user_id, evidence_in)
