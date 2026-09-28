@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import String, Boolean, DateTime, Index, text
+from sqlalchemy import String, Boolean, DateTime, Index, CheckConstraint, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -9,6 +9,10 @@ class User(Base):
     __tablename__ = "users"
     __table_args__ = (
         Index("ix_users_email_lower", text("LOWER(email)"), unique=True),
+        CheckConstraint(
+            "role IN ('student', 'employer', 'institute', 'trainer', 'admin')",
+            name="chk_users_role"
+        ),
         {"extend_existing": True},
     )
 

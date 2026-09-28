@@ -367,16 +367,11 @@ def test_messy_legacy_data_duplicate_emails():
             conn.execute(text(f"DROP SCHEMA IF EXISTS {schema_name} CASCADE;"))
 
 
-@pytest.mark.xfail(
-    raises=IntegrityError,
-    strict=True,
-    reason="Attempting to enforce role enum check constraint on mixed-case legacy data must fail with IntegrityError at DB level until Phase 1 Task 8 migration normalizes roles"
-)
 def test_messy_legacy_data_mixed_case_roles():
     """
     Calls real 'alembic upgrade head' on legacy database containing mixed-case roles,
-    then attempts to apply the role enum check constraint.
-    PostgreSQL itself must reject unnormalized values with IntegrityError.
+    verifies migration 004 normalizes legacy roles to canonical lowercase and applies check constraint.
+    PostgreSQL itself must reject unnormalized or invalid values with IntegrityError.
     """
     if not is_postgres:
         pytest.skip("Requires PostgreSQL database for full migration validation")
@@ -405,13 +400,20 @@ def test_messy_legacy_data_mixed_case_roles():
 
     try:
         run_alembic_upgrade(pg_target_url, "head")
-        # Attempt to enforce the role enum constraint against unnormalized data
-        with engine.begin() as conn:
-            conn.execute(text(f"""
-                ALTER TABLE {schema_name}.users
-                ADD CONSTRAINT chk_users_role
-                CHECK (role IN ('student', 'employer', 'institute', 'trainer', 'admin'));
-            """))
+
+        # Verify roles are normalized to canonical lowercase
+        with engine.connect() as conn:
+            roles = conn.execute(text(f"SELECT id, role FROM {schema_name}.users ORDER BY id")).fetchall()
+            assert roles[0][1] == "student"
+            assert roles[1][1] == "employer"
+
+        # Verify check constraint rejects invalid or unnormalized role
+        with pytest.raises(IntegrityError):
+            with engine.begin() as conn:
+                conn.execute(text(f"""
+                    INSERT INTO {schema_name}.users (email, hashed_password, role)
+                    VALUES ('invalid@worknexus.io', 'hash3', 'INVALID_ROLE');
+                """))
     finally:
         with engine.begin() as conn:
             conn.execute(text(f"DROP SCHEMA IF EXISTS {schema_name} CASCADE;"))
