@@ -7,9 +7,29 @@ from alembic.config import Config
 from alembic import command
 
 
-# Detect if PostgreSQL is available from environment
+# Detect if PostgreSQL is available and reachable from environment
 raw_url = os.getenv("DATABASE_URL", "")
-is_postgres = raw_url.startswith("postgresql")
+
+def _check_postgres_available() -> bool:
+    if not (raw_url and raw_url.startswith("postgresql")):
+        return False
+    try:
+        import urllib.parse, socket
+        parsed = urllib.parse.urlparse(raw_url)
+        host = parsed.hostname
+        if not host:
+            return False
+        if host == "db" and not Path("/.dockerenv").exists():
+            return False
+        socket.gethostbyname(host)
+        test_eng = create_engine(raw_url, connect_args={"connect_timeout": 2})
+        with test_eng.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        return True
+    except Exception:
+        return False
+
+is_postgres = _check_postgres_available()
 
 
 def get_postgres_url_with_schema(schema_name: str) -> str:
