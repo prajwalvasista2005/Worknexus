@@ -27,15 +27,9 @@ def create_app() -> FastAPI:
         description="WorkNexus / SkillMesh Core Backend API with Integrated ML Engine"
     )
 
-    # Initialize tables and seed canonical taxonomy
+    # Startup audit and self-healing validation for employer profiles
     try:
-        from .db.base import Base
-        from .db.session import engine, SessionLocal
-        # Import all SQLAlchemy models to bind metadata
-        from .models import users, skills, courses, course_skills, job_postings, jobSkill, refresh_tokens, user_skills, student_roles, employers
-        Base.metadata.create_all(bind=engine)
-
-        # Startup audit and self-healing validation for employer profiles
+        from .db.session import SessionLocal
         from .services.employer_service import EmployerService
         with SessionLocal() as db_session:
             EmployerService.verify_employer_profiles(db_session)
@@ -44,7 +38,7 @@ def create_app() -> FastAPI:
             seed_all(db_session)
     except Exception as e:
         import logging
-        logging.getLogger(__name__).warning(f"Database initialization warning: {e}")
+        logging.getLogger(__name__).warning(f"Database startup check warning: {e}")
 
     app.add_middleware(
         CORSMiddleware,
