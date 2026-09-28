@@ -85,7 +85,7 @@ def test_refresh_token_revoked():
     mock_exec_token = MagicMock()
     mock_exec_token.scalar_one_or_none.return_value = db_token
 
-    mock_db.execute.side_effect = [mock_exec_user, mock_exec_token]
+    mock_db.execute.side_effect = [mock_exec_user, mock_exec_token, MagicMock()]
 
     req = TokenRefreshRequest(refresh_token=token_str)
     try:

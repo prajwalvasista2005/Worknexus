@@ -97,13 +97,15 @@ def test_get_all_job_postings():
 
 
 def test_delete_job_posting_not_found():
+    from app.auth.rbac import CurrentUser
+    admin_user = CurrentUser(user_id=1, email="admin@worknexus.io", role="Admin")
     mock_db = MagicMock()
     mock_execute = MagicMock()
     mock_execute.scalar_one_or_none.return_value = None
     mock_db.execute.return_value = mock_execute
 
     try:
-        delete_job_posting(job_id=999, db=mock_db)
+        delete_job_posting(job_id=999, db=mock_db, _user=admin_user)
         assert False, "Should have raised 404"
     except HTTPException as exc:
         assert exc.status_code == 404
@@ -111,6 +113,8 @@ def test_delete_job_posting_not_found():
 
 
 def test_delete_job_posting_success():
+    from app.auth.rbac import CurrentUser
+    admin_user = CurrentUser(user_id=1, email="admin@worknexus.io", role="Admin")
     mock_db = MagicMock()
     job = JobPosting(
         id=1,
@@ -126,7 +130,7 @@ def test_delete_job_posting_success():
     mock_execute.scalar_one_or_none.return_value = job
     mock_db.execute.return_value = mock_execute
 
-    result = delete_job_posting(job_id=1, db=mock_db)
+    result = delete_job_posting(job_id=1, db=mock_db, _user=admin_user)
     assert result == {"message": "Job posting deleted successfully"}
     assert mock_db.delete.called
     assert mock_db.commit.called

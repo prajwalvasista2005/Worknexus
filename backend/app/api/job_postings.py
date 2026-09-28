@@ -79,7 +79,8 @@ def delete_job_posting(
     db: Session = Depends(get_db),
     _user: CurrentUser = Depends(require_role(["Employer", "Admin"])),
 ):
-    actual_db = next(db) if hasattr(db, "__next__") else db
+    from inspect import isgenerator
+    actual_db = next(db) if isgenerator(db) else db
     job = JobPostingService.get_job_posting(db=actual_db, job_id=job_id)
     if not job:
         raise HTTPException(
@@ -96,5 +97,6 @@ def delete_job_posting(
                 detail="You do not have permission to delete this job posting",
             )
 
-    JobPostingService.delete_job_posting(db=actual_db, job_id=job_id)
+    actual_db.delete(job)
+    actual_db.commit()
     return {"message": "Job posting deleted successfully"}
