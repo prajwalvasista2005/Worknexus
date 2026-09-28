@@ -8,7 +8,9 @@ from app.db.session import SessionLocal
 from app.models.entities import User, Employer, JobPosting
 from app.schemas.schemas import JobCreateSchema
 from app.services.job_service import JobService
+from app.services.employer_service import EmployerService
 from app.services.ml_adapter import MLAdapter
+from app.db.seed import verify_and_heal_profiles
 from fastapi import HTTPException
 
 client = TestClient(app)
@@ -16,23 +18,52 @@ client = TestClient(app)
 PASSWORD = "SecurePassword123!"
 
 
-def test_employer_without_profile_fails_validation():
+def test_employer_registration_auto_provisions_profile():
     """
-    Validation Test:
-    When an authenticated employer has no Employer profile row in the employers table,
-    creating a job posting must return HTTP 404 (or 400) with a clear message.
-    Crucially, a database IntegrityError must NOT reach the client.
+    Registration Flow Test (Task 7):
+    Registering a new user with role 'Employer' must automatically provision
+    a corresponding Employer profile row in the employers table.
     """
     unique_id = uuid4().hex[:8]
-    email = f"employer_no_profile_{unique_id}@worknexus.io"
+    email = f"registered_employer_{unique_id}@worknexus.io"
+    company_name = f"Enterprise Corp {unique_id}"
 
-    # 1. Create a user with Employer role but NO Employer row
+    # 1. Register new employer via public API endpoint
+    reg_payload = {
+        "email": email,
+        "password": PASSWORD,
+        "full_name": company_name,
+        "role": "Employer"
+    }
+    res = client.post("/api/v1/auth/register", json=reg_payload)
+    assert res.status_code == 201, f"Registration failed: {res.text}"
+    user_data = res.json()
+    user_id = user_data["id"]
+
+    # 2. Verify an Employer profile row was automatically provisioned in DB
+    with SessionLocal() as db:
+        emp = db.query(Employer).filter(Employer.user_id == user_id).first()
+        assert emp is not None, f"Employer profile was not auto-provisioned for user {user_id}"
+        assert emp.company_name == company_name
+        assert emp.user_id == user_id
+
+
+def test_legacy_employer_account_healing():
+    """
+    Legacy Account Healing Test (Task 7):
+    Users with role 'employer' that exist in users table but lack an Employer profile
+    must be automatically healed by verify_and_heal_profiles.
+    """
+    unique_id = uuid4().hex[:8]
+    email = f"legacy_employer_{unique_id}@worknexus.io"
+    company_name = f"Legacy Corp {unique_id}"
+
     with SessionLocal() as db:
         from app.auth.security import hash_password
         user = User(
             email=email,
             hashed_password=hash_password(PASSWORD),
-            full_name=f"Profileless Employer {unique_id}",
+            full_name=company_name,
             role="employer",
             is_active=True
         )
@@ -41,29 +72,78 @@ def test_employer_without_profile_fails_validation():
         db.refresh(user)
         user_id = user.id
 
-        # Verify no Employer row exists for this user
-        existing_emp = db.query(Employer).filter(Employer.user_id == user_id).first()
-        assert existing_emp is None
+        # Explicitly verify no profile exists yet
+        assert db.query(Employer).filter(Employer.user_id == user_id).first() is None
 
-    # 2. Login as the newly created employer account
+        # Run healing procedure
+        heal_res = verify_and_heal_profiles(db)
+        assert heal_res["healed_employers"] >= 1
+
+        # Verify profile is now healed
+        healed_emp = db.query(Employer).filter(Employer.user_id == user_id).first()
+        assert healed_emp is not None
+        assert healed_emp.company_name == company_name
+        assert healed_emp.user_id == user_id
+
+
+def test_missing_employer_profile_recovery_during_job_creation():
+    """
+    Missing Employer Profile Recovery Test (Task 4 & 5):
+    When an authenticated employer user has NO pre-existing Employer row in the employers table,
+    creating a job posting must NOT crash with ForeignKeyViolation or return 500.
+    The system must defensively auto-provision the profile and successfully create the job posting.
+    """
+    unique_id = uuid4().hex[:8]
+    email = f"unprofiled_employer_{unique_id}@worknexus.io"
+    company_name = f"Self Healing Corp {unique_id}"
+
+    # 1. Insert user directly with employer role but NO Employer record
+    with SessionLocal() as db:
+        from app.auth.security import hash_password
+        user = User(
+            email=email,
+            hashed_password=hash_password(PASSWORD),
+            full_name=company_name,
+            role="employer",
+            is_active=True
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        user_id = user.id
+
+        assert db.query(Employer).filter(Employer.user_id == user_id).first() is None
+
+    # 2. Login as the unprofiled employer
     login_res = client.post("/api/v1/auth/login", json={"email": email, "password": PASSWORD})
     assert login_res.status_code == 200, login_res.text
     token = login_res.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 
-    # 3. Attempt to create a job posting
+    # 3. Post a job demand requisition
     job_payload = {
-        "title": "Cloud Architect",
-        "company": "Missing Profile Corp",
+        "title": "Principal Distributed Systems Engineer",
+        "company": company_name,
         "location": "Remote",
-        "description": "Looking for Python and Kubernetes cloud architect."
+        "description": "Requires advanced Go, Distributed Systems, gRPC, and Kubernetes."
     }
     res = client.post("/api/v1/jobs/", headers=headers, json=job_payload)
+    assert res.status_code == 201, f"Expected 201 Created on missing profile recovery, got {res.status_code}: {res.text}"
 
-    # 4. Must return 404 (or 400) with a clear message, NOT 500 or unhandled DB IntegrityError
-    assert res.status_code in [400, 404], f"Expected 400 or 404, got {res.status_code}: {res.text}"
-    detail = res.json().get("detail", "")
-    assert "Employer profile not found" in detail, f"Expected clear message, got: {detail}"
+    data = res.json()
+    assert data["title"] == "Principal Distributed Systems Engineer"
+    assert data["company"] == company_name
+    assert data["employer_id"] is not None
+
+    # 4. Verify DB state: Employer profile was created and JobPosting foreign key references it
+    with SessionLocal() as db:
+        emp = db.query(Employer).filter(Employer.user_id == user_id).first()
+        assert emp is not None, "Employer profile was not automatically created!"
+        assert emp.id == data["employer_id"]
+
+        job = db.query(JobPosting).filter(JobPosting.id == data["id"]).first()
+        assert job is not None
+        assert job.employer_id == emp.id
 
 
 def test_employer_job_creation_lifecycle_integration():
@@ -150,7 +230,8 @@ def test_create_job_service_direct_rejects_invalid_employer_id():
     """
     Direct Service Validation Test:
     JobService.create_job() must reject an invalid employer_id that does not exist
-    in the employers table, and not allow IntegrityError to escape.
+    in the employers table and cannot be resolved to any user, without allowing
+    an unhandled raw IntegrityError to escape.
     """
     adapter = MLAdapter()
     invalid_employer_id = 99999999

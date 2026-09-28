@@ -3,16 +3,17 @@ from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.dependencies import get_db
-from app.models.employers import EmployerFeedback
+from app.models.employers import EmployerFeedback, EmployerFeedbackSignal
 from app.schemas.schemas import (
     EmployerFeedbackCreateSchema,
     EmployerFeedbackResponseSchema,
+    EmployerFeedbackSignalItem,
     EmployerProfileCreateSchema,
     EmployerProfileResponseSchema
 )
 from app.services.ml_adapter import MLAdapter, get_ml_adapter
 from app.services.employer_service import EmployerService
-from app.auth.rbac import require_role, get_current_user, CurrentUser
+from app.auth.rbac import require_role, get_current_user, CurrentUser, get_current_employer
 
 router = APIRouter()
 
@@ -45,17 +46,9 @@ def create_or_update_employer_profile(
     summary="Retrieve current authenticated employer profile"
 )
 def get_current_employer_profile(
-    db: Session = Depends(get_db),
-    _user: CurrentUser = Depends(require_role(["Employer", "Admin"]))
+    current_employer: Employer = Depends(get_current_employer)
 ):
-    actual_db = next(db) if hasattr(db, "__next__") else db
-    employer = EmployerService.get_employer_by_user_id(actual_db, _user.user_id)
-    if not employer:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Employer profile not found for user {_user.user_id}."
-        )
-    return employer
+    return current_employer
 
 
 @router.get(
@@ -89,14 +82,13 @@ def submit_employer_feedback(
     feedback_in: EmployerFeedbackCreateSchema,
     db: Session = Depends(get_db),
     ml_adapter: MLAdapter = Depends(get_ml_adapter),
-    _user: CurrentUser = Depends(require_role(["Employer", "Admin"]))
+    current_employer: Employer = Depends(get_current_employer)
 ) -> EmployerFeedbackResponseSchema:
     actual_db = next(db) if hasattr(db, "__next__") else db
     actual_adapter = ml_adapter if not hasattr(ml_adapter, "dependency") else get_ml_adapter()
-    if _user and getattr(_user, "role", "").lower() == "employer":
-        employer = EmployerService.get_employer_by_user_id(actual_db, _user.user_id)
-        if employer:
-            feedback_in.employer_id = employer.id
+    # Authoritatively assign employer.id from the authenticated employer profile
+    # Never accept arbitrary client employer_id or confuse user_id with employer_id
+    feedback_in.employer_id = current_employer.id
     return EmployerService.submit_feedback(db=actual_db, feedback_in=feedback_in, ml_adapter=actual_adapter)
 
 
@@ -118,15 +110,35 @@ def list_employer_feedback(
     else:
         feedbacks = []
 
-    return [
-        EmployerFeedbackResponseSchema(
-            id=fb.id,
-            employer_id=fb.employer_id,
-            course_id=fb.course_id,
-            comments=fb.comments,
-            rating=fb.rating,
-            detected_signals=[],
-            created_at=fb.created_at
+    res: List[EmployerFeedbackResponseSchema] = []
+    for fb in feedbacks:
+        sigs = getattr(fb, "signals", None)
+        if sigs is None and hasattr(actual_db, "query"):
+            sigs = actual_db.query(EmployerFeedbackSignal).filter(EmployerFeedbackSignal.feedback_id == fb.id).all()
+
+        signal_items: List[EmployerFeedbackSignalItem] = []
+        if sigs:
+            for s in sigs:
+                signal_items.append(
+                    EmployerFeedbackSignalItem(
+                        id=s.id,
+                        skill_id=s.skill_id,
+                        confidence_score=s.confidence_score,
+                        trust_weight=s.trust_weight,
+                        weighted_signal=s.weighted_signal,
+                    )
+                )
+
+        res.append(
+            EmployerFeedbackResponseSchema(
+                id=fb.id,
+                employer_id=fb.employer_id,
+                course_id=fb.course_id,
+                comments=fb.comments,
+                rating=fb.rating,
+                signals=signal_items,
+                detected_signals=signal_items,
+                created_at=fb.created_at
+            )
         )
-        for fb in feedbacks
-    ]
+    return res

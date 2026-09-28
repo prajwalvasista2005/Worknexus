@@ -53,23 +53,28 @@ class AuthService:
         )
 
         db.add(user)
+        db.flush()
+
+        user_role_str = (user.role or "").strip().lower()
+        if user_role_str == "employer":
+            from app.models.employers import Employer
+            company_name = user.full_name or "Enterprise Partner"
+            employer = Employer(
+                user_id=user.id,
+                company_name=company_name,
+                trust_weight=1.0,
+            )
+            db.add(employer)
+        elif user_role_str == "student":
+            from app.models.student_roles import StudentProfile
+            profile = StudentProfile(
+                user_id=user.id,
+                target_role_id="ROLE_FULL_STACK_DEV"
+            )
+            db.add(profile)
+
         db.commit()
         db.refresh(user)
-
-        if user.role.lower() == "student":
-            try:
-                from app.models.student_roles import StudentProfile
-                existing_p = db.query(StudentProfile).filter(StudentProfile.user_id == user.id).first()
-                if not existing_p:
-                    profile = StudentProfile(
-                        user_id=user.id,
-                        target_role_id="ROLE_FULL_STACK_DEV"
-                    )
-                    db.add(profile)
-                    db.commit()
-            except Exception:
-                pass
-
         return user
 
     @staticmethod

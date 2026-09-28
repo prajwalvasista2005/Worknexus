@@ -18,7 +18,7 @@ import { CircularProgress } from '../components/ui/CircularProgress';
 import { EmptyState } from '../components/ui/EmptyState';
 import { CardSkeleton, Skeleton } from '../components/ui/Skeleton';
 import { Alert } from '../components/ui/Alert';
-import { formatPercentage, formatDate } from '../utils/formatters';
+import { formatPercentage, formatDate, normalizeExternalUrl } from '../utils/formatters';
 import {
   Target,
   BookOpen,
@@ -1024,7 +1024,7 @@ export const StudentPortal: React.FC = () => {
 
                         {item.metadata?.repo && (
                           <a
-                            href={item.metadata.repo}
+                            href={normalizeExternalUrl(item.metadata.repo)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="mt-1 inline-flex items-center gap-1 text-xs text-indigo-600 hover:underline truncate max-w-sm"

@@ -15,8 +15,23 @@ class JobService:
 
         emp_id = job_in.employer_id
         if emp_id is not None:
+            # 1. Check if emp_id matches an existing Employer by primary key
             emp = EmployerService.get_employer_by_id(db, emp_id)
             if not emp:
+                # 2. Check if emp_id is actually a user_id
+                emp = EmployerService.get_employer_by_user_id(db, emp_id)
+            if not emp:
+                # 3. Defensive recovery: Try to auto-provision employer profile for this user
+                emp = EmployerService.get_or_create_employer_by_user_id(
+                    db,
+                    user_id=emp_id,
+                    company_name=job_in.company
+                )
+
+            if emp:
+                emp_id = emp.id
+                job_in.employer_id = emp.id
+            else:
                 raise HTTPException(
                     status_code=404,
                     detail=f"Employer with ID {emp_id} does not exist in employers table."
@@ -89,5 +104,7 @@ class JobService:
             description=job.description,
             employer_id=job.employer_id,
             extracted_skills=extracted_items,
+            confidence_scores={s.skill_id: s.confidence_score for s in extracted_items} if extracted_items else None,
+            skills=[s.skill_id for s in extracted_items] if extracted_items else None,
             created_at=job.created_at
         )

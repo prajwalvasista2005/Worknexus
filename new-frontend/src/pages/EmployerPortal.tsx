@@ -163,10 +163,22 @@ export const EmployerPortal: React.FC = () => {
     }
   }, []);
 
+  const fetchProfile = useCallback(async () => {
+    try {
+      const prof = await employersApi.getProfile();
+      if (prof?.company_name) {
+        setCompanyName((prev) => prev || prof.company_name);
+      }
+    } catch {
+      // optional
+    }
+  }, []);
+
   useEffect(() => {
+    fetchProfile();
     fetchJobsList();
     fetchFeedbackList();
-  }, [fetchJobsList, fetchFeedbackList]);
+  }, [fetchProfile, fetchJobsList, fetchFeedbackList]);
 
   const handleDeleteJob = async (jobId: string | number) => {
     try {
@@ -509,7 +521,8 @@ export const EmployerPortal: React.FC = () => {
 
                     {submittedJobResult.extracted_skills && submittedJobResult.extracted_skills.length > 0 ? (
                       <div className="flex flex-wrap gap-1.5">
-                        {submittedJobResult.extracted_skills.map((skill, sIdx) => {
+                        {submittedJobResult.extracted_skills.map((skill, sIdx) => 
+                        {
                           const skillLabel = (() => {
                             if (typeof skill === 'string') return skill;
 

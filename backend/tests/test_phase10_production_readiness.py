@@ -13,12 +13,26 @@ class TestPhase10ProductionReadiness(unittest.TestCase):
     def setUpClass(cls):
         cls.client = TestClient(app)
         from app.db.session import SessionLocal, _global_session
-        from app.models.entities import Employer
+        from app.models.entities import Employer, User
         with SessionLocal() as db:
+            user = db.query(User).filter(User.id == 42).first()
+            if not user:
+                user = User(id=42, email="enterprise42@worknexus.io", hashed_password="fake", role="Employer", full_name="Enterprise Recruiter")
+                db.add(user)
+                db.commit()
             emp = db.query(Employer).filter(Employer.id == 42).first()
             if not emp:
                 db.add(Employer(id=42, company_name="Enterprise Cloud", user_id=42, trust_weight=1.0))
                 db.commit()
+            try:
+                from sqlalchemy import text
+                db.execute(text("SELECT setval(pg_get_serial_sequence('users', 'id'), (SELECT COALESCE(MAX(id), 1) FROM users));"))
+                db.execute(text("SELECT setval(pg_get_serial_sequence('employers', 'id'), (SELECT COALESCE(MAX(id), 1) FROM employers));"))
+                db.commit()
+            except Exception:
+                pass
+        if 42 not in _global_session.users:
+            _global_session.add(User(id=42, email="enterprise42@worknexus.io", hashed_password="fake", role="Employer", full_name="Enterprise Recruiter"))
         if 42 not in _global_session.employers:
             _global_session.add(Employer(id=42, company_name="Enterprise Cloud", user_id=42, trust_weight=1.0))
 

@@ -421,7 +421,13 @@ def seed_portal_accounts(db) -> Dict[str, int]:
                     elif existing_emp.user_id is None:
                         existing_emp.user_id = user.id
             else:
-                if u["role"].lower() == "employer":
+                user.hashed_password = hash_password("SecurePassword123!")
+                user.is_active = True
+                if u["role"].lower() == "student":
+                    existing_p = db.query(SqlStudentProfile).filter(SqlStudentProfile.user_id == user.id).first()
+                    if not existing_p:
+                        db.add(SqlStudentProfile(user_id=user.id, target_role_id="ROLE_FULL_STACK_DEV"))
+                elif u["role"].lower() == "employer":
                     existing_emp = db.query(SqlEmployer).filter(
                         (SqlEmployer.user_id == user.id) | (SqlEmployer.company_name == "NexusTech Labs")
                     ).first()
@@ -434,6 +440,43 @@ def seed_portal_accounts(db) -> Dict[str, int]:
     return {"portal_users_seeded": seeded}
 
 
+def verify_and_heal_profiles(db) -> Dict[str, Any]:
+    """
+    Ensure all users in the database have their appropriate profile records linked,
+    preventing any runtime foreign key or missing-profile failures.
+    """
+    if _is_mock(db):
+        from ..services.employer_service import EmployerService
+        emp_res = EmployerService.verify_employer_profiles(db)
+        return {"profiles_healed": 0, "healed_employers": emp_res.get("healed_employers", 0)}
+
+    healed_students = 0
+    healed_employers = 0
+
+    try:
+        # 1. Heal Students
+        students = db.query(SqlUser).filter(SqlUser.role.ilike("student")).all()
+        for s in students:
+            profile = db.query(SqlStudentProfile).filter(SqlStudentProfile.user_id == s.id).first()
+            if not profile:
+                db.add(SqlStudentProfile(user_id=s.id, target_role_id="ROLE_FULL_STACK_DEV"))
+                healed_students += 1
+        db.commit()
+
+        # 2. Heal Employers with canonical EmployerService audit
+        from ..services.employer_service import EmployerService
+        emp_audit = EmployerService.verify_employer_profiles(db)
+        healed_employers = emp_audit.get("healed_employers", 0)
+
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning(f"Error during profile verification and healing: {e}")
+        if hasattr(db, "rollback"):
+            db.rollback()
+
+    return {"healed_students": healed_students, "healed_employers": healed_employers}
+
+
 def seed_all(db) -> Dict[str, Any]:
     """
     Seed all canonical skills, benchmark roles, courses, demo student profiles, benchmark employer, and demo portal accounts.
@@ -444,12 +487,14 @@ def seed_all(db) -> Dict[str, Any]:
     courses_res = seed_canonical_courses(db)
     students_res = seed_demo_students(db)
     portal_res = seed_portal_accounts(db)
+    heal_res = verify_and_heal_profiles(db)
     return {
         "employers_seeded": emp_res,
         "skills_seeded": skills_count,
         **roles_res,
         **courses_res,
         **students_res,
-        **portal_res
+        **portal_res,
+        **heal_res
     }
 

@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session
 
 from app.db.dependencies import get_db
 from app.models.job_postings import JobPosting
-from app.schemas.schemas import JobCreateSchema, JobResponseSchema
+from app.models.jobSkill import JobSkill
+from app.schemas.schemas import JobCreateSchema, JobResponseSchema, SkillExtractionItem
 from app.services.ml_adapter import MLAdapter, get_ml_adapter
 from app.services.job_service import JobService
 from app.services.job_posting_service import JobPostingService
@@ -35,20 +36,27 @@ def create_job_posting(
         # Resolve the authenticated employer user to their Employer profile record
         employer = EmployerService.get_employer_by_user_id(actual_db, _user.user_id)
         if not employer:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Employer profile not found for user {_user.user_id}. Please create an employer profile before posting jobs."
+            # Auto-provision/heal missing employer profile so job creation never fails
+            employer = EmployerService.get_or_create_employer_by_user_id(
+                actual_db,
+                user_id=_user.user_id,
+                company_name=job_in.company or getattr(_user, "full_name", None)
             )
         # Authoritatively assign employer.id (never write _user.user_id directly)
-        job_in.employer_id = employer.id
+        job_in.employer_id = employer.id if employer else None
     elif user_role == "admin":
         if job_in.employer_id is not None:
             employer = EmployerService.get_employer_by_id(actual_db, job_in.employer_id)
             if not employer:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail=f"Employer with ID {job_in.employer_id} not found."
+                employer = EmployerService.get_employer_by_user_id(actual_db, job_in.employer_id)
+            if not employer:
+                employer = EmployerService.get_or_create_employer_by_user_id(
+                    actual_db,
+                    user_id=job_in.employer_id,
+                    company_name=job_in.company
                 )
+            if employer:
+                job_in.employer_id = employer.id
 
     return JobService.create_job(db=actual_db, job_in=job_in, ml_adapter=actual_adapter)
 
@@ -71,19 +79,40 @@ def list_job_postings(
     else:
         postings = []
 
-    return [
-        JobResponseSchema(
-            id=p.id,
-            title=p.title,
-            company=getattr(p, "company", getattr(p, "company_name", "")),
-            location=p.location or "Remote",
-            description=p.description,
-            employer_id=getattr(p, "employer_id", None),
-            extracted_skills=[],
-            created_at=p.created_at
+    res: List[JobResponseSchema] = []
+    for p in postings:
+        job_skills = getattr(p, "job_skills", None)
+        extracted: List[SkillExtractionItem] = []
+        conf_scores = {}
+        if job_skills:
+            for js in job_skills:
+                sk_id = js.skill_id
+                conf = float(js.confidence_score) if js.confidence_score is not None else 1.0
+                extracted.append(SkillExtractionItem(skill_id=sk_id, confidence_score=conf))
+                conf_scores[sk_id] = conf
+        elif hasattr(actual_db, "query"):
+            js_rows = actual_db.query(JobSkill).filter(JobSkill.job_id == p.id).all()
+            for js in js_rows:
+                sk_id = js.skill_id
+                conf = float(js.confidence_score) if js.confidence_score is not None else 1.0
+                extracted.append(SkillExtractionItem(skill_id=sk_id, confidence_score=conf))
+                conf_scores[sk_id] = conf
+
+        res.append(
+            JobResponseSchema(
+                id=p.id,
+                title=p.title,
+                company=getattr(p, "company", getattr(p, "company_name", "")),
+                location=p.location or "Remote",
+                description=p.description,
+                employer_id=getattr(p, "employer_id", None),
+                extracted_skills=extracted,
+                confidence_scores=conf_scores if conf_scores else None,
+                skills=[s.skill_id for s in extracted] if extracted else None,
+                created_at=p.created_at
+            )
         )
-        for p in postings
-    ]
+    return res
 
 
 @router.get(
@@ -102,6 +131,24 @@ def get_job_posting_by_id(
     job = JobPostingService.get_job_posting(db=actual_db, job_id=job_id)
     if not job:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job posting not found")
+
+    job_skills = getattr(job, "job_skills", None)
+    extracted: List[SkillExtractionItem] = []
+    conf_scores = {}
+    if job_skills:
+        for js in job_skills:
+            sk_id = js.skill_id
+            conf = float(js.confidence_score) if js.confidence_score is not None else 1.0
+            extracted.append(SkillExtractionItem(skill_id=sk_id, confidence_score=conf))
+            conf_scores[sk_id] = conf
+    elif hasattr(actual_db, "query"):
+        js_rows = actual_db.query(JobSkill).filter(JobSkill.job_id == job.id).all()
+        for js in js_rows:
+            sk_id = js.skill_id
+            conf = float(js.confidence_score) if js.confidence_score is not None else 1.0
+            extracted.append(SkillExtractionItem(skill_id=sk_id, confidence_score=conf))
+            conf_scores[sk_id] = conf
+
     return JobResponseSchema(
         id=job.id,
         title=job.title,
@@ -109,7 +156,9 @@ def get_job_posting_by_id(
         location=job.location or "Remote",
         description=job.description,
         employer_id=getattr(job, "employer_id", None),
-        extracted_skills=[],
+        extracted_skills=extracted,
+        confidence_scores=conf_scores if conf_scores else None,
+        skills=[s.skill_id for s in extracted] if extracted else None,
         created_at=job.created_at
     )
 

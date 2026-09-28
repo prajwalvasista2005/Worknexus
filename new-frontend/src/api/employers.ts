@@ -1,5 +1,5 @@
 import { apiClient } from './client';
-import { EmployerFeedback, EmployerFeedbackCreate } from '../types';
+import { EmployerFeedback, EmployerFeedbackCreate, EmployerProfile, EmployerProfileCreate } from '../types';
 
 export const employersApi = {
   /**
@@ -18,5 +18,29 @@ export const employersApi = {
    */
   async getFeedback(): Promise<EmployerFeedback[]> {
     return apiClient.get<EmployerFeedback[]>('/api/v1/employers/feedback');
+  },
+
+  /**
+   * Retrieve current authenticated employer profile
+   * GET /api/v1/employers/profile
+   */
+  async getProfile(): Promise<EmployerProfile> {
+    return apiClient.get<EmployerProfile>('/api/v1/employers/profile');
+  },
+
+  /**
+   * Create or update current authenticated employer profile
+   * POST /api/v1/employers/profile
+   */
+  async createOrUpdateProfile(profile: EmployerProfileCreate): Promise<EmployerProfile> {
+    return apiClient.post<EmployerProfile>('/api/v1/employers/profile', profile);
+  },
+
+  /**
+   * Retrieve employer profile by user ID
+   * GET /api/v1/employers/{user_id}/profile
+   */
+  async getProfileByUserId(userId: number | string): Promise<EmployerProfile> {
+    return apiClient.get<EmployerProfile>(`/api/v1/employers/${userId}/profile`);
   },
 };

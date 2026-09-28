@@ -32,26 +32,12 @@ def create_app() -> FastAPI:
         from .models import users, skills, courses, course_skills, job_postings, jobSkill, refresh_tokens, user_skills, student_roles, employers
         Base.metadata.create_all(bind=engine)
 
-        # Ensure user_id column exists on employers table for existing databases
-        from sqlalchemy import text
-        with engine.connect() as conn:
-            try:
-                if engine.dialect.name == "sqlite":
-                    cols = [row[1] for row in conn.execute(text("PRAGMA table_info(employers)")).fetchall()]
-                    if cols and "user_id" not in cols:
-                        conn.execute(text("ALTER TABLE employers ADD COLUMN user_id INTEGER REFERENCES users(id) ON DELETE CASCADE"))
-                        conn.commit()
-                elif engine.dialect.name == "postgresql":
-                    cols = [row[0] for row in conn.execute(text("SELECT column_name FROM information_schema.columns WHERE table_name = 'employers'")).fetchall()]
-                    if cols and "user_id" not in cols:
-                        conn.execute(text("ALTER TABLE employers ADD COLUMN user_id INTEGER REFERENCES users(id) ON DELETE CASCADE"))
-                        conn.commit()
-            except Exception:
-                pass
-
-        # Idempotent seed check for production / dev PostgreSQL database
-        from .db.seed import seed_all
+        # Startup audit and self-healing validation for employer profiles
+        from .services.employer_service import EmployerService
         with SessionLocal() as db_session:
+            EmployerService.verify_employer_profiles(db_session)
+            # Idempotent seed check for production / dev PostgreSQL database
+            from .db.seed import seed_all
             seed_all(db_session)
     except Exception as e:
         import logging
@@ -59,16 +45,55 @@ def create_app() -> FastAPI:
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[
-            "http://localhost:3000",
-            "http://localhost:5173",
-            "http://127.0.0.1:3000",
-            "http://127.0.0.1:5173",
-        ],
+        allow_origins=settings.CORS_ORIGINS,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    # Global Exception Handlers
+    from fastapi.responses import JSONResponse
+    from fastapi.exceptions import RequestValidationError
+    from starlette.exceptions import HTTPException as StarletteHTTPException
+    import logging
+
+    logger = logging.getLogger("worknexus")
+
+    def _cors_headers(request):
+        origin = request.headers.get("origin")
+        allowed = origin if (origin and (origin in settings.CORS_ORIGINS or "*" in settings.CORS_ORIGINS)) else (origin or "*")
+        return {
+            "Access-Control-Allow-Origin": allowed,
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        }
+
+    @app.exception_handler(StarletteHTTPException)
+    async def http_exception_handler(request, exc):
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"detail": exc.detail},
+            headers=_cors_headers(request),
+        )
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(request, exc):
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content={"detail": exc.errors()},
+            headers=_cors_headers(request),
+        )
+
+    @app.exception_handler(Exception)
+    async def global_exception_handler(request, exc):
+        logger.error(f"Unhandled exception on {request.method} {request.url.path}: {exc}", exc_info=True)
+        detail_msg = str(exc) if exc and str(exc) else "Internal server error. Please try again later."
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"detail": detail_msg},
+            headers=_cors_headers(request),
+        )
 
     # Core Authentication & CRUD Routers (available at both root and /api/v1 for compatibility)
     for prefix in ["", settings.API_V1_STR]:

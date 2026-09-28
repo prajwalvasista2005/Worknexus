@@ -22,26 +22,38 @@ class Settings:
     _db_name = os.getenv("DB_NAME", "SkillSync")
 
     _raw_url = os.getenv("DATABASE_URL")
-    _target_host = _db_host
-    if _raw_url:
+
+    _can_resolve_raw = False
+    if _raw_url and ":password@db" not in _raw_url:
         try:
             parsed = urllib.parse.urlparse(_raw_url)
-            if parsed.hostname:
-                _target_host = parsed.hostname
+            raw_host = parsed.hostname
+            if raw_host in ("localhost", "127.0.0.1"):
+                _can_resolve_raw = True
+            elif raw_host == "db" and not Path("/.dockerenv").exists():
+                _can_resolve_raw = False
+            elif raw_host:
+                import socket
+                socket.gethostbyname(raw_host)
+                _can_resolve_raw = True
         except Exception:
-            pass
+            _can_resolve_raw = False
 
-    _can_resolve_host = True
-    if _target_host and _target_host not in ("localhost", "127.0.0.1"):
-        try:
-            import socket
-            socket.gethostbyname(_target_host)
-        except Exception:
-            _can_resolve_host = False
+    _can_resolve_db_host = False
+    if _db_host:
+        if _db_host in ("localhost", "127.0.0.1"):
+            _can_resolve_db_host = True
+        else:
+            try:
+                import socket
+                socket.gethostbyname(_db_host)
+                _can_resolve_db_host = True
+            except Exception:
+                _can_resolve_db_host = False
 
-    if _raw_url and ":password@db" not in _raw_url and _can_resolve_host:
+    if _can_resolve_raw:
         DATABASE_URL = _raw_url
-    elif _db_user and _db_pass and _can_resolve_host:
+    elif _db_user and _db_pass and _can_resolve_db_host:
         _encoded_pass = urllib.parse.quote_plus(_db_pass)
         DATABASE_URL = f"postgresql://{_db_user}:{_encoded_pass}@{_db_host}:{_db_port}/{_db_name}"
     else:
@@ -57,5 +69,13 @@ class Settings:
     REFRESH_TOKEN_EXPIRE_DAYS: int = int(
         os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "7")
     )
+
+    _custom_cors = [x.strip() for x in os.getenv("CORS_ORIGINS", "").split(",") if x.strip()]
+    CORS_ORIGINS: list[str] = list(set([
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173",
+    ] + _custom_cors))
 
 settings = Settings()

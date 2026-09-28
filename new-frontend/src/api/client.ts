@@ -15,6 +15,13 @@ export const getApiBaseUrl = (): string => {
   if (envUrl && typeof envUrl === 'string' && envUrl.trim().length > 0) {
     return envUrl.replace(/\/+$/, '');
   }
+  if (
+    typeof window !== 'undefined' &&
+    window.location.hostname !== 'localhost' &&
+    window.location.hostname !== '127.0.0.1'
+  ) {
+    return window.location.origin;
+  }
   return 'http://localhost:8000';
 };
 
@@ -149,11 +156,26 @@ export async function request<T>(endpoint: string, options: RequestOptions = {})
       headers,
     });
   } catch (netErr) {
-    throw new ApiError(
-      `Unable to reach backend at ${baseUrl}. Please verify the server is running.`,
-      0,
-      netErr
-    );
+    // If fetch failed, determine if backend is truly unreachable or if it rejected with a 500/CORS error
+    try {
+      await fetch(`${baseUrl}/docs`, { method: 'HEAD', mode: 'no-cors' });
+      // If we reach here, backend IS running and reachable!
+      const netMsg = netErr instanceof Error ? netErr.message : 'Network error';
+      throw new ApiError(
+        `Server error: ${netMsg}. Backend is reachable at ${baseUrl} but the request could not be completed.`,
+        500,
+        netErr
+      );
+    } catch (checkErr) {
+      if (checkErr instanceof ApiError) {
+        throw checkErr;
+      }
+      throw new ApiError(
+        `Unable to reach backend at ${baseUrl}. Please verify the server is running.`,
+        0,
+        netErr
+      );
+    }
   }
 
   // Intercept 401 Unauthorized for refresh token handling
@@ -196,13 +218,13 @@ export async function request<T>(endpoint: string, options: RequestOptions = {})
   // Handle other error responses
   if (!response.ok) {
     let errorData: unknown = null;
-    let errorMessage = `HTTP Error ${response.status}`;
+    let errorMessage = `Server error (HTTP ${response.status})`;
     try {
       errorData = await response.json();
       errorMessage = parseFastApiError(errorData, errorMessage);
     } catch {
       // Failed to parse JSON error, fall back to status text
-      errorMessage = response.statusText || errorMessage;
+      errorMessage = response.statusText ? `HTTP ${response.status}: ${response.statusText}` : errorMessage;
     }
 
     throw new ApiError(errorMessage, response.status, errorData);

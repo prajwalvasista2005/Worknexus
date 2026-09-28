@@ -69,11 +69,13 @@ class JobResponseSchema(BaseModel):
     description: str
     employer_id: Optional[int] = None
     extracted_skills: List[SkillExtractionItem] = Field(default_factory=list)
+    confidence_scores: Optional[Dict[str, float]] = None
+    skills: Optional[List[str]] = None
     created_at: Optional[datetime] = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class EmployerFeedbackCreateSchema(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, from_attributes=True)
-    employer_id: Optional[int] = 1
+    employer_id: Optional[int] = None
     comments: Optional[str] = None
     feedback_text: Optional[str] = None
     course_id: Optional[int] = None

@@ -310,7 +310,19 @@ export interface EmployerFeedbackCreate {
   comments: string;
   course_id?: number;
   rating?: number;
-  employer_id?: number;
+}
+
+export interface EmployerProfile {
+  id: number;
+  company_name: string;
+  trust_weight: number;
+  user_id?: number | null;
+  created_at?: string;
+}
+
+export interface EmployerProfileCreate {
+  company_name: string;
+  trust_weight?: number;
 }
 
 export interface Recommendation {

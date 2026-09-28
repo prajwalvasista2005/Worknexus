@@ -75,3 +75,50 @@ def require_role(allowed_roles: List[str]):
         return user
     return role_checker
 
+
+def get_current_employer(
+    current_user: CurrentUser = Depends(get_current_user),
+):
+    """
+    Helper dependency that:
+    1. Authenticates current user context.
+    2. Verifies employer or admin role.
+    3. Loads employer profile via user_id.
+    4. Auto-heals missing employer profile if needed.
+    5. Returns authoritative employer entity.
+    Never uses current_user.id as employer_id.
+    """
+    from ..db.dependencies import get_db
+    from ..services.employer_service import EmployerService
+
+    role = (current_user.role or "").strip().lower()
+    if role not in ["employer", "admin"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"User role '{current_user.role}' not permitted to perform employer operations. Required: Employer or Admin."
+        )
+
+    db_gen = get_db()
+    db = next(db_gen) if hasattr(db_gen, "__next__") else db_gen
+    try:
+        employer = EmployerService.get_employer_by_user_id(db, current_user.user_id)
+        if not employer:
+            employer = EmployerService.get_or_create_employer_by_user_id(
+                db,
+                user_id=current_user.user_id,
+            )
+
+        if not employer:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Employer profile not found for user {current_user.user_id}."
+            )
+        return employer
+    finally:
+        if hasattr(db_gen, "close"):
+            try:
+                db_gen.close()
+            except Exception:
+                pass
+
+

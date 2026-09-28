@@ -111,3 +111,14 @@ export function getRoleDisplayName(role?: string | null): string {
       return role;
   }
 }
+
+/**
+ * Safely format an external URL (ensures protocol prefix so browser doesn't treat as relative localhost URL)
+ */
+export function normalizeExternalUrl(url?: string | null): string {
+  if (!url || typeof url !== 'string') return '#';
+  const trimmed = url.trim();
+  if (!trimmed) return '#';
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+}

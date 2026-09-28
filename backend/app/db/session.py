@@ -62,6 +62,8 @@ class MockDatabaseSession:
         self.student_profiles: Dict[int, Any] = {}
         self.student_skill_evidence: List[Any] = []
 
+        self._user_id_counter = 1
+        self._employer_id_counter = 1
         self._job_id_counter = 1
         self._fb_id_counter = 1
         self._signal_id_counter = 1
@@ -73,6 +75,9 @@ class MockDatabaseSession:
     def add(self, entity: Any):
         name = type(entity).__name__
         if name == "User":
+            if not getattr(entity, "id", None):
+                entity.id = self._user_id_counter
+                self._user_id_counter += 1
             self.users[entity.id] = entity
         elif name == "Skill":
             sk_id = getattr(entity, "skill_id", getattr(entity, "id", None))
@@ -82,6 +87,9 @@ class MockDatabaseSession:
         elif name == "CourseSkill":
             self.course_skills.append(entity)
         elif name == "Employer":
+            if not getattr(entity, "id", None):
+                entity.id = self._employer_id_counter
+                self._employer_id_counter += 1
             self.employers[entity.id] = entity
         elif name == "JobPosting":
             if not getattr(entity, "id", None):
