@@ -3,9 +3,12 @@ import os
 import urllib.parse
 from pathlib import Path
 
+_root_env_path = Path(__file__).resolve().parent.parent.parent / ".env"
 _env_path = Path(__file__).resolve().parent.parent / ".env"
+if _root_env_path.exists():
+    load_dotenv(dotenv_path=_root_env_path)
 if _env_path.exists():
-    load_dotenv(dotenv_path=_env_path)
+    load_dotenv(dotenv_path=_env_path, override=True)
 else:
     load_dotenv()
 
@@ -15,11 +18,11 @@ class Settings:
 
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
 
-    _db_user = os.getenv("DB_USER")
-    _db_pass = os.getenv("DB_PASSWORD")
+    _db_user = os.getenv("DB_USER") or os.getenv("POSTGRES_USER")
+    _db_pass = os.getenv("DB_PASSWORD") or os.getenv("POSTGRES_PASSWORD")
     _db_host = os.getenv("DB_HOST", "localhost")
     _db_port = os.getenv("DB_PORT", "5432")
-    _db_name = os.getenv("DB_NAME", "SkillSync")
+    _db_name = os.getenv("DB_NAME") or os.getenv("POSTGRES_DB", "SkillSync")
 
     _raw_url = os.getenv("DATABASE_URL")
 
@@ -54,8 +57,9 @@ class Settings:
     if _can_resolve_raw:
         DATABASE_URL = _raw_url
     elif _db_user and _db_pass and _can_resolve_db_host:
+        _encoded_user = urllib.parse.quote_plus(_db_user)
         _encoded_pass = urllib.parse.quote_plus(_db_pass)
-        DATABASE_URL = f"postgresql://{_db_user}:{_encoded_pass}@{_db_host}:{_db_port}/{_db_name}"
+        DATABASE_URL = f"postgresql://{_encoded_user}:{_encoded_pass}@{_db_host}:{_db_port}/{_db_name}"
     else:
         DATABASE_URL = "sqlite:///./test.db"
 

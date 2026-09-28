@@ -1,10 +1,11 @@
+import os
 import psycopg2
 
 try:
     conn = psycopg2.connect(
         dbname="SkillSync",
         user="postgres",
-        password="prajwal@123",
+        password=os.getenv("DB_PASSWORD", os.getenv("POSTGRES_PASSWORD", "")),
         host="localhost",
         port="5432"
     )

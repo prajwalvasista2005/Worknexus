@@ -1,6 +1,8 @@
+import os
 import psycopg2
 
-conn = psycopg2.connect(dbname="SkillSync", user="postgres", password="prajwal@123", host="localhost", port="5432")
+password = os.getenv("DB_PASSWORD", os.getenv("POSTGRES_PASSWORD", ""))
+conn = psycopg2.connect(dbname="SkillSync", user="postgres", password=password, host="localhost", port="5432")
 cur = conn.cursor()
 cur.execute("SELECT * FROM alembic_version")
 print("alembic_version:", cur.fetchall())
