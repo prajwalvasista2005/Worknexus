@@ -293,7 +293,7 @@ def test_postgres_migration_002_succeeds_and_enforces_fk_and_unique_index():
 
             # 2. Assert PostgreSQL UNIQUE constraint on user_id
             with pytest.raises(IntegrityError):
-                with conn.begin():
+                with conn.begin_nested():
                     conn.execute(text(f"""
                         INSERT INTO {schema_name}.employers (id, user_id, company_name)
                         VALUES (2, 10, 'Duplicate Employer User')
@@ -301,7 +301,7 @@ def test_postgres_migration_002_succeeds_and_enforces_fk_and_unique_index():
 
             # 3. Assert PostgreSQL FOREIGN KEY constraint referencing users(id)
             with pytest.raises(IntegrityError):
-                with conn.begin():
+                with conn.begin_nested():
                     conn.execute(text(f"""
                         INSERT INTO {schema_name}.employers (id, user_id, company_name)
                         VALUES (3, 999999, 'Nonexistent User')

@@ -18,6 +18,22 @@ if [[ -f "${REPO_ROOT}/.env" ]]; then
   set +a
 fi
 
+# Prioritize virtual environment if present
+if [[ -d "${REPO_ROOT}/backend/venv/Scripts" ]]; then
+  export PATH="${REPO_ROOT}/backend/venv/Scripts:${PATH}"
+elif [[ -d "${REPO_ROOT}/backend/venv/bin" ]]; then
+  export PATH="${REPO_ROOT}/backend/venv/bin:${PATH}"
+elif [[ -d "${REPO_ROOT}/venv/Scripts" ]]; then
+  export PATH="${REPO_ROOT}/venv/Scripts:${PATH}"
+elif [[ -d "${REPO_ROOT}/venv/bin" ]]; then
+  export PATH="${REPO_ROOT}/venv/bin:${PATH}"
+fi
+
+PYTHON_BIN="python3"
+if command -v python >/dev/null 2>&1 && python -c "import sys" >/dev/null 2>&1; then
+  PYTHON_BIN="python"
+fi
+
 DB_USER="${POSTGRES_USER:-${DB_USER:-postgres}}"
 DB_PASS="${POSTGRES_PASSWORD:-${DB_PASSWORD:-}}"
 SOURCE_DB="${POSTGRES_DB:-${DB_NAME:-SkillSync}}"
@@ -94,13 +110,13 @@ done
 # Step c: Run alembic upgrade head against dryrun database
 echo "==> Step (c): Executing 'alembic upgrade head' against '${DRYRUN_DB}'..."
 ALEMBIC_CONFIG="${REPO_ROOT}/backend/alembic.ini"
-ENCODED_PASS=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1], safe=''))" "${DB_PASS}" 2>/dev/null || echo "${DB_PASS}")
+ENCODED_PASS=$(${PYTHON_BIN} -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1], safe=''))" "${DB_PASS}" 2>/dev/null || echo "${DB_PASS}")
 DRYRUN_URL="postgresql://${DB_USER}:${ENCODED_PASS}@${DB_HOST}:${DB_PORT}/${DRYRUN_DB}"
 
 # Execute alembic in backend dir
 (
   cd "${REPO_ROOT}/backend"
-  DATABASE_URL="${DRYRUN_URL}" PYTHONPATH="${REPO_ROOT}/backend:${REPO_ROOT}" alembic -c "${ALEMBIC_CONFIG}" upgrade head
+  DATABASE_URL="${DRYRUN_URL}" PYTHONPATH="${REPO_ROOT}/backend:${REPO_ROOT}" ${PYTHON_BIN} -m alembic -c "${ALEMBIC_CONFIG}" upgrade head
 )
 
 echo "==> Migration upgrade successful."
@@ -177,10 +193,10 @@ echo ""
 echo "--- 7. Orphaned Employer Feedback Signals Check ---"
 FEEDBACK_TABLE_EXISTS=$(run_sql "${DRYRUN_DB}" "SELECT 1 FROM information_schema.tables WHERE table_name = 'employer_feedback_signals';" || true)
 if [[ "${FEEDBACK_TABLE_EXISTS}" = "1" ]]; then
-  ORPHAN_SIGNALS=$(run_sql "${DRYRUN_DB}" "SELECT s.id, s.skill_id FROM employer_feedback_signals s LEFT JOIN skills sk ON s.skill_id = sk.id WHERE sk.id IS NULL;" || true)
+  ORPHAN_SIGNALS=$(run_sql "${DRYRUN_DB}" "SELECT s.id, s.skill_id FROM employer_feedback_signals s LEFT JOIN skills sk ON CAST(s.skill_id AS text) = CAST(sk.id AS text) WHERE sk.id IS NULL;" || true)
   if [[ -n "${ORPHAN_SIGNALS}" ]]; then
     echo "FAIL: Detected orphaned employer_feedback_signals:" >&2
-    run_sql_formatted "${DRYRUN_DB}" "SELECT s.id, s.skill_id FROM employer_feedback_signals s LEFT JOIN skills sk ON s.skill_id = sk.id WHERE sk.id IS NULL;" >&2
+    run_sql_formatted "${DRYRUN_DB}" "SELECT s.id, s.skill_id FROM employer_feedback_signals s LEFT JOIN skills sk ON CAST(s.skill_id AS text) = CAST(sk.id AS text) WHERE sk.id IS NULL;" >&2
     FAILED_CHECKS=$((FAILED_CHECKS + 1))
   else
     echo "PASS: No orphaned employer_feedback_signals detected."
@@ -204,8 +220,8 @@ echo ""
 echo "==> Step (e): Verifying reversibility (downgrade -1 followed by re-upgrade)..."
 (
   cd "${REPO_ROOT}/backend"
-  DATABASE_URL="${DRYRUN_URL}" PYTHONPATH="${REPO_ROOT}/backend:${REPO_ROOT}" alembic -c "${ALEMBIC_CONFIG}" downgrade -1
-  DATABASE_URL="${DRYRUN_URL}" PYTHONPATH="${REPO_ROOT}/backend:${REPO_ROOT}" alembic -c "${ALEMBIC_CONFIG}" upgrade head
+  DATABASE_URL="${DRYRUN_URL}" PYTHONPATH="${REPO_ROOT}/backend:${REPO_ROOT}" ${PYTHON_BIN} -m alembic -c "${ALEMBIC_CONFIG}" downgrade -1
+  DATABASE_URL="${DRYRUN_URL}" PYTHONPATH="${REPO_ROOT}/backend:${REPO_ROOT}" ${PYTHON_BIN} -m alembic -c "${ALEMBIC_CONFIG}" upgrade head
 )
 echo "==> Reversibility check passed."
 

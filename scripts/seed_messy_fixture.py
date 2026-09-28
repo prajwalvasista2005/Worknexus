@@ -48,6 +48,12 @@ def seed_fixture(mode: str = "messy"):
     with engine.begin() as conn:
         # Create core tables using RAW SQL at pre-002 state (never create_all)
         conn.execute(text("""
+            DROP TABLE IF EXISTS employer_feedback_signals CASCADE;
+            DROP TABLE IF EXISTS employer_feedback CASCADE;
+            DROP TABLE IF EXISTS refresh_tokens CASCADE;
+            DROP TABLE IF EXISTS user_skills CASCADE;
+            DROP TABLE IF EXISTS course_skills CASCADE;
+            DROP TABLE IF EXISTS courses CASCADE;
             DROP TABLE IF EXISTS student_skill_evidence CASCADE;
             DROP TABLE IF EXISTS student_profiles CASCADE;
             DROP TABLE IF EXISTS role_skills CASCADE;

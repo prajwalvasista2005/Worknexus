@@ -8,7 +8,7 @@ _env_path = Path(__file__).resolve().parent.parent / ".env"
 if _root_env_path.exists():
     load_dotenv(dotenv_path=_root_env_path)
 if _env_path.exists():
-    load_dotenv(dotenv_path=_env_path, override=True)
+    load_dotenv(dotenv_path=_env_path, override=False)
 else:
     load_dotenv()
 

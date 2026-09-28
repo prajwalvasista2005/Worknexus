@@ -14,11 +14,14 @@ from app.config import settings
 
 config = context.config
 
-# Override URL from config.py
-config.set_main_option(
-    "sqlalchemy.url",
-    settings.DATABASE_URL.replace("%", "%%")
-)
+# Override URL from environment or config.py if not already explicitly configured
+existing_url = config.get_main_option("sqlalchemy.url")
+if not existing_url or existing_url == "sqlite:///./worknexus.db":
+    effective_url = os.environ.get("DATABASE_URL") or settings.DATABASE_URL
+    config.set_main_option(
+        "sqlalchemy.url",
+        effective_url.replace("%", "%%")
+    )
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
