@@ -18,6 +18,9 @@ from .api import (
 )
 
 def create_app() -> FastAPI:
+    # 1. Enforce production cryptographic key security invariants
+    settings.validate_production_security()
+
     app = FastAPI(
         title=settings.PROJECT_NAME,
         version="1.0.0",

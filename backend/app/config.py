@@ -12,6 +12,21 @@ if _env_path.exists():
 else:
     load_dotenv()
 
+
+INSECURE_SECRET_KEYS = {
+    "default-dev-secret-key-replace-in-production",
+    "default-dev-refresh-secret-key-replace-in-production",
+    "secret",
+    "secretkey",
+    "changeme",
+    "password",
+    "insecure",
+    "testsecret",
+    "admin",
+    "123456",
+}
+
+
 class Settings:
     PROJECT_NAME: str = "WorkNexus / SkillMesh"
     API_V1_STR: str = "/api/v1"
@@ -63,7 +78,12 @@ class Settings:
     else:
         DATABASE_URL = "sqlite:///./test.db"
 
+    # Core Cryptographic & Token Configuration
     SECRET_KEY: str = os.getenv("SECRET_KEY", "default-dev-secret-key-replace-in-production")
+    REFRESH_SECRET_KEY: str = os.getenv(
+        "REFRESH_SECRET_KEY",
+        os.getenv("SECRET_KEY", "default-dev-refresh-secret-key-replace-in-production")
+    )
     ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(
@@ -81,5 +101,25 @@ class Settings:
         "http://127.0.0.1:3000",
         "http://127.0.0.1:5173",
     ] + _custom_cors))
+
+    def validate_production_security(self) -> None:
+        """
+        Enforce strict security validation for production environments:
+        Refuses to start if SECRET_KEY or REFRESH_SECRET_KEY are unset, empty,
+        shorter than 16 characters, or match known insecure defaults.
+        """
+        env = (self.ENVIRONMENT or "").strip().lower()
+        if env in ("production", "prod"):
+            if not self.SECRET_KEY or self.SECRET_KEY in INSECURE_SECRET_KEYS or len(self.SECRET_KEY) < 16:
+                raise RuntimeError(
+                    "FATAL SECURITY VIOLATION: Insecure or default SECRET_KEY detected in production environment. "
+                    "A secure, randomly generated SECRET_KEY (min 16 characters) must be configured."
+                )
+            if not self.REFRESH_SECRET_KEY or self.REFRESH_SECRET_KEY in INSECURE_SECRET_KEYS or len(self.REFRESH_SECRET_KEY) < 16:
+                raise RuntimeError(
+                    "FATAL SECURITY VIOLATION: Insecure or default REFRESH_SECRET_KEY detected in production environment. "
+                    "A secure, randomly generated REFRESH_SECRET_KEY (min 16 characters) must be configured."
+                )
+
 
 settings = Settings()
