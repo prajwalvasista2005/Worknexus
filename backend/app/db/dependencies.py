@@ -1,9 +1,6 @@
-from app.db.database import SessionLocal
+"""
+Database dependencies module for FastAPI dependency injection.
+"""
+from app.db.session import get_db, SessionLocal
 
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+__all__ = ["get_db", "SessionLocal"]

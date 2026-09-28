@@ -1,0 +1,1632 @@
+{
+  "metadata": {
+    "phase": "7C",
+    "pipeline": "personalized_skill_recommendation",
+    "student_gap_input": "C:/Users/Nehal Jois/Documents/SIH/ml/gap_student/student_skill_gaps.json",
+    "generic_recommendation_input": "C:/Users/Nehal Jois/Documents/SIH/ml/recommend/skill_recommendations.json",
+    "context_input": "C:/Users/Nehal Jois/Documents/SIH/ml/context/contextual_recommendations.json",
+    "evidence_input": "C:/Users/Nehal Jois/Documents/SIH/ml/evidence/multi_signal_evidence.json",
+    "taxonomy_version": "1",
+    "total_students": 5,
+    "total_role_skill_records": 26,
+    "total_personalized_recommendations": 8,
+    "total_already_present_skills": 15,
+    "total_not_recommended_missing_skills": 3,
+    "total_unavailable_context_skills": 7,
+    "scope_note": "Personalized skill recommendations for assigned student-role pairs based on validated skill gaps and multi-source evidence without scoring, rankings, or course assignments."
+  },
+  "students": [
+    {
+      "student_id": "STU_001",
+      "profile_name": "Synthetic Data Engineering Student",
+      "role": {
+        "role_id": "ROLE_DATA_ENGINEER",
+        "role_name": "Data Engineer"
+      },
+      "summary": {
+        "total_role_skills": 5,
+        "already_present_count": 2,
+        "recommended_skill_count": 2,
+        "not_recommended_missing_count": 1,
+        "unavailable_context_count": 0
+      },
+      "recommended_skills": [
+        "SK_AIRFLOW",
+        "SK_AWS"
+      ],
+      "already_present_skills": [
+        "SK_PYTHON",
+        "SK_SQL"
+      ],
+      "not_recommended_skills": [
+        "SK_SPARK"
+      ],
+      "skill_recommendations": [
+        {
+          "student_id": "STU_001",
+          "role": {
+            "role_id": "ROLE_DATA_ENGINEER",
+            "role_name": "Data Engineer"
+          },
+          "skill_id": "SK_AIRFLOW",
+          "skill_name": "Apache Airflow",
+          "category": "IT / Data",
+          "student_status": "missing",
+          "personalized_status": "recommended",
+          "recommendation_reason_ids": [
+            "student_skill_gap",
+            "role_requirement",
+            "generic_evidence_recommended",
+            "market_demand_evidence",
+            "employer_validation_evidence",
+            "multi_source_evidence"
+          ],
+          "student_evidence": [],
+          "evidence": {
+            "evidence_relationship": "both",
+            "evidence_sources": [
+              "job_postings",
+              "employer_feedback"
+            ],
+            "job_demand": {
+              "observed": true,
+              "job_count": 11,
+              "total_jobs": 295,
+              "demand_share": 0.0373,
+              "demand_percentage": 3.73,
+              "source_coverage_count": 2,
+              "sources_present": [
+                "linkedin_india",
+                "parquet"
+              ]
+            },
+            "employer_validation": {
+              "observed": true,
+              "feedback_count": 1,
+              "unique_employer_count": 1,
+              "weighted_signal_sum": 0.9405,
+              "average_weighted_signal": 0.9405,
+              "max_weighted_signal": 0.9405
+            },
+            "description": "Observed in 11 of 295 job postings and mentioned across 1 feedback records from 1 employer(s)."
+          },
+          "generic_recommendation": {
+            "status": "recommended",
+            "reason_ids": [
+              "observed_market_demand",
+              "employer_validated",
+              "observed_in_both_sources"
+            ]
+          },
+          "context": {
+            "contextual_recommendation_status": "recommended",
+            "context_reason": {
+              "reason_id": "explicit_role_skill_mapping",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_001",
+          "role": {
+            "role_id": "ROLE_DATA_ENGINEER",
+            "role_name": "Data Engineer"
+          },
+          "skill_id": "SK_AWS",
+          "skill_name": "AWS Cloud Services",
+          "category": "IT / Data",
+          "student_status": "missing",
+          "personalized_status": "recommended",
+          "recommendation_reason_ids": [
+            "student_skill_gap",
+            "role_requirement",
+            "generic_evidence_recommended",
+            "market_demand_evidence",
+            "course_coverage_gap"
+          ],
+          "student_evidence": [],
+          "evidence": {
+            "evidence_relationship": "job_only",
+            "evidence_sources": [
+              "job_postings"
+            ],
+            "job_demand": {
+              "observed": true,
+              "job_count": 51,
+              "total_jobs": 295,
+              "demand_share": 0.1729,
+              "demand_percentage": 17.29,
+              "source_coverage_count": 3,
+              "sources_present": [
+                "linkedin_india",
+                "naukri",
+                "parquet"
+              ]
+            },
+            "employer_validation": {
+              "observed": false,
+              "feedback_count": null,
+              "unique_employer_count": null,
+              "weighted_signal_sum": null,
+              "average_weighted_signal": null,
+              "max_weighted_signal": null
+            },
+            "description": "Observed in 51 of 295 job postings; no employer feedback observed in current sample."
+          },
+          "generic_recommendation": {
+            "status": "recommended",
+            "reason_ids": [
+              "observed_market_demand",
+              "course_coverage_gap"
+            ]
+          },
+          "context": {
+            "contextual_recommendation_status": "recommended",
+            "context_reason": {
+              "reason_id": "explicit_role_skill_mapping",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_001",
+          "role": {
+            "role_id": "ROLE_DATA_ENGINEER",
+            "role_name": "Data Engineer"
+          },
+          "skill_id": "SK_PYTHON",
+          "skill_name": "Python Programming",
+          "category": "IT / Data",
+          "student_status": "present",
+          "personalized_status": "already_present",
+          "recommendation_reason_ids": [
+            "already_present"
+          ],
+          "student_evidence": [
+            {
+              "evidence_type": "certification",
+              "evidence_strength": "basic"
+            },
+            {
+              "evidence_type": "project",
+              "evidence_strength": "intermediate"
+            }
+          ],
+          "evidence": {
+            "evidence_relationship": "both",
+            "evidence_sources": [
+              "job_postings",
+              "employer_feedback"
+            ],
+            "job_demand": {
+              "observed": true,
+              "job_count": 98,
+              "total_jobs": 295,
+              "demand_share": 0.3322,
+              "demand_percentage": 33.22,
+              "source_coverage_count": 3,
+              "sources_present": [
+                "linkedin_india",
+                "naukri",
+                "parquet"
+              ]
+            },
+            "employer_validation": {
+              "observed": true,
+              "feedback_count": 1,
+              "unique_employer_count": 1,
+              "weighted_signal_sum": 0.912,
+              "average_weighted_signal": 0.912,
+              "max_weighted_signal": 0.912
+            },
+            "description": "Observed in 98 of 295 job postings and mentioned across 1 feedback records from 1 employer(s)."
+          },
+          "generic_recommendation": {
+            "status": "recommended",
+            "reason_ids": [
+              "observed_market_demand",
+              "employer_validated",
+              "observed_in_both_sources"
+            ]
+          },
+          "context": {
+            "contextual_recommendation_status": "recommended",
+            "context_reason": {
+              "reason_id": "explicit_role_skill_mapping",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_001",
+          "role": {
+            "role_id": "ROLE_DATA_ENGINEER",
+            "role_name": "Data Engineer"
+          },
+          "skill_id": "SK_SPARK",
+          "skill_name": "Apache Spark Big Data",
+          "category": "IT / Data",
+          "student_status": "missing",
+          "personalized_status": "not_recommended",
+          "recommendation_reason_ids": [
+            "student_skill_gap",
+            "role_requirement"
+          ],
+          "student_evidence": [],
+          "evidence": {
+            "evidence_relationship": "job_only",
+            "evidence_sources": [
+              "job_postings"
+            ],
+            "job_demand": {
+              "observed": true,
+              "job_count": 21,
+              "total_jobs": 295,
+              "demand_share": 0.0712,
+              "demand_percentage": 7.12,
+              "source_coverage_count": 3,
+              "sources_present": [
+                "linkedin_india",
+                "naukri",
+                "parquet"
+              ]
+            },
+            "employer_validation": {
+              "observed": false,
+              "feedback_count": null,
+              "unique_employer_count": null,
+              "weighted_signal_sum": null,
+              "average_weighted_signal": null,
+              "max_weighted_signal": null
+            },
+            "description": "Observed in 21 of 295 job postings; no employer feedback observed in current sample."
+          },
+          "generic_recommendation": {
+            "status": "not_recommended",
+            "reason_ids": []
+          },
+          "context": {
+            "contextual_recommendation_status": "not_recommended",
+            "context_reason": {
+              "reason_id": "role_mapping_without_generic_recommendation",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_001",
+          "role": {
+            "role_id": "ROLE_DATA_ENGINEER",
+            "role_name": "Data Engineer"
+          },
+          "skill_id": "SK_SQL",
+          "skill_name": "SQL Database Management",
+          "category": "IT / Data",
+          "student_status": "present",
+          "personalized_status": "already_present",
+          "recommendation_reason_ids": [
+            "already_present"
+          ],
+          "student_evidence": [
+            {
+              "evidence_type": "course_completed",
+              "evidence_strength": "intermediate"
+            }
+          ],
+          "evidence": {
+            "evidence_relationship": "both",
+            "evidence_sources": [
+              "job_postings",
+              "employer_feedback"
+            ],
+            "job_demand": {
+              "observed": true,
+              "job_count": 99,
+              "total_jobs": 295,
+              "demand_share": 0.3356,
+              "demand_percentage": 33.56,
+              "source_coverage_count": 3,
+              "sources_present": [
+                "linkedin_india",
+                "naukri",
+                "parquet"
+              ]
+            },
+            "employer_validation": {
+              "observed": true,
+              "feedback_count": 1,
+              "unique_employer_count": 1,
+              "weighted_signal_sum": 0.912,
+              "average_weighted_signal": 0.912,
+              "max_weighted_signal": 0.912
+            },
+            "description": "Observed in 99 of 295 job postings and mentioned across 1 feedback records from 1 employer(s)."
+          },
+          "generic_recommendation": {
+            "status": "recommended",
+            "reason_ids": [
+              "observed_market_demand",
+              "employer_validated",
+              "observed_in_both_sources"
+            ]
+          },
+          "context": {
+            "contextual_recommendation_status": "recommended",
+            "context_reason": {
+              "reason_id": "explicit_role_skill_mapping",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "student_id": "STU_002",
+      "profile_name": "Synthetic Beginner EV Technician Student",
+      "role": {
+        "role_id": "ROLE_EV_TECHNICIAN",
+        "role_name": "EV Technician"
+      },
+      "summary": {
+        "total_role_skills": 6,
+        "already_present_count": 3,
+        "recommended_skill_count": 3,
+        "not_recommended_missing_count": 0,
+        "unavailable_context_count": 0
+      },
+      "recommended_skills": [
+        "SK_CAN",
+        "SK_DIAG",
+        "SK_THERMAL"
+      ],
+      "already_present_skills": [
+        "SK_BATTERY_CELL",
+        "SK_BMS",
+        "SK_HIGH_VOLTAGE"
+      ],
+      "not_recommended_skills": [],
+      "skill_recommendations": [
+        {
+          "student_id": "STU_002",
+          "role": {
+            "role_id": "ROLE_EV_TECHNICIAN",
+            "role_name": "EV Technician"
+          },
+          "skill_id": "SK_BATTERY_CELL",
+          "skill_name": "Cell Balancing and Testing",
+          "category": "EV / Automotive",
+          "student_status": "present",
+          "personalized_status": "already_present",
+          "recommendation_reason_ids": [
+            "already_present"
+          ],
+          "student_evidence": [
+            {
+              "evidence_type": "self_reported",
+              "evidence_strength": "basic"
+            }
+          ],
+          "evidence": {
+            "evidence_relationship": "employer_feedback_only",
+            "evidence_sources": [
+              "employer_feedback"
+            ],
+            "job_demand": {
+              "observed": false,
+              "job_count": null,
+              "total_jobs": null,
+              "demand_share": null,
+              "demand_percentage": null,
+              "source_coverage_count": null,
+              "sources_present": null
+            },
+            "employer_validation": {
+              "observed": true,
+              "feedback_count": 1,
+              "unique_employer_count": 1,
+              "weighted_signal_sum": 0.864,
+              "average_weighted_signal": 0.864,
+              "max_weighted_signal": 0.864
+            },
+            "description": "Mentioned across 1 feedback records from 1 employer(s); no job posting occurrences in current sample."
+          },
+          "generic_recommendation": {
+            "status": "recommended",
+            "reason_ids": [
+              "employer_validated",
+              "employer_only_signal"
+            ]
+          },
+          "context": {
+            "contextual_recommendation_status": "recommended",
+            "context_reason": {
+              "reason_id": "explicit_role_skill_mapping",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_002",
+          "role": {
+            "role_id": "ROLE_EV_TECHNICIAN",
+            "role_name": "EV Technician"
+          },
+          "skill_id": "SK_BMS",
+          "skill_name": "Battery Management Systems",
+          "category": "EV / Automotive",
+          "student_status": "present",
+          "personalized_status": "already_present",
+          "recommendation_reason_ids": [
+            "already_present"
+          ],
+          "student_evidence": [
+            {
+              "evidence_type": "course_completed",
+              "evidence_strength": "basic"
+            }
+          ],
+          "evidence": {
+            "evidence_relationship": "both",
+            "evidence_sources": [
+              "job_postings",
+              "employer_feedback"
+            ],
+            "job_demand": {
+              "observed": true,
+              "job_count": 1,
+              "total_jobs": 295,
+              "demand_share": 0.0034,
+              "demand_percentage": 0.34,
+              "source_coverage_count": 1,
+              "sources_present": [
+                "linkedin_india"
+              ]
+            },
+            "employer_validation": {
+              "observed": true,
+              "feedback_count": 1,
+              "unique_employer_count": 1,
+              "weighted_signal_sum": 0.96,
+              "average_weighted_signal": 0.96,
+              "max_weighted_signal": 0.96
+            },
+            "description": "Observed in 1 of 295 job postings and mentioned across 1 feedback records from 1 employer(s)."
+          },
+          "generic_recommendation": {
+            "status": "recommended",
+            "reason_ids": [
+              "observed_market_demand",
+              "employer_validated",
+              "observed_in_both_sources"
+            ]
+          },
+          "context": {
+            "contextual_recommendation_status": "recommended",
+            "context_reason": {
+              "reason_id": "explicit_role_skill_mapping",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_002",
+          "role": {
+            "role_id": "ROLE_EV_TECHNICIAN",
+            "role_name": "EV Technician"
+          },
+          "skill_id": "SK_CAN",
+          "skill_name": "CAN Bus",
+          "category": "EV / Automotive",
+          "student_status": "missing",
+          "personalized_status": "recommended",
+          "recommendation_reason_ids": [
+            "student_skill_gap",
+            "role_requirement",
+            "generic_evidence_recommended",
+            "employer_validation_evidence"
+          ],
+          "student_evidence": [],
+          "evidence": {
+            "evidence_relationship": "employer_feedback_only",
+            "evidence_sources": [
+              "employer_feedback"
+            ],
+            "job_demand": {
+              "observed": false,
+              "job_count": null,
+              "total_jobs": null,
+              "demand_share": null,
+              "demand_percentage": null,
+              "source_coverage_count": null,
+              "sources_present": null
+            },
+            "employer_validation": {
+              "observed": true,
+              "feedback_count": 3,
+              "unique_employer_count": 3,
+              "weighted_signal_sum": 2.523,
+              "average_weighted_signal": 0.841,
+              "max_weighted_signal": 0.96
+            },
+            "description": "Mentioned across 3 feedback records from 3 employer(s); no job posting occurrences in current sample."
+          },
+          "generic_recommendation": {
+            "status": "recommended",
+            "reason_ids": [
+              "employer_validated",
+              "employer_only_signal"
+            ]
+          },
+          "context": {
+            "contextual_recommendation_status": "recommended",
+            "context_reason": {
+              "reason_id": "explicit_role_skill_mapping",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_002",
+          "role": {
+            "role_id": "ROLE_EV_TECHNICIAN",
+            "role_name": "EV Technician"
+          },
+          "skill_id": "SK_DIAG",
+          "skill_name": "Vehicle Diagnostics",
+          "category": "EV / Automotive",
+          "student_status": "missing",
+          "personalized_status": "recommended",
+          "recommendation_reason_ids": [
+            "student_skill_gap",
+            "role_requirement",
+            "generic_evidence_recommended",
+            "employer_validation_evidence"
+          ],
+          "student_evidence": [],
+          "evidence": {
+            "evidence_relationship": "employer_feedback_only",
+            "evidence_sources": [
+              "employer_feedback"
+            ],
+            "job_demand": {
+              "observed": false,
+              "job_count": null,
+              "total_jobs": null,
+              "demand_share": null,
+              "demand_percentage": null,
+              "source_coverage_count": null,
+              "sources_present": null
+            },
+            "employer_validation": {
+              "observed": true,
+              "feedback_count": 1,
+              "unique_employer_count": 1,
+              "weighted_signal_sum": 0.693,
+              "average_weighted_signal": 0.693,
+              "max_weighted_signal": 0.693
+            },
+            "description": "Mentioned across 1 feedback records from 1 employer(s); no job posting occurrences in current sample."
+          },
+          "generic_recommendation": {
+            "status": "recommended",
+            "reason_ids": [
+              "employer_validated",
+              "employer_only_signal"
+            ]
+          },
+          "context": {
+            "contextual_recommendation_status": "recommended",
+            "context_reason": {
+              "reason_id": "explicit_role_skill_mapping",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_002",
+          "role": {
+            "role_id": "ROLE_EV_TECHNICIAN",
+            "role_name": "EV Technician"
+          },
+          "skill_id": "SK_HIGH_VOLTAGE",
+          "skill_name": "High Voltage Safety",
+          "category": "EV / Automotive",
+          "student_status": "present",
+          "personalized_status": "already_present",
+          "recommendation_reason_ids": [
+            "already_present"
+          ],
+          "student_evidence": [
+            {
+              "evidence_type": "assessment",
+              "evidence_strength": "basic"
+            }
+          ],
+          "evidence": {
+            "evidence_relationship": "employer_feedback_only",
+            "evidence_sources": [
+              "employer_feedback"
+            ],
+            "job_demand": {
+              "observed": false,
+              "job_count": null,
+              "total_jobs": null,
+              "demand_share": null,
+              "demand_percentage": null,
+              "source_coverage_count": null,
+              "sources_present": null
+            },
+            "employer_validation": {
+              "observed": true,
+              "feedback_count": 1,
+              "unique_employer_count": 1,
+              "weighted_signal_sum": 0.8415,
+              "average_weighted_signal": 0.8415,
+              "max_weighted_signal": 0.8415
+            },
+            "description": "Mentioned across 1 feedback records from 1 employer(s); no job posting occurrences in current sample."
+          },
+          "generic_recommendation": {
+            "status": "recommended",
+            "reason_ids": [
+              "employer_validated",
+              "employer_only_signal"
+            ]
+          },
+          "context": {
+            "contextual_recommendation_status": "recommended",
+            "context_reason": {
+              "reason_id": "explicit_role_skill_mapping",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_002",
+          "role": {
+            "role_id": "ROLE_EV_TECHNICIAN",
+            "role_name": "EV Technician"
+          },
+          "skill_id": "SK_THERMAL",
+          "skill_name": "Thermal Management",
+          "category": "EV / Automotive",
+          "student_status": "missing",
+          "personalized_status": "recommended",
+          "recommendation_reason_ids": [
+            "student_skill_gap",
+            "role_requirement",
+            "generic_evidence_recommended",
+            "employer_validation_evidence"
+          ],
+          "student_evidence": [],
+          "evidence": {
+            "evidence_relationship": "employer_feedback_only",
+            "evidence_sources": [
+              "employer_feedback"
+            ],
+            "job_demand": {
+              "observed": false,
+              "job_count": null,
+              "total_jobs": null,
+              "demand_share": null,
+              "demand_percentage": null,
+              "source_coverage_count": null,
+              "sources_present": null
+            },
+            "employer_validation": {
+              "observed": true,
+              "feedback_count": 1,
+              "unique_employer_count": 1,
+              "weighted_signal_sum": 0.8415,
+              "average_weighted_signal": 0.8415,
+              "max_weighted_signal": 0.8415
+            },
+            "description": "Mentioned across 1 feedback records from 1 employer(s); no job posting occurrences in current sample."
+          },
+          "generic_recommendation": {
+            "status": "recommended",
+            "reason_ids": [
+              "employer_validated",
+              "employer_only_signal"
+            ]
+          },
+          "context": {
+            "contextual_recommendation_status": "recommended",
+            "context_reason": {
+              "reason_id": "explicit_role_skill_mapping",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "student_id": "STU_003",
+      "profile_name": "Synthetic Advanced Full Stack Student",
+      "role": {
+        "role_id": "ROLE_FULL_STACK_DEV",
+        "role_name": "Full Stack Developer"
+      },
+      "summary": {
+        "total_role_skills": 6,
+        "already_present_count": 4,
+        "recommended_skill_count": 1,
+        "not_recommended_missing_count": 1,
+        "unavailable_context_count": 0
+      },
+      "recommended_skills": [
+        "SK_SQL"
+      ],
+      "already_present_skills": [
+        "SK_DOCKER",
+        "SK_JAVASCRIPT",
+        "SK_PYTHON",
+        "SK_REACT"
+      ],
+      "not_recommended_skills": [
+        "SK_GIT"
+      ],
+      "skill_recommendations": [
+        {
+          "student_id": "STU_003",
+          "role": {
+            "role_id": "ROLE_FULL_STACK_DEV",
+            "role_name": "Full Stack Developer"
+          },
+          "skill_id": "SK_DOCKER",
+          "skill_name": "Docker Containerization",
+          "category": "IT / Data",
+          "student_status": "present",
+          "personalized_status": "already_present",
+          "recommendation_reason_ids": [
+            "already_present"
+          ],
+          "student_evidence": [
+            {
+              "evidence_type": "assessment",
+              "evidence_strength": "intermediate"
+            }
+          ],
+          "evidence": {
+            "evidence_relationship": "job_only",
+            "evidence_sources": [
+              "job_postings"
+            ],
+            "job_demand": {
+              "observed": true,
+              "job_count": 17,
+              "total_jobs": 295,
+              "demand_share": 0.0576,
+              "demand_percentage": 5.76,
+              "source_coverage_count": 3,
+              "sources_present": [
+                "linkedin_india",
+                "naukri",
+                "parquet"
+              ]
+            },
+            "employer_validation": {
+              "observed": false,
+              "feedback_count": null,
+              "unique_employer_count": null,
+              "weighted_signal_sum": null,
+              "average_weighted_signal": null,
+              "max_weighted_signal": null
+            },
+            "description": "Observed in 17 of 295 job postings; no employer feedback observed in current sample."
+          },
+          "generic_recommendation": {
+            "status": "not_recommended",
+            "reason_ids": []
+          },
+          "context": {
+            "contextual_recommendation_status": "not_recommended",
+            "context_reason": {
+              "reason_id": "role_mapping_without_generic_recommendation",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_003",
+          "role": {
+            "role_id": "ROLE_FULL_STACK_DEV",
+            "role_name": "Full Stack Developer"
+          },
+          "skill_id": "SK_GIT",
+          "skill_name": "Git Version Control",
+          "category": "IT / Data",
+          "student_status": "missing",
+          "personalized_status": "not_recommended",
+          "recommendation_reason_ids": [
+            "student_skill_gap",
+            "role_requirement"
+          ],
+          "student_evidence": [],
+          "evidence": {
+            "evidence_relationship": "job_only",
+            "evidence_sources": [
+              "job_postings"
+            ],
+            "job_demand": {
+              "observed": true,
+              "job_count": 30,
+              "total_jobs": 295,
+              "demand_share": 0.1017,
+              "demand_percentage": 10.17,
+              "source_coverage_count": 3,
+              "sources_present": [
+                "linkedin_india",
+                "naukri",
+                "parquet"
+              ]
+            },
+            "employer_validation": {
+              "observed": false,
+              "feedback_count": null,
+              "unique_employer_count": null,
+              "weighted_signal_sum": null,
+              "average_weighted_signal": null,
+              "max_weighted_signal": null
+            },
+            "description": "Observed in 30 of 295 job postings; no employer feedback observed in current sample."
+          },
+          "generic_recommendation": {
+            "status": "not_recommended",
+            "reason_ids": []
+          },
+          "context": {
+            "contextual_recommendation_status": "not_recommended",
+            "context_reason": {
+              "reason_id": "role_mapping_without_generic_recommendation",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_003",
+          "role": {
+            "role_id": "ROLE_FULL_STACK_DEV",
+            "role_name": "Full Stack Developer"
+          },
+          "skill_id": "SK_JAVASCRIPT",
+          "skill_name": "JavaScript Programming",
+          "category": "IT / Data",
+          "student_status": "present",
+          "personalized_status": "already_present",
+          "recommendation_reason_ids": [
+            "already_present"
+          ],
+          "student_evidence": [
+            {
+              "evidence_type": "certification",
+              "evidence_strength": "advanced"
+            }
+          ],
+          "evidence": {
+            "evidence_relationship": "job_only",
+            "evidence_sources": [
+              "job_postings"
+            ],
+            "job_demand": {
+              "observed": true,
+              "job_count": 37,
+              "total_jobs": 295,
+              "demand_share": 0.1254,
+              "demand_percentage": 12.54,
+              "source_coverage_count": 3,
+              "sources_present": [
+                "linkedin_india",
+                "naukri",
+                "parquet"
+              ]
+            },
+            "employer_validation": {
+              "observed": false,
+              "feedback_count": null,
+              "unique_employer_count": null,
+              "weighted_signal_sum": null,
+              "average_weighted_signal": null,
+              "max_weighted_signal": null
+            },
+            "description": "Observed in 37 of 295 job postings; no employer feedback observed in current sample."
+          },
+          "generic_recommendation": {
+            "status": "recommended",
+            "reason_ids": [
+              "observed_market_demand",
+              "course_coverage_gap"
+            ]
+          },
+          "context": {
+            "contextual_recommendation_status": "recommended",
+            "context_reason": {
+              "reason_id": "explicit_role_skill_mapping",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_003",
+          "role": {
+            "role_id": "ROLE_FULL_STACK_DEV",
+            "role_name": "Full Stack Developer"
+          },
+          "skill_id": "SK_PYTHON",
+          "skill_name": "Python Programming",
+          "category": "IT / Data",
+          "student_status": "present",
+          "personalized_status": "already_present",
+          "recommendation_reason_ids": [
+            "already_present"
+          ],
+          "student_evidence": [
+            {
+              "evidence_type": "project",
+              "evidence_strength": "advanced"
+            }
+          ],
+          "evidence": {
+            "evidence_relationship": "both",
+            "evidence_sources": [
+              "job_postings",
+              "employer_feedback"
+            ],
+            "job_demand": {
+              "observed": true,
+              "job_count": 98,
+              "total_jobs": 295,
+              "demand_share": 0.3322,
+              "demand_percentage": 33.22,
+              "source_coverage_count": 3,
+              "sources_present": [
+                "linkedin_india",
+                "naukri",
+                "parquet"
+              ]
+            },
+            "employer_validation": {
+              "observed": true,
+              "feedback_count": 1,
+              "unique_employer_count": 1,
+              "weighted_signal_sum": 0.912,
+              "average_weighted_signal": 0.912,
+              "max_weighted_signal": 0.912
+            },
+            "description": "Observed in 98 of 295 job postings and mentioned across 1 feedback records from 1 employer(s)."
+          },
+          "generic_recommendation": {
+            "status": "recommended",
+            "reason_ids": [
+              "observed_market_demand",
+              "employer_validated",
+              "observed_in_both_sources"
+            ]
+          },
+          "context": {
+            "contextual_recommendation_status": "recommended",
+            "context_reason": {
+              "reason_id": "explicit_role_skill_mapping",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_003",
+          "role": {
+            "role_id": "ROLE_FULL_STACK_DEV",
+            "role_name": "Full Stack Developer"
+          },
+          "skill_id": "SK_REACT",
+          "skill_name": "React.js Frontend",
+          "category": "IT / Data",
+          "student_status": "present",
+          "personalized_status": "already_present",
+          "recommendation_reason_ids": [
+            "already_present"
+          ],
+          "student_evidence": [
+            {
+              "evidence_type": "project",
+              "evidence_strength": "advanced"
+            }
+          ],
+          "evidence": {
+            "evidence_relationship": "job_only",
+            "evidence_sources": [
+              "job_postings"
+            ],
+            "job_demand": {
+              "observed": true,
+              "job_count": 11,
+              "total_jobs": 295,
+              "demand_share": 0.0373,
+              "demand_percentage": 3.73,
+              "source_coverage_count": 2,
+              "sources_present": [
+                "linkedin_india",
+                "parquet"
+              ]
+            },
+            "employer_validation": {
+              "observed": false,
+              "feedback_count": null,
+              "unique_employer_count": null,
+              "weighted_signal_sum": null,
+              "average_weighted_signal": null,
+              "max_weighted_signal": null
+            },
+            "description": "Observed in 11 of 295 job postings; no employer feedback observed in current sample."
+          },
+          "generic_recommendation": {
+            "status": "recommended",
+            "reason_ids": [
+              "observed_market_demand",
+              "course_coverage_gap"
+            ]
+          },
+          "context": {
+            "contextual_recommendation_status": "recommended",
+            "context_reason": {
+              "reason_id": "explicit_role_skill_mapping",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_003",
+          "role": {
+            "role_id": "ROLE_FULL_STACK_DEV",
+            "role_name": "Full Stack Developer"
+          },
+          "skill_id": "SK_SQL",
+          "skill_name": "SQL Database Management",
+          "category": "IT / Data",
+          "student_status": "missing",
+          "personalized_status": "recommended",
+          "recommendation_reason_ids": [
+            "student_skill_gap",
+            "role_requirement",
+            "generic_evidence_recommended",
+            "market_demand_evidence",
+            "employer_validation_evidence",
+            "multi_source_evidence"
+          ],
+          "student_evidence": [],
+          "evidence": {
+            "evidence_relationship": "both",
+            "evidence_sources": [
+              "job_postings",
+              "employer_feedback"
+            ],
+            "job_demand": {
+              "observed": true,
+              "job_count": 99,
+              "total_jobs": 295,
+              "demand_share": 0.3356,
+              "demand_percentage": 33.56,
+              "source_coverage_count": 3,
+              "sources_present": [
+                "linkedin_india",
+                "naukri",
+                "parquet"
+              ]
+            },
+            "employer_validation": {
+              "observed": true,
+              "feedback_count": 1,
+              "unique_employer_count": 1,
+              "weighted_signal_sum": 0.912,
+              "average_weighted_signal": 0.912,
+              "max_weighted_signal": 0.912
+            },
+            "description": "Observed in 99 of 295 job postings and mentioned across 1 feedback records from 1 employer(s)."
+          },
+          "generic_recommendation": {
+            "status": "recommended",
+            "reason_ids": [
+              "observed_market_demand",
+              "employer_validated",
+              "observed_in_both_sources"
+            ]
+          },
+          "context": {
+            "contextual_recommendation_status": "recommended",
+            "context_reason": {
+              "reason_id": "explicit_role_skill_mapping",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "student_id": "STU_004",
+      "profile_name": "Synthetic Healthcare Support Student",
+      "role": {
+        "role_id": "ROLE_HEALTHCARE_ASST",
+        "role_name": "General Duty Healthcare Assistant"
+      },
+      "summary": {
+        "total_role_skills": 5,
+        "already_present_count": 4,
+        "recommended_skill_count": 1,
+        "not_recommended_missing_count": 0,
+        "unavailable_context_count": 4
+      },
+      "recommended_skills": [
+        "SK_EHR"
+      ],
+      "already_present_skills": [
+        "SK_CPR_BLS",
+        "SK_FIRST_AID",
+        "SK_PATIENT_CARE",
+        "SK_VITAL_SIGNS"
+      ],
+      "not_recommended_skills": [],
+      "skill_recommendations": [
+        {
+          "student_id": "STU_004",
+          "role": {
+            "role_id": "ROLE_HEALTHCARE_ASST",
+            "role_name": "General Duty Healthcare Assistant"
+          },
+          "skill_id": "SK_CPR_BLS",
+          "skill_name": "CPR and Basic Life Support",
+          "category": "Healthcare Support",
+          "student_status": "present",
+          "personalized_status": "already_present",
+          "recommendation_reason_ids": [
+            "already_present"
+          ],
+          "student_evidence": [
+            {
+              "evidence_type": "certification",
+              "evidence_strength": "advanced"
+            }
+          ],
+          "evidence": {
+            "job_demand": {
+              "observed": false,
+              "job_count": null,
+              "demand_percentage": null
+            },
+            "employer_validation": {
+              "observed": false,
+              "unique_employer_count": null,
+              "weighted_signal": null
+            },
+            "evidence_relationship": "unobserved"
+          },
+          "generic_recommendation": {
+            "status": "not_available",
+            "reason_ids": []
+          },
+          "context": {
+            "contextual_recommendation_status": "not_available",
+            "context_reason": {
+              "reason_id": "role_skill_not_in_phase6a_universe",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_004",
+          "role": {
+            "role_id": "ROLE_HEALTHCARE_ASST",
+            "role_name": "General Duty Healthcare Assistant"
+          },
+          "skill_id": "SK_EHR",
+          "skill_name": "Electronic Health Records (EHR)",
+          "category": "Healthcare Support",
+          "student_status": "missing",
+          "personalized_status": "recommended",
+          "recommendation_reason_ids": [
+            "student_skill_gap",
+            "role_requirement",
+            "generic_evidence_recommended",
+            "market_demand_evidence",
+            "course_coverage_gap"
+          ],
+          "student_evidence": [],
+          "evidence": {
+            "evidence_relationship": "job_only",
+            "evidence_sources": [
+              "job_postings"
+            ],
+            "job_demand": {
+              "observed": true,
+              "job_count": 7,
+              "total_jobs": 295,
+              "demand_share": 0.0237,
+              "demand_percentage": 2.37,
+              "source_coverage_count": 2,
+              "sources_present": [
+                "linkedin_india",
+                "naukri"
+              ]
+            },
+            "employer_validation": {
+              "observed": false,
+              "feedback_count": null,
+              "unique_employer_count": null,
+              "weighted_signal_sum": null,
+              "average_weighted_signal": null,
+              "max_weighted_signal": null
+            },
+            "description": "Observed in 7 of 295 job postings; no employer feedback observed in current sample."
+          },
+          "generic_recommendation": {
+            "status": "recommended",
+            "reason_ids": [
+              "observed_market_demand",
+              "course_coverage_gap"
+            ]
+          },
+          "context": {
+            "contextual_recommendation_status": "recommended",
+            "context_reason": {
+              "reason_id": "explicit_role_skill_mapping",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_004",
+          "role": {
+            "role_id": "ROLE_HEALTHCARE_ASST",
+            "role_name": "General Duty Healthcare Assistant"
+          },
+          "skill_id": "SK_FIRST_AID",
+          "skill_name": "First Aid and Emergency Response",
+          "category": "Healthcare Support",
+          "student_status": "present",
+          "personalized_status": "already_present",
+          "recommendation_reason_ids": [
+            "already_present"
+          ],
+          "student_evidence": [
+            {
+              "evidence_type": "certification",
+              "evidence_strength": "intermediate"
+            }
+          ],
+          "evidence": {
+            "job_demand": {
+              "observed": false,
+              "job_count": null,
+              "demand_percentage": null
+            },
+            "employer_validation": {
+              "observed": false,
+              "unique_employer_count": null,
+              "weighted_signal": null
+            },
+            "evidence_relationship": "unobserved"
+          },
+          "generic_recommendation": {
+            "status": "not_available",
+            "reason_ids": []
+          },
+          "context": {
+            "contextual_recommendation_status": "not_available",
+            "context_reason": {
+              "reason_id": "role_skill_not_in_phase6a_universe",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_004",
+          "role": {
+            "role_id": "ROLE_HEALTHCARE_ASST",
+            "role_name": "General Duty Healthcare Assistant"
+          },
+          "skill_id": "SK_PATIENT_CARE",
+          "skill_name": "Patient Care & Bedside Assistance",
+          "category": "Healthcare Support",
+          "student_status": "present",
+          "personalized_status": "already_present",
+          "recommendation_reason_ids": [
+            "already_present"
+          ],
+          "student_evidence": [
+            {
+              "evidence_type": "course_completed",
+              "evidence_strength": "intermediate"
+            }
+          ],
+          "evidence": {
+            "job_demand": {
+              "observed": false,
+              "job_count": null,
+              "demand_percentage": null
+            },
+            "employer_validation": {
+              "observed": false,
+              "unique_employer_count": null,
+              "weighted_signal": null
+            },
+            "evidence_relationship": "unobserved"
+          },
+          "generic_recommendation": {
+            "status": "not_available",
+            "reason_ids": []
+          },
+          "context": {
+            "contextual_recommendation_status": "not_available",
+            "context_reason": {
+              "reason_id": "role_skill_not_in_phase6a_universe",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_004",
+          "role": {
+            "role_id": "ROLE_HEALTHCARE_ASST",
+            "role_name": "General Duty Healthcare Assistant"
+          },
+          "skill_id": "SK_VITAL_SIGNS",
+          "skill_name": "Vital Signs Monitoring",
+          "category": "Healthcare Support",
+          "student_status": "present",
+          "personalized_status": "already_present",
+          "recommendation_reason_ids": [
+            "already_present"
+          ],
+          "student_evidence": [
+            {
+              "evidence_type": "assessment",
+              "evidence_strength": "intermediate"
+            }
+          ],
+          "evidence": {
+            "job_demand": {
+              "observed": false,
+              "job_count": null,
+              "demand_percentage": null
+            },
+            "employer_validation": {
+              "observed": false,
+              "unique_employer_count": null,
+              "weighted_signal": null
+            },
+            "evidence_relationship": "unobserved"
+          },
+          "generic_recommendation": {
+            "status": "not_available",
+            "reason_ids": []
+          },
+          "context": {
+            "contextual_recommendation_status": "not_available",
+            "context_reason": {
+              "reason_id": "role_skill_not_in_phase6a_universe",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "student_id": "STU_005",
+      "profile_name": "Synthetic Cross-Disciplinary Automation Student",
+      "role": {
+        "role_id": "ROLE_INDUSTRIAL_AUTO",
+        "role_name": "Industrial Automation Technician"
+      },
+      "summary": {
+        "total_role_skills": 4,
+        "already_present_count": 2,
+        "recommended_skill_count": 1,
+        "not_recommended_missing_count": 1,
+        "unavailable_context_count": 3
+      },
+      "recommended_skills": [
+        "SK_SCADA"
+      ],
+      "already_present_skills": [
+        "SK_CIRCUIT_DESIGN",
+        "SK_PLC"
+      ],
+      "not_recommended_skills": [
+        "SK_PANEL_WIRING"
+      ],
+      "skill_recommendations": [
+        {
+          "student_id": "STU_005",
+          "role": {
+            "role_id": "ROLE_INDUSTRIAL_AUTO",
+            "role_name": "Industrial Automation Technician"
+          },
+          "skill_id": "SK_CIRCUIT_DESIGN",
+          "skill_name": "Circuit Design & Schematic",
+          "category": "Electrician / Electronics",
+          "student_status": "present",
+          "personalized_status": "already_present",
+          "recommendation_reason_ids": [
+            "already_present"
+          ],
+          "student_evidence": [
+            {
+              "evidence_type": "assessment",
+              "evidence_strength": "basic"
+            }
+          ],
+          "evidence": {
+            "job_demand": {
+              "observed": false,
+              "job_count": null,
+              "demand_percentage": null
+            },
+            "employer_validation": {
+              "observed": false,
+              "unique_employer_count": null,
+              "weighted_signal": null
+            },
+            "evidence_relationship": "unobserved"
+          },
+          "generic_recommendation": {
+            "status": "not_available",
+            "reason_ids": []
+          },
+          "context": {
+            "contextual_recommendation_status": "not_available",
+            "context_reason": {
+              "reason_id": "role_skill_not_in_phase6a_universe",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_005",
+          "role": {
+            "role_id": "ROLE_INDUSTRIAL_AUTO",
+            "role_name": "Industrial Automation Technician"
+          },
+          "skill_id": "SK_PANEL_WIRING",
+          "skill_name": "Electrical Panel Wiring",
+          "category": "Electrician / Electronics",
+          "student_status": "missing",
+          "personalized_status": "not_recommended",
+          "recommendation_reason_ids": [
+            "student_skill_gap",
+            "role_requirement",
+            "contextual_evidence_unavailable"
+          ],
+          "student_evidence": [],
+          "evidence": {
+            "job_demand": {
+              "observed": false,
+              "job_count": null,
+              "demand_percentage": null
+            },
+            "employer_validation": {
+              "observed": false,
+              "unique_employer_count": null,
+              "weighted_signal": null
+            },
+            "evidence_relationship": "unobserved"
+          },
+          "generic_recommendation": {
+            "status": "not_available",
+            "reason_ids": []
+          },
+          "context": {
+            "contextual_recommendation_status": "not_available",
+            "context_reason": {
+              "reason_id": "role_skill_not_in_phase6a_universe",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_005",
+          "role": {
+            "role_id": "ROLE_INDUSTRIAL_AUTO",
+            "role_name": "Industrial Automation Technician"
+          },
+          "skill_id": "SK_PLC",
+          "skill_name": "PLC Programming",
+          "category": "Electrician / Electronics",
+          "student_status": "present",
+          "personalized_status": "already_present",
+          "recommendation_reason_ids": [
+            "already_present"
+          ],
+          "student_evidence": [
+            {
+              "evidence_type": "course_completed",
+              "evidence_strength": "intermediate"
+            }
+          ],
+          "evidence": {
+            "job_demand": {
+              "observed": false,
+              "job_count": null,
+              "demand_percentage": null
+            },
+            "employer_validation": {
+              "observed": false,
+              "unique_employer_count": null,
+              "weighted_signal": null
+            },
+            "evidence_relationship": "unobserved"
+          },
+          "generic_recommendation": {
+            "status": "not_available",
+            "reason_ids": []
+          },
+          "context": {
+            "contextual_recommendation_status": "not_available",
+            "context_reason": {
+              "reason_id": "role_skill_not_in_phase6a_universe",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        },
+        {
+          "student_id": "STU_005",
+          "role": {
+            "role_id": "ROLE_INDUSTRIAL_AUTO",
+            "role_name": "Industrial Automation Technician"
+          },
+          "skill_id": "SK_SCADA",
+          "skill_name": "SCADA Industrial Systems",
+          "category": "Electrician / Electronics",
+          "student_status": "missing",
+          "personalized_status": "recommended",
+          "recommendation_reason_ids": [
+            "student_skill_gap",
+            "role_requirement",
+            "generic_evidence_recommended",
+            "market_demand_evidence",
+            "course_coverage_gap"
+          ],
+          "student_evidence": [],
+          "evidence": {
+            "evidence_relationship": "job_only",
+            "evidence_sources": [
+              "job_postings"
+            ],
+            "job_demand": {
+              "observed": true,
+              "job_count": 1,
+              "total_jobs": 295,
+              "demand_share": 0.0034,
+              "demand_percentage": 0.34,
+              "source_coverage_count": 1,
+              "sources_present": [
+                "parquet"
+              ]
+            },
+            "employer_validation": {
+              "observed": false,
+              "feedback_count": null,
+              "unique_employer_count": null,
+              "weighted_signal_sum": null,
+              "average_weighted_signal": null,
+              "max_weighted_signal": null
+            },
+            "description": "Observed in 1 of 295 job postings; no employer feedback observed in current sample."
+          },
+          "generic_recommendation": {
+            "status": "recommended",
+            "reason_ids": [
+              "observed_market_demand",
+              "course_coverage_gap"
+            ]
+          },
+          "context": {
+            "contextual_recommendation_status": "recommended",
+            "context_reason": {
+              "reason_id": "explicit_role_skill_mapping",
+              "source": "sample_role_contexts.json"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

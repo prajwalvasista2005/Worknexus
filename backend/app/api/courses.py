@@ -124,3 +124,56 @@ def get_course_skills(
             detail="Course not found",
         )
     return CourseSkillService.get_course_skills(db=db, course_id=id)
+
+
+class AddSkillToCourseBody(CourseCreate.__base__):
+    skill_id: int
+    relevance_score: float | None = 1.0
+
+
+@router.post(
+    "/{id}/skills",
+    response_model=CourseSkillResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Add a skill to a course",
+)
+def add_skill_to_course_by_id(
+    id: int,
+    body: AddSkillToCourseBody,
+    db: Session = Depends(get_db),
+):
+    course = CourseService.get_course_by_id(db=db, id=id)
+    if not course:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Course not found",
+        )
+    existing = CourseSkillService.get_course_skill(db=db, course_id=id, skill_id=body.skill_id)
+    if existing:
+        return existing
+    from app.schemas.course_skill import CourseSkillCreate
+    return CourseSkillService.add_skill_to_course(
+        db=db,
+        data=CourseSkillCreate(course_id=id, skill_id=body.skill_id)
+    )
+
+
+@router.delete(
+    "/{id}/skills/{skill_id}",
+    status_code=status.HTTP_200_OK,
+    summary="Remove a skill from a course",
+)
+def remove_skill_from_course_by_id(
+    id: int,
+    skill_id: int,
+    db: Session = Depends(get_db),
+):
+    existing = CourseSkillService.get_course_skill(db=db, course_id=id, skill_id=skill_id)
+    if not existing:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Course-skill mapping not found",
+        )
+    CourseSkillService.delete_course_skill(db=db, id=existing.id)
+    return {"message": "Skill removed from course successfully"}
+

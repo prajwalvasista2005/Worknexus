@@ -1,19 +1,31 @@
-from app.models.users import User
-from app.models.skills import Skill
-from app.models.courses import Course
-from app.models.user_skills import UserSkill
-from app.models.course_skills import CourseSkill
-from app.models.refresh_tokens import RefreshToken
-from app.models.job_postings import JobPosting
-from app.models.jobSkill import JobSkill
+"""
+SQLAlchemy Domain Models Package for WorkNexus.
+"""
+from .users import User
+from .skills import Skill
+from .courses import Course
+from .course_skills import CourseSkill
+from .refresh_tokens import RefreshToken
+from .user_skills import UserSkill
+from .job_postings import JobPosting
+from .jobSkill import JobSkill
+from .student_roles import TargetRole, RoleSkill, StudentProfile, StudentSkillEvidence
+from .employers import Employer, EmployerFeedback, EmployerFeedbackSignal
 
 __all__ = [
     "User",
     "Skill",
     "Course",
-    "UserSkill",
     "CourseSkill",
     "RefreshToken",
+    "UserSkill",
     "JobPosting",
     "JobSkill",
+    "TargetRole",
+    "RoleSkill",
+    "StudentProfile",
+    "StudentSkillEvidence",
+    "Employer",
+    "EmployerFeedback",
+    "EmployerFeedbackSignal",
 ]

@@ -1,0 +1,352 @@
+{
+  "metadata": {
+    "phase": "5A",
+    "pipeline": "employer_feedback_intelligence",
+    "input_file": "C:/Users/Nehal Jois/Documents/SIH/ml/data/sample_employer_feedback.json",
+    "taxonomy_version": "1",
+    "total_feedback_records": 5,
+    "processed_feedback_records": 5,
+    "failed_feedback_records": 0,
+    "feedback_records_with_skills": 5,
+    "zero_skill_feedback_records": 0,
+    "unique_employers": 5,
+    "unique_courses": 2,
+    "unique_skills_detected": 9,
+    "scope_note": "Observed employer validation signals computed strictly from feedback comments and trust weights."
+  },
+  "feedback_records": [
+    {
+      "feedback_id": "fb_1",
+      "employer_id": 17,
+      "trust_weight": 0.9,
+      "skills": [
+        {
+          "skill_id": "SK_BATTERY_CELL",
+          "skill_name": "Cell Balancing and Testing",
+          "category": "EV / Automotive",
+          "confidence_score": 0.96,
+          "trust_weight": 0.9,
+          "weighted_signal": 0.864
+        },
+        {
+          "skill_id": "SK_CAN",
+          "skill_name": "CAN Bus",
+          "category": "EV / Automotive",
+          "confidence_score": 0.99,
+          "trust_weight": 0.9,
+          "weighted_signal": 0.891
+        }
+      ],
+      "course_id": 42
+    },
+    {
+      "feedback_id": "fb_2",
+      "employer_id": 22,
+      "trust_weight": 1.0,
+      "skills": [
+        {
+          "skill_id": "SK_BMS",
+          "skill_name": "Battery Management Systems",
+          "category": "EV / Automotive",
+          "confidence_score": 0.96,
+          "trust_weight": 1.0,
+          "weighted_signal": 0.96
+        },
+        {
+          "skill_id": "SK_CAN",
+          "skill_name": "CAN Bus",
+          "category": "EV / Automotive",
+          "confidence_score": 0.96,
+          "trust_weight": 1.0,
+          "weighted_signal": 0.96
+        }
+      ],
+      "course_id": 42
+    },
+    {
+      "feedback_id": "fb_3",
+      "employer_id": 31,
+      "trust_weight": 0.7,
+      "skills": [
+        {
+          "skill_id": "SK_CAN",
+          "skill_name": "CAN Bus",
+          "category": "EV / Automotive",
+          "confidence_score": 0.96,
+          "trust_weight": 0.7,
+          "weighted_signal": 0.6719999999999999
+        },
+        {
+          "skill_id": "SK_DIAG",
+          "skill_name": "Vehicle Diagnostics",
+          "category": "EV / Automotive",
+          "confidence_score": 0.99,
+          "trust_weight": 0.7,
+          "weighted_signal": 0.693
+        }
+      ],
+      "course_id": 42
+    },
+    {
+      "feedback_id": "fb_4",
+      "employer_id": 15,
+      "trust_weight": 0.85,
+      "skills": [
+        {
+          "skill_id": "SK_HIGH_VOLTAGE",
+          "skill_name": "High Voltage Safety",
+          "category": "EV / Automotive",
+          "confidence_score": 0.99,
+          "trust_weight": 0.85,
+          "weighted_signal": 0.8415
+        },
+        {
+          "skill_id": "SK_THERMAL",
+          "skill_name": "Thermal Management",
+          "category": "EV / Automotive",
+          "confidence_score": 0.99,
+          "trust_weight": 0.85,
+          "weighted_signal": 0.8415
+        }
+      ],
+      "course_id": 42
+    },
+    {
+      "feedback_id": "fb_5",
+      "employer_id": 44,
+      "trust_weight": 0.95,
+      "skills": [
+        {
+          "skill_id": "SK_AIRFLOW",
+          "skill_name": "Apache Airflow",
+          "category": "IT / Data",
+          "confidence_score": 0.99,
+          "trust_weight": 0.95,
+          "weighted_signal": 0.9405
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "skill_name": "Python Programming",
+          "category": "IT / Data",
+          "confidence_score": 0.96,
+          "trust_weight": 0.95,
+          "weighted_signal": 0.9119999999999999
+        },
+        {
+          "skill_id": "SK_SQL",
+          "skill_name": "SQL Database Management",
+          "category": "IT / Data",
+          "confidence_score": 0.96,
+          "trust_weight": 0.95,
+          "weighted_signal": 0.9119999999999999
+        }
+      ],
+      "course_id": 102
+    }
+  ],
+  "skill_signals": [
+    {
+      "skill_id": "SK_AIRFLOW",
+      "skill_name": "Apache Airflow",
+      "category": "IT / Data",
+      "feedback_count": 1,
+      "unique_employer_count": 1,
+      "weighted_signal_sum": 0.9405,
+      "average_weighted_signal": 0.9405,
+      "max_weighted_signal": 0.9405
+    },
+    {
+      "skill_id": "SK_BATTERY_CELL",
+      "skill_name": "Cell Balancing and Testing",
+      "category": "EV / Automotive",
+      "feedback_count": 1,
+      "unique_employer_count": 1,
+      "weighted_signal_sum": 0.864,
+      "average_weighted_signal": 0.864,
+      "max_weighted_signal": 0.864
+    },
+    {
+      "skill_id": "SK_BMS",
+      "skill_name": "Battery Management Systems",
+      "category": "EV / Automotive",
+      "feedback_count": 1,
+      "unique_employer_count": 1,
+      "weighted_signal_sum": 0.96,
+      "average_weighted_signal": 0.96,
+      "max_weighted_signal": 0.96
+    },
+    {
+      "skill_id": "SK_CAN",
+      "skill_name": "CAN Bus",
+      "category": "EV / Automotive",
+      "feedback_count": 3,
+      "unique_employer_count": 3,
+      "weighted_signal_sum": 2.523,
+      "average_weighted_signal": 0.841,
+      "max_weighted_signal": 0.96
+    },
+    {
+      "skill_id": "SK_DIAG",
+      "skill_name": "Vehicle Diagnostics",
+      "category": "EV / Automotive",
+      "feedback_count": 1,
+      "unique_employer_count": 1,
+      "weighted_signal_sum": 0.693,
+      "average_weighted_signal": 0.693,
+      "max_weighted_signal": 0.693
+    },
+    {
+      "skill_id": "SK_HIGH_VOLTAGE",
+      "skill_name": "High Voltage Safety",
+      "category": "EV / Automotive",
+      "feedback_count": 1,
+      "unique_employer_count": 1,
+      "weighted_signal_sum": 0.8415,
+      "average_weighted_signal": 0.8415,
+      "max_weighted_signal": 0.8415
+    },
+    {
+      "skill_id": "SK_PYTHON",
+      "skill_name": "Python Programming",
+      "category": "IT / Data",
+      "feedback_count": 1,
+      "unique_employer_count": 1,
+      "weighted_signal_sum": 0.912,
+      "average_weighted_signal": 0.912,
+      "max_weighted_signal": 0.912
+    },
+    {
+      "skill_id": "SK_SQL",
+      "skill_name": "SQL Database Management",
+      "category": "IT / Data",
+      "feedback_count": 1,
+      "unique_employer_count": 1,
+      "weighted_signal_sum": 0.912,
+      "average_weighted_signal": 0.912,
+      "max_weighted_signal": 0.912
+    },
+    {
+      "skill_id": "SK_THERMAL",
+      "skill_name": "Thermal Management",
+      "category": "EV / Automotive",
+      "feedback_count": 1,
+      "unique_employer_count": 1,
+      "weighted_signal_sum": 0.8415,
+      "average_weighted_signal": 0.8415,
+      "max_weighted_signal": 0.8415
+    }
+  ],
+  "course_signals": [
+    {
+      "course_id": 42,
+      "feedback_count": 4,
+      "employer_count": 4,
+      "skills_mentioned_count": 6,
+      "skills_mentioned": [
+        "SK_BATTERY_CELL",
+        "SK_BMS",
+        "SK_CAN",
+        "SK_DIAG",
+        "SK_HIGH_VOLTAGE",
+        "SK_THERMAL"
+      ],
+      "skills": [
+        {
+          "skill_id": "SK_BATTERY_CELL",
+          "skill_name": "Cell Balancing and Testing",
+          "category": "EV / Automotive",
+          "feedback_count": 1,
+          "unique_employer_count": 1,
+          "weighted_signal_sum": 0.864,
+          "average_weighted_signal": 0.864
+        },
+        {
+          "skill_id": "SK_BMS",
+          "skill_name": "Battery Management Systems",
+          "category": "EV / Automotive",
+          "feedback_count": 1,
+          "unique_employer_count": 1,
+          "weighted_signal_sum": 0.96,
+          "average_weighted_signal": 0.96
+        },
+        {
+          "skill_id": "SK_CAN",
+          "skill_name": "CAN Bus",
+          "category": "EV / Automotive",
+          "feedback_count": 3,
+          "unique_employer_count": 3,
+          "weighted_signal_sum": 2.523,
+          "average_weighted_signal": 0.841
+        },
+        {
+          "skill_id": "SK_DIAG",
+          "skill_name": "Vehicle Diagnostics",
+          "category": "EV / Automotive",
+          "feedback_count": 1,
+          "unique_employer_count": 1,
+          "weighted_signal_sum": 0.693,
+          "average_weighted_signal": 0.693
+        },
+        {
+          "skill_id": "SK_HIGH_VOLTAGE",
+          "skill_name": "High Voltage Safety",
+          "category": "EV / Automotive",
+          "feedback_count": 1,
+          "unique_employer_count": 1,
+          "weighted_signal_sum": 0.8415,
+          "average_weighted_signal": 0.8415
+        },
+        {
+          "skill_id": "SK_THERMAL",
+          "skill_name": "Thermal Management",
+          "category": "EV / Automotive",
+          "feedback_count": 1,
+          "unique_employer_count": 1,
+          "weighted_signal_sum": 0.8415,
+          "average_weighted_signal": 0.8415
+        }
+      ]
+    },
+    {
+      "course_id": 102,
+      "feedback_count": 1,
+      "employer_count": 1,
+      "skills_mentioned_count": 3,
+      "skills_mentioned": [
+        "SK_AIRFLOW",
+        "SK_PYTHON",
+        "SK_SQL"
+      ],
+      "skills": [
+        {
+          "skill_id": "SK_AIRFLOW",
+          "skill_name": "Apache Airflow",
+          "category": "IT / Data",
+          "feedback_count": 1,
+          "unique_employer_count": 1,
+          "weighted_signal_sum": 0.9405,
+          "average_weighted_signal": 0.9405
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "skill_name": "Python Programming",
+          "category": "IT / Data",
+          "feedback_count": 1,
+          "unique_employer_count": 1,
+          "weighted_signal_sum": 0.912,
+          "average_weighted_signal": 0.912
+        },
+        {
+          "skill_id": "SK_SQL",
+          "skill_name": "SQL Database Management",
+          "category": "IT / Data",
+          "feedback_count": 1,
+          "unique_employer_count": 1,
+          "weighted_signal_sum": 0.912,
+          "average_weighted_signal": 0.912
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

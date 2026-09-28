@@ -53,9 +53,28 @@ class AuthService:
         )
 
         db.add(user)
+        db.flush()
+
+        user_role_str = (user.role or "").strip().lower()
+        if user_role_str == "employer":
+            from app.models.employers import Employer
+            company_name = user.full_name or "Enterprise Partner"
+            employer = Employer(
+                user_id=user.id,
+                company_name=company_name,
+                trust_weight=1.0,
+            )
+            db.add(employer)
+        elif user_role_str == "student":
+            from app.models.student_roles import StudentProfile
+            profile = StudentProfile(
+                user_id=user.id,
+                target_role_id="ROLE_FULL_STACK_DEV"
+            )
+            db.add(profile)
+
         db.commit()
         db.refresh(user)
-
         return user
 
     @staticmethod
@@ -116,7 +135,10 @@ class AuthService:
             return None
 
         now = datetime.now(timezone.utc)
-        if db_token.expires_at < now:
+        expires_at = db_token.expires_at
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=timezone.utc)
+        if expires_at < now:
             return None
 
         # Revoke old token

@@ -1,0 +1,478 @@
+[
+  {
+    "id": "SK_BMS",
+    "name": "Battery Management Systems",
+    "aliases": ["BMS", "Battery Management", "Li-ion BMS", "Battery Management System"],
+    "category": "EV / Automotive",
+    "version": 1
+  },
+  {
+    "id": "SK_CAN",
+    "name": "CAN Bus",
+    "aliases": ["CAN", "CAN bus", "CAN-Bus", "Controller Area Network", "CAN protocol"],
+    "category": "EV / Automotive",
+    "version": 1
+  },
+  {
+    "id": "SK_DIAG",
+    "name": "Vehicle Diagnostics",
+    "aliases": ["Diagnostics", "OBD", "OBD-II", "Vehicle Diagnostics", "Diagnostic scan"],
+    "category": "EV / Automotive",
+    "version": 1
+  },
+  {
+    "id": "SK_THERMAL",
+    "name": "Thermal Management",
+    "aliases": ["Thermal Management System", "EV Thermal Management", "Cooling Systems", "Battery Cooling"],
+    "category": "EV / Automotive",
+    "version": 1
+  },
+  {
+    "id": "SK_EV_POWERTRAIN",
+    "name": "Electric Powertrain",
+    "aliases": ["EV Powertrain", "Electric Drive", "Traction Motor", "Powertrain"],
+    "category": "EV / Automotive",
+    "version": 1
+  },
+  {
+    "id": "SK_HIGH_VOLTAGE",
+    "name": "High Voltage Safety",
+    "aliases": ["High Voltage", "HV Safety", "HV Systems", "High-Voltage Isolation"],
+    "category": "EV / Automotive",
+    "version": 1
+  },
+  {
+    "id": "SK_CHARGING_INFRA",
+    "name": "EV Charging Systems",
+    "aliases": ["EV Charging", "EVSE", "CCS", "CHAdeMO", "Type 2 Charger"],
+    "category": "EV / Automotive",
+    "version": 1
+  },
+  {
+    "id": "SK_REGEN_BRAKING",
+    "name": "Regenerative Braking",
+    "aliases": ["Regenerative Braking", "Regen Braking", "KERS", "Regenerative Brakes"],
+    "category": "EV / Automotive",
+    "version": 1
+  },
+  {
+    "id": "SK_INVERTER",
+    "name": "Traction Inverters",
+    "aliases": ["Inverter", "Motor Inverter", "DC-AC Inverter", "Power Inverter"],
+    "category": "EV / Automotive",
+    "version": 1
+  },
+  {
+    "id": "SK_AUTOSAR",
+    "name": "AUTOSAR Architecture",
+    "aliases": ["AUTOSAR", "AutoSAR", "Classic AUTOSAR", "Adaptive AUTOSAR"],
+    "category": "EV / Automotive",
+    "version": 1
+  },
+  {
+    "id": "SK_BATTERY_CELL",
+    "name": "Cell Balancing and Testing",
+    "aliases": ["Cell Balancing", "Battery Testing", "Cell Testing", "Pack Assembly"],
+    "category": "EV / Automotive",
+    "version": 1
+  },
+  {
+    "id": "SK_TELEMATICS",
+    "name": "Vehicle Telematics & IoT",
+    "aliases": ["Vehicle Telematics", "Telematics", "Connected Vehicle", "V2X"],
+    "category": "EV / Automotive",
+    "version": 1
+  },
+  {
+    "id": "SK_PYTHON",
+    "name": "Python Programming",
+    "aliases": ["Python", "Python 3", "Python3", "Py"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_SQL",
+    "name": "SQL Database Management",
+    "aliases": ["SQL", "Structured Query Language", "PostgreSQL", "MySQL", "RDBMS"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_PANDAS",
+    "name": "Pandas Data Analysis",
+    "aliases": ["Pandas", "Pandas library", "Python Pandas"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_NUMPY",
+    "name": "NumPy Numerical Computing",
+    "aliases": ["NumPy", "Numpy", "Num-py"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_FASTAPI",
+    "name": "FastAPI Framework",
+    "aliases": ["FastAPI", "Fast API", "Fast-API"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_DOCKER",
+    "name": "Docker Containerization",
+    "aliases": ["Docker", "Docker containers", "Containerization", "Docker Engine"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_KUBERNETES",
+    "name": "Kubernetes Orchestration",
+    "aliases": ["Kubernetes", "K8s", "K8", "Kube"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_AWS",
+    "name": "AWS Cloud Services",
+    "aliases": ["AWS", "Amazon Web Services", "Amazon AWS"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_GIT",
+    "name": "Git Version Control",
+    "aliases": ["Git", "Git VCS", "GitHub", "Gitlab"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_SCIKIT_LEARN",
+    "name": "Scikit-Learn ML",
+    "aliases": ["Scikit-Learn", "Scikit Learn", "sklearn", "scikit-learn"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_TENSORFLOW",
+    "name": "TensorFlow Framework",
+    "aliases": ["TensorFlow", "Tensorflow", "TF2", "Tensor-Flow"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_PYTORCH",
+    "name": "PyTorch Framework",
+    "aliases": ["PyTorch", "Pytorch", "Torch"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_REACT",
+    "name": "React.js Frontend",
+    "aliases": ["React", "ReactJS", "React.js", "React Native"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_NODEJS",
+    "name": "Node.js Backend",
+    "aliases": ["Node.js", "NodeJS", "Node", "Node js"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_REST_API",
+    "name": "RESTful API Design",
+    "aliases": ["REST API", "RESTful API", "REST APIs", "Web Services"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_LINUX",
+    "name": "Linux System Administration",
+    "aliases": ["Linux", "Ubuntu", "Bash", "Linux CLI"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_DATA_VIZ",
+    "name": "Data Visualization",
+    "aliases": ["Data Visualization", "Matplotlib", "Seaborn", "Tableau", "PowerBI"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_SPARK",
+    "name": "Apache Spark Big Data",
+    "aliases": ["Spark", "Apache Spark", "PySpark"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_AIRFLOW",
+    "name": "Apache Airflow",
+    "aliases": ["Airflow", "Apache Airflow", "Data Orchestration"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_JAVASCRIPT",
+    "name": "JavaScript Programming",
+    "aliases": ["JavaScript", "JS", "ES6", "Javascript"],
+    "category": "IT / Data",
+    "version": 1
+  },
+  {
+    "id": "SK_CIRCUIT_DESIGN",
+    "name": "Circuit Design & Schematic",
+    "aliases": ["Circuit Design", "Schematic Design", "PCB Design", "Electronic Circuits"],
+    "category": "Electrician / Electronics",
+    "version": 1
+  },
+  {
+    "id": "SK_PLC",
+    "name": "PLC Programming",
+    "aliases": ["PLC", "Programmable Logic Controller", "Ladder Logic", "PLC Programming"],
+    "category": "Electrician / Electronics",
+    "version": 1
+  },
+  {
+    "id": "SK_SCADA",
+    "name": "SCADA Industrial Systems",
+    "aliases": ["SCADA", "Supervisory Control", "HMI", "SCADA Systems"],
+    "category": "Electrician / Electronics",
+    "version": 1
+  },
+  {
+    "id": "SK_OSCILLOSCOPE",
+    "name": "Oscilloscope Testing & Measurement",
+    "aliases": ["Oscilloscope", "DSO", "Signal Testing", "Waveform Analysis"],
+    "category": "Electrician / Electronics",
+    "version": 1
+  },
+  {
+    "id": "SK_MULTIMETER",
+    "name": "Digital Multimeter Measurement",
+    "aliases": ["Multimeter", "DMM", "Digital Multimeter", "Volt-Ohm Meter"],
+    "category": "Electrician / Electronics",
+    "version": 1
+  },
+  {
+    "id": "SK_SOLDERING",
+    "name": "Soldering & Desoldering",
+    "aliases": ["Soldering", "SMD Soldering", "Through-hole Soldering", "Desoldering"],
+    "category": "Electrician / Electronics",
+    "version": 1
+  },
+  {
+    "id": "SK_PANEL_WIRING",
+    "name": "Electrical Panel Wiring",
+    "aliases": ["Panel Wiring", "Control Panel Wiring", "Switchgear", "DB Wiring"],
+    "category": "Electrician / Electronics",
+    "version": 1
+  },
+  {
+    "id": "SK_TRANSFORMER",
+    "name": "Transformer Maintenance",
+    "aliases": ["Transformer", "Transformer Maintenance", "Substation", "Step-down Transformer"],
+    "category": "Electrician / Electronics",
+    "version": 1
+  },
+  {
+    "id": "SK_MOTOR_CONTROL",
+    "name": "AC/DC Motor Drives & Controls",
+    "aliases": ["Motor Control", "VFD", "Variable Frequency Drive", "Motor Starter"],
+    "category": "Electrician / Electronics",
+    "version": 1
+  },
+  {
+    "id": "SK_EARTHING",
+    "name": "Earthing & Grounding",
+    "aliases": ["Earthing", "Grounding", "Earth Pit", "Lightning Protection"],
+    "category": "Electrician / Electronics",
+    "version": 1
+  },
+  {
+    "id": "SK_CAD_ELECTRICAL",
+    "name": "AutoCAD Electrical",
+    "aliases": ["AutoCAD Electrical", "AutoCAD", "CAD Electrical", "EPlan"],
+    "category": "Electrician / Electronics",
+    "version": 1
+  },
+  {
+    "id": "SK_RELAYS",
+    "name": "Relays & Protection Systems",
+    "aliases": ["Relay Protection", "Relays", "Overcurrent Relay", "Contactor"],
+    "category": "Electrician / Electronics",
+    "version": 1
+  },
+  {
+    "id": "SK_CPR_BLS",
+    "name": "CPR and Basic Life Support",
+    "aliases": ["CPR", "BLS", "Basic Life Support", "Cardiopulmonary Resuscitation"],
+    "category": "Healthcare Support",
+    "version": 1
+  },
+  {
+    "id": "SK_PHLEBOTOMY",
+    "name": "Phlebotomy & Blood Sample Collection",
+    "aliases": ["Phlebotomy", "Blood Sampling", "Venipuncture", "Blood Draw"],
+    "category": "Healthcare Support",
+    "version": 1
+  },
+  {
+    "id": "SK_VITAL_SIGNS",
+    "name": "Vital Signs Monitoring",
+    "aliases": ["Vital Signs", "Vitals", "BP Monitoring", "Pulse Oximetry"],
+    "category": "Healthcare Support",
+    "version": 1
+  },
+  {
+    "id": "SK_PATIENT_CARE",
+    "name": "Patient Care & Bedside Assistance",
+    "aliases": ["Patient Care", "Bedside Care", "Patient Assistance", "Nursing Care"],
+    "category": "Healthcare Support",
+    "version": 1
+  },
+  {
+    "id": "SK_INFECTION_CONTROL",
+    "name": "Infection Control & Sanitization",
+    "aliases": ["Infection Control", "Sterilization", "Biohazard Safety", "Sanitization"],
+    "category": "Healthcare Support",
+    "version": 1
+  },
+  {
+    "id": "SK_EHR",
+    "name": "Electronic Health Records (EHR)",
+    "aliases": ["EHR", "EMR", "Electronic Medical Records", "Health Informatics"],
+    "category": "Healthcare Support",
+    "version": 1
+  },
+  {
+    "id": "SK_MED_ADMIN",
+    "name": "Medication Administration",
+    "aliases": ["Medication Administration", "Drug Administration", "Dosage Dispensing"],
+    "category": "Healthcare Support",
+    "version": 1
+  },
+  {
+    "id": "SK_FIRST_AID",
+    "name": "First Aid and Emergency Response",
+    "aliases": ["First Aid", "Emergency Response", "Triage", "First-Aid"],
+    "category": "Healthcare Support",
+    "version": 1
+  },
+  {
+    "id": "SK_ECG",
+    "name": "ECG Operation & Recording",
+    "aliases": ["ECG", "EKG", "Electrocardiogram", "12-Lead ECG"],
+    "category": "Healthcare Support",
+    "version": 1
+  },
+  {
+    "id": "SK_MEDICAL_TERMINOLOGY",
+    "name": "Medical Terminology",
+    "aliases": ["Medical Terminology", "Med Terms", "Clinical Vocab"],
+    "category": "Healthcare Support",
+    "version": 1
+  },
+  {
+    "id": "SK_WOUND_CARE",
+    "name": "Wound Dressing and Care",
+    "aliases": ["Wound Care", "Dressing", "Bandaging", "Sterile Dressing"],
+    "category": "Healthcare Support",
+    "version": 1
+  },
+  {
+    "id": "SK_PATIENT_TRANSFER",
+    "name": "Patient Mobility & Transfer",
+    "aliases": ["Patient Mobility", "Patient Transfer", "Wheelchair Handling"],
+    "category": "Healthcare Support",
+    "version": 1
+  },
+  {
+    "id": "SK_POS_SYSTEMS",
+    "name": "Point of Sale (POS) Systems",
+    "aliases": ["POS", "Point of Sale", "Cash Register", "POS Billing"],
+    "category": "Retail / Sales",
+    "version": 1
+  },
+  {
+    "id": "SK_INVENTORY_MGMT",
+    "name": "Inventory Management",
+    "aliases": ["Inventory Management", "Stock Management", "Stock Auditing", "Inventory Control"],
+    "category": "Retail / Sales",
+    "version": 1
+  },
+  {
+    "id": "SK_CUSTOMER_SERVICE",
+    "name": "Customer Relationship & Service",
+    "aliases": ["Customer Service", "Customer Support", "Client Service", "Guest Relations"],
+    "category": "Retail / Sales",
+    "version": 1
+  },
+  {
+    "id": "SK_MERCHANDISING",
+    "name": "Visual Merchandising & Display",
+    "aliases": ["Merchandising", "Visual Merchandising", "Product Display", "Planogram"],
+    "category": "Retail / Sales",
+    "version": 1
+  },
+  {
+    "id": "SK_CASH_HANDLING",
+    "name": "Cash Handling & Reconciliation",
+    "aliases": ["Cash Handling", "Cash Balancing", "Till Reconciliation", "Cashiering"],
+    "category": "Retail / Sales",
+    "version": 1
+  },
+  {
+    "id": "SK_UPSELLING",
+    "name": "Upselling and Cross-selling",
+    "aliases": ["Upselling", "Cross-selling", "Product Promotion", "Add-on Sales"],
+    "category": "Retail / Sales",
+    "version": 1
+  },
+  {
+    "id": "SK_CRM_RETAIL",
+    "name": "Retail CRM Software",
+    "aliases": ["CRM", "Salesforce Retail", "Zoho CRM", "Customer Management"],
+    "category": "Retail / Sales",
+    "version": 1
+  },
+  {
+    "id": "SK_SUPPLY_CHAIN",
+    "name": "Supply Chain Coordination",
+    "aliases": ["Supply Chain", "Logistics Coordination", "Vendor Management", "Procurement"],
+    "category": "Retail / Sales",
+    "version": 1
+  },
+  {
+    "id": "SK_STORE_OPS",
+    "name": "Store Operations & Opening/Closing",
+    "aliases": ["Store Operations", "Floor Management", "Store Opening/Closing"],
+    "category": "Retail / Sales",
+    "version": 1
+  },
+  {
+    "id": "SK_LOSS_PREVENTION",
+    "name": "Loss Prevention & Asset Protection",
+    "aliases": ["Loss Prevention", "Shoplifting Prevention", "Asset Protection", "Inventory Shrinkage"],
+    "category": "Retail / Sales",
+    "version": 1
+  },
+  {
+    "id": "SK_BARCODE_SCANNING",
+    "name": "Barcode & RFID Scanning",
+    "aliases": ["Barcode Scanning", "RFID", "Handheld Scanner", "Barcode Reader"],
+    "category": "Retail / Sales",
+    "version": 1
+  },
+  {
+    "id": "SK_ORDER_FULFILLMENT",
+    "name": "E-commerce Order Fulfillment",
+    "aliases": ["Order Fulfillment", "Order Packing", "Dispatch", "Pick and Pack"],
+    "category": "Retail / Sales",
+    "version": 1
+  }
+]

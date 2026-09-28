@@ -7,6 +7,16 @@ from app.db.base import Base
 
 class Course(Base):
     __tablename__ = "courses"
+    __table_args__ = {"extend_existing": True}
+
+    def __init__(self, **kwargs):
+        if "course_id" not in kwargs:
+            c_id = kwargs.get("id", 1)
+            kwargs["course_id"] = f"COURSE-{c_id}"
+        if "department" not in kwargs:
+            kwargs["department"] = kwargs.pop("role", "Vocational Studies")
+        kwargs.pop("duration_hours", None)
+        super().__init__(**kwargs)
 
     id: Mapped[int] = mapped_column(
         Integer,

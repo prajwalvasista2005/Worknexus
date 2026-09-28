@@ -9,6 +9,7 @@ class UserSkill(Base):
     __tablename__ = "user_skills"
     __table_args__ = (
         UniqueConstraint("user_id", "skill_id", name="uq_user_skills_user_skill"),
+        {"extend_existing": True}
     )
 
     id: Mapped[int] = mapped_column(

@@ -1,0 +1,61 @@
+services:
+
+  db:
+    image: postgres:17
+    restart: always
+
+    environment:
+      POSTGRES_DB: SkillSync
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: prajwal@123
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d SkillSync"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    ports:
+      - "8000:8000"
+
+    env_file:
+      - ./backend/.env
+
+    environment:
+      DATABASE_URL: postgresql://postgres:prajwal%40123@db:5432/SkillSync
+      DB_USER: postgres
+      DB_PASSWORD: prajwal@123
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: SkillSync
+      PYTHONPATH: /app/backend:/app
+
+  frontend:
+    build: ./new-frontend
+
+    depends_on:
+      - backend
+
+    ports:
+      - "3000:3000"
+
+    environment:
+      - VITE_API_URL=http://localhost:8000
+
+volumes:
+  postgres_data:

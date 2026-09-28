@@ -27,13 +27,17 @@ def get_skills(
 @router.get(
     "/{skill_id}",
     response_model=SkillResponse,
-    summary="Get skill by ID",
+    summary="Get skill by ID or code",
 )
 def get_skill(
-    skill_id: int,
+    skill_id: str,
     db: Session = Depends(get_db),
 ):
-    skill = SkillService.get_skill_by_id(db=db, skill_id=skill_id)
+    skill = None
+    if skill_id.isdigit():
+        skill = SkillService.get_skill_by_id(db=db, skill_id=int(skill_id))
+    if not skill:
+        skill = SkillService.get_skill_by_code(db=db, skill_code=skill_id)
     if not skill:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

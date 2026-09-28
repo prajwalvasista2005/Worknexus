@@ -1,10 +1,7 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+"""
+Database engine and session factory module.
+Re-exports canonical engine, SessionLocal, and get_db from session.py to eliminate dual-engine duplication.
+"""
+from app.db.session import engine, SessionLocal, get_db
 
-from app.config import settings
-engine=create_engine(settings.DATABASE_URL)
-SessionLocal=sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine
-)
+__all__ = ["engine", "SessionLocal", "get_db"]

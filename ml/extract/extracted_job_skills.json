@@ -1,0 +1,4438 @@
+{
+  "metadata": {
+    "phase": "2",
+    "pipeline": "batch_job_skill_extraction",
+    "extractor": "ml.extract.extract_skills",
+    "taxonomy_version": "1",
+    "total_input_jobs": 295,
+    "total_processed_jobs": 295,
+    "total_failed_jobs": 0,
+    "total_jobs_with_skills": 211,
+    "total_zero_skill_jobs": 84,
+    "total_skill_mentions": 536,
+    "unique_skills_detected": 30
+  },
+  "jobs": [
+    {
+      "job_id": "linkedin_india_3471657636",
+      "source": "linkedin_india",
+      "source_record_id": "3471657636",
+      "title": "Data Analyst, Trilogy (Remote) - $60,000/year USD",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3474349934",
+      "source": "linkedin_india",
+      "source_record_id": "3474349934",
+      "title": "Data Analyst - WFH",
+      "skills": [
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3472816027",
+      "source": "linkedin_india",
+      "source_record_id": "3472816027",
+      "title": "Data Analyst",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SUPPLY_CHAIN",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3473311511",
+      "source": "linkedin_india",
+      "source_record_id": "3473311511",
+      "title": "Data Analyst",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3472504479",
+      "source": "linkedin_india",
+      "source_record_id": "3472504479",
+      "title": "Data Analyst",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3471658510",
+      "source": "linkedin_india",
+      "source_record_id": "3471658510",
+      "title": "Data Analyst, Trilogy (Remote) - $60,000/year USD",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3472808738",
+      "source": "linkedin_india",
+      "source_record_id": "3472808738",
+      "title": "Shopify Developer",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3475061559",
+      "source": "linkedin_india",
+      "source_record_id": "3475061559",
+      "title": "Database Developer",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3473336242",
+      "source": "linkedin_india",
+      "source_record_id": "3473336242",
+      "title": "Shopify Developer",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3471883751",
+      "source": "linkedin_india",
+      "source_record_id": "3471883751",
+      "title": "Shopify Developer",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3467390929",
+      "source": "linkedin_india",
+      "source_record_id": "3467390929",
+      "title": "Data Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3472504791",
+      "source": "linkedin_india",
+      "source_record_id": "3472504791",
+      "title": "Tableau (APL)",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3470730035",
+      "source": "linkedin_india",
+      "source_record_id": "3470730035",
+      "title": "Data Engineer (Python)",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467389209",
+      "source": "linkedin_india",
+      "source_record_id": "3467389209",
+      "title": "Python Data Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3473305093",
+      "source": "linkedin_india",
+      "source_record_id": "3473305093",
+      "title": "Zoho Developer",
+      "skills": [
+        {
+          "skill_id": "SK_CRM_RETAIL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467376975",
+      "source": "linkedin_india",
+      "source_record_id": "3467376975",
+      "title": "Salesforce CPQ Developer(Looking for only Immediate Joiners)",
+      "skills": [
+        {
+          "skill_id": "SK_CRM_RETAIL",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3471880568",
+      "source": "linkedin_india",
+      "source_record_id": "3471880568",
+      "title": "Golang Developer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_NODEJS",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3470733079",
+      "source": "linkedin_india",
+      "source_record_id": "3470733079",
+      "title": "SAP Customer Data Cloud \"Business Analyst Technical\"",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467389203",
+      "source": "linkedin_india",
+      "source_record_id": "3467389203",
+      "title": "Quickbase Developer",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3472521028",
+      "source": "linkedin_india",
+      "source_record_id": "3472521028",
+      "title": "Vlocity Developer - (Freelancer)",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3467828023",
+      "source": "linkedin_india",
+      "source_record_id": "3467828023",
+      "title": "Data Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467325066",
+      "source": "linkedin_india",
+      "source_record_id": "3467325066",
+      "title": "ODI Developer - Immediate Joiner",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3471878927",
+      "source": "linkedin_india",
+      "source_record_id": "3471878927",
+      "title": "Spotfire Developer",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467360998",
+      "source": "linkedin_india",
+      "source_record_id": "3467360998",
+      "title": "Developer",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3467382822",
+      "source": "linkedin_india",
+      "source_record_id": "3467382822",
+      "title": "Smart Contract Developers(Experienced)",
+      "skills": [
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3472813954",
+      "source": "linkedin_india",
+      "source_record_id": "3472813954",
+      "title": "STIBO Lead developers (Functional)",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3474326981",
+      "source": "linkedin_india",
+      "source_record_id": "3474326981",
+      "title": "Salesforce Developer Aura LWC",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3470098797",
+      "source": "linkedin_india",
+      "source_record_id": "3470098797",
+      "title": "Developer",
+      "skills": [
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3472810165",
+      "source": "linkedin_india",
+      "source_record_id": "3472810165",
+      "title": "Salesforce Developer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3472851497",
+      "source": "linkedin_india",
+      "source_record_id": "3472851497",
+      "title": "ssrs",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3472865558",
+      "source": "linkedin_india",
+      "source_record_id": "3472865558",
+      "title": "GCP Data Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_AIRFLOW",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467356873",
+      "source": "linkedin_india",
+      "source_record_id": "3467356873",
+      "title": "Sr Data Analyst -Data Governance / Collibra",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3472506283",
+      "source": "linkedin_india",
+      "source_record_id": "3472506283",
+      "title": "Data Engineer - PySpark,Scala,EMR,Airflow,Databricks,Data Engineering,BigData,AWS - 4-12 Yrs",
+      "skills": [
+        {
+          "skill_id": "SK_AIRFLOW",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_EHR",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3473747818",
+      "source": "linkedin_india",
+      "source_record_id": "3473747818",
+      "title": "Data Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467810151",
+      "source": "linkedin_india",
+      "source_record_id": "3467810151",
+      "title": "Developer",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3470050334",
+      "source": "linkedin_india",
+      "source_record_id": "3470050334",
+      "title": "AWS Data Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_EHR",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467357432",
+      "source": "linkedin_india",
+      "source_record_id": "3467357432",
+      "title": "Azure Data Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_KUBERNETES",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3473321030",
+      "source": "linkedin_india",
+      "source_record_id": "3473321030",
+      "title": "SAS Developer",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3467329430",
+      "source": "linkedin_india",
+      "source_record_id": "3467329430",
+      "title": "Azure Pyspark",
+      "skills": [
+        {
+          "skill_id": "SK_CUSTOMER_SERVICE",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467359146",
+      "source": "linkedin_india",
+      "source_record_id": "3467359146",
+      "title": "Filenet developer",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467361056",
+      "source": "linkedin_india",
+      "source_record_id": "3467361056",
+      "title": "Salesforce Developer",
+      "skills": [
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467385379",
+      "source": "linkedin_india",
+      "source_record_id": "3467385379",
+      "title": "Salesforce Developer",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3474370726",
+      "source": "linkedin_india",
+      "source_record_id": "3474370726",
+      "title": "Salesforce Developer",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467835536",
+      "source": "linkedin_india",
+      "source_record_id": "3467835536",
+      "title": "TIBCO BW5 Development",
+      "skills": [
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3472885386",
+      "source": "linkedin_india",
+      "source_record_id": "3472885386",
+      "title": "Database Developer",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3474270673",
+      "source": "linkedin_india",
+      "source_record_id": "3474270673",
+      "title": "Salesforce Developer",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3467393249",
+      "source": "linkedin_india",
+      "source_record_id": "3467393249",
+      "title": "GCP Data Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467381520",
+      "source": "linkedin_india",
+      "source_record_id": "3467381520",
+      "title": "AWS Data Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_EHR",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3474814865",
+      "source": "linkedin_india",
+      "source_record_id": "3474814865",
+      "title": "Sr. PHP/Laravel Developer",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467323896",
+      "source": "linkedin_india",
+      "source_record_id": "3467323896",
+      "title": "PL/SQL Developer",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3472861231",
+      "source": "linkedin_india",
+      "source_record_id": "3472861231",
+      "title": "Salesforce Developer",
+      "skills": [
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467394871",
+      "source": "linkedin_india",
+      "source_record_id": "3467394871",
+      "title": "Salesforce developer with CPQ",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3470731699",
+      "source": "linkedin_india",
+      "source_record_id": "3470731699",
+      "title": "AEM-developer",
+      "skills": [
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3474329386",
+      "source": "linkedin_india",
+      "source_record_id": "3474329386",
+      "title": "Elasticsearch",
+      "skills": [
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467394021",
+      "source": "linkedin_india",
+      "source_record_id": "3467394021",
+      "title": "Tibco BW",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467392611",
+      "source": "linkedin_india",
+      "source_record_id": "3467392611",
+      "title": "Phonegap developer",
+      "skills": [
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467361818",
+      "source": "linkedin_india",
+      "source_record_id": "3467361818",
+      "title": "MSBI-SSIS",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3470065572",
+      "source": "linkedin_india",
+      "source_record_id": "3470065572",
+      "title": "ForgeRock Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3472835751",
+      "source": "linkedin_india",
+      "source_record_id": "3472835751",
+      "title": "Power Pages Developer",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3474883758",
+      "source": "linkedin_india",
+      "source_record_id": "3474883758",
+      "title": "Snaplogic Developer",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467367065",
+      "source": "linkedin_india",
+      "source_record_id": "3467367065",
+      "title": "Developer",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467375910",
+      "source": "linkedin_india",
+      "source_record_id": "3467375910",
+      "title": "#Salesforce# Golang#Mongo DB# Python#Mainframes#IBM Security Management#",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_BMS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_CRM_RETAIL",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_FASTAPI",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3474860617",
+      "source": "linkedin_india",
+      "source_record_id": "3474860617",
+      "title": "NetSuite Admin/Developer",
+      "skills": [
+        {
+          "skill_id": "SK_CUSTOMER_SERVICE",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467392205",
+      "source": "linkedin_india",
+      "source_record_id": "3467392205",
+      "title": "L2/L3 Protocol developers",
+      "skills": [
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3474698131",
+      "source": "linkedin_india",
+      "source_record_id": "3474698131",
+      "title": "Data Engineer - ETL/ELT, SQL, Datawarehousing(Mumbai)",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3471880129",
+      "source": "linkedin_india",
+      "source_record_id": "3471880129",
+      "title": "Hiring-Data Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.99
+        },
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3472591892",
+      "source": "linkedin_india",
+      "source_record_id": "3472591892",
+      "title": "Thunderhead Developer",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3463535172",
+      "source": "linkedin_india",
+      "source_record_id": "3463535172",
+      "title": "Sr Business Data Analyst (PowerBi)- Remote Work",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3471879800",
+      "source": "linkedin_india",
+      "source_record_id": "3471879800",
+      "title": "Aem developer",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3474331793",
+      "source": "linkedin_india",
+      "source_record_id": "3474331793",
+      "title": "IBM Sterling OMS Developer",
+      "skills": [
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467802155",
+      "source": "linkedin_india",
+      "source_record_id": "3467802155",
+      "title": "Informatica Developer",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3160453995",
+      "source": "linkedin_india",
+      "source_record_id": "3160453995",
+      "title": "Database Developer (MS-SQL)",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3471883106",
+      "source": "linkedin_india",
+      "source_record_id": "3471883106",
+      "title": "HCL Hiring || ASP.Net MVC || Chennai,Bangalore,Noida",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3467350708",
+      "source": "linkedin_india",
+      "source_record_id": "3467350708",
+      "title": "Data Engineering",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3472524253",
+      "source": "linkedin_india",
+      "source_record_id": "3472524253",
+      "title": "Power Apps Developer",
+      "skills": [
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3474327672",
+      "source": "linkedin_india",
+      "source_record_id": "3474327672",
+      "title": "Sr. Salesforce Developer",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3472529308",
+      "source": "linkedin_india",
+      "source_record_id": "3472529308",
+      "title": "Cloud Engineer(GCP Python)",
+      "skills": [
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_KUBERNETES",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467377446",
+      "source": "linkedin_india",
+      "source_record_id": "3467377446",
+      "title": "Informatica Developer",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3472810339",
+      "source": "linkedin_india",
+      "source_record_id": "3472810339",
+      "title": "OIC Developers",
+      "skills": [
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467303289",
+      "source": "linkedin_india",
+      "source_record_id": "3467303289",
+      "title": "Oracle PL/SQL Senior Developer",
+      "skills": [
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467381114",
+      "source": "linkedin_india",
+      "source_record_id": "3467381114",
+      "title": "Snowflake Developer",
+      "skills": [
+        {
+          "skill_id": "SK_AIRFLOW",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467358773",
+      "source": "linkedin_india",
+      "source_record_id": "3467358773",
+      "title": "Immediate joiner-.Net with Angular or Azure",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3467379190",
+      "source": "linkedin_india",
+      "source_record_id": "3467379190",
+      "title": "SailPoint Developer",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3472898654",
+      "source": "linkedin_india",
+      "source_record_id": "3472898654",
+      "title": "Lead Database Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_AIRFLOW",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3470024919",
+      "source": "linkedin_india",
+      "source_record_id": "3470024919",
+      "title": "Azure Data Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_AIRFLOW",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3472854279",
+      "source": "linkedin_india",
+      "source_record_id": "3472854279",
+      "title": "Lead Data Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_AIRFLOW",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3474306107",
+      "source": "linkedin_india",
+      "source_record_id": "3474306107",
+      "title": "Senior Data Engineer - Remote",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.99
+        },
+        {
+          "skill_id": "SK_AIRFLOW",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_EHR",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467821860",
+      "source": "linkedin_india",
+      "source_record_id": "3467821860",
+      "title": "Angular",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_NODEJS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3472836030",
+      "source": "linkedin_india",
+      "source_record_id": "3472836030",
+      "title": "Sr. SQL Developer",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467358339",
+      "source": "linkedin_india",
+      "source_record_id": "3467358339",
+      "title": "Python Developer_AWS Lambda",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3474334072",
+      "source": "linkedin_india",
+      "source_record_id": "3474334072",
+      "title": "Salesforce (Java Script) Web Developer",
+      "skills": [
+        {
+          "skill_id": "SK_CRM_RETAIL",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467359580",
+      "source": "linkedin_india",
+      "source_record_id": "3467359580",
+      "title": "Marklogic Developer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_NODEJS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3474322675",
+      "source": "linkedin_india",
+      "source_record_id": "3474322675",
+      "title": "SQL Developer/SSIS Developer/Data Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3474300793",
+      "source": "linkedin_india",
+      "source_record_id": "3474300793",
+      "title": "Senior Data Engineer - WFH",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.99
+        },
+        {
+          "skill_id": "SK_AIRFLOW",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_EHR",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3471872587",
+      "source": "linkedin_india",
+      "source_record_id": "3471872587",
+      "title": "Oracle Apex Developer",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3472530102",
+      "source": "linkedin_india",
+      "source_record_id": "3472530102",
+      "title": "Salesforce Devops Engineer",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3472815525",
+      "source": "linkedin_india",
+      "source_record_id": "3472815525",
+      "title": "Python/AWS Developer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_EHR",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "linkedin_india_3467380178",
+      "source": "linkedin_india",
+      "source_record_id": "3467380178",
+      "title": "Azure Data Engineer",
+      "skills": []
+    },
+    {
+      "job_id": "linkedin_india_3467365261",
+      "source": "linkedin_india",
+      "source_record_id": "3467365261",
+      "title": "Immediate joiner-Liferay Developer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REACT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_1",
+      "source": "naukri",
+      "source_record_id": "naukri_1",
+      "title": "Senior Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_2",
+      "source": "naukri",
+      "source_record_id": "naukri_2",
+      "title": "Senior Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_TENSORFLOW",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_3",
+      "source": "naukri",
+      "source_record_id": "naukri_3",
+      "title": "Applied Data Scientist / ML Senior Engineer (Python / SQL)",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_4",
+      "source": "naukri",
+      "source_record_id": "naukri_4",
+      "title": "Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_5",
+      "source": "naukri",
+      "source_record_id": "naukri_5",
+      "title": "Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_6",
+      "source": "naukri",
+      "source_record_id": "naukri_6",
+      "title": "Principal Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_7",
+      "source": "naukri",
+      "source_record_id": "naukri_7",
+      "title": "Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_8",
+      "source": "naukri",
+      "source_record_id": "naukri_8",
+      "title": "Expert Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_9",
+      "source": "naukri",
+      "source_record_id": "naukri_9",
+      "title": "Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_10",
+      "source": "naukri",
+      "source_record_id": "naukri_10",
+      "title": "Sr Data Scientist / Lead Data Scientist | GeakMinds | Chennai",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_11",
+      "source": "naukri",
+      "source_record_id": "naukri_11",
+      "title": "Senior Data Scientist - Machine Learning",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_12",
+      "source": "naukri",
+      "source_record_id": "naukri_12",
+      "title": "Data Scientist / Senior Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_13",
+      "source": "naukri",
+      "source_record_id": "naukri_13",
+      "title": "Sr Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_14",
+      "source": "naukri",
+      "source_record_id": "naukri_14",
+      "title": "Senior Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_15",
+      "source": "naukri",
+      "source_record_id": "naukri_15",
+      "title": "Senior Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_16",
+      "source": "naukri",
+      "source_record_id": "naukri_16",
+      "title": "Lead Python Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_17",
+      "source": "naukri",
+      "source_record_id": "naukri_17",
+      "title": "Senior Data Scientist Grade12",
+      "skills": [
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_18",
+      "source": "naukri",
+      "source_record_id": "naukri_18",
+      "title": "Senior Data Scientist Grade12",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_19",
+      "source": "naukri",
+      "source_record_id": "naukri_19",
+      "title": "Sr. Analyst - Applied Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_20",
+      "source": "naukri",
+      "source_record_id": "naukri_20",
+      "title": "Data Scientist V",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_21",
+      "source": "naukri",
+      "source_record_id": "naukri_21",
+      "title": "Manager, Data Scientist/AI and Machine Learning Specialist",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.99
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_22",
+      "source": "naukri",
+      "source_record_id": "naukri_22",
+      "title": "Digital-Process Manager-Data Scientist PM",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_23",
+      "source": "naukri",
+      "source_record_id": "naukri_23",
+      "title": "Associate Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_24",
+      "source": "naukri",
+      "source_record_id": "naukri_24",
+      "title": "Senior Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_25",
+      "source": "naukri",
+      "source_record_id": "naukri_25",
+      "title": "Senior Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_26",
+      "source": "naukri",
+      "source_record_id": "naukri_26",
+      "title": "Junior Data Analyst/ Scientist- Fresher Position",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.99
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_27",
+      "source": "naukri",
+      "source_record_id": "naukri_27",
+      "title": "Sr. Clinical Data Programming Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_28",
+      "source": "naukri",
+      "source_record_id": "naukri_28",
+      "title": "Manager, Senior Clinical Data Scientist, Clinical Data Sciences",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_29",
+      "source": "naukri",
+      "source_record_id": "naukri_29",
+      "title": "Senior Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_SUPPLY_CHAIN",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_30",
+      "source": "naukri",
+      "source_record_id": "naukri_30",
+      "title": "Digital-Senior Process Manager- Data Scientist SPM",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_31",
+      "source": "naukri",
+      "source_record_id": "naukri_31",
+      "title": "Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.99
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_32",
+      "source": "naukri",
+      "source_record_id": "naukri_32",
+      "title": "Data Scientist - Machine learning AI",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_33",
+      "source": "naukri",
+      "source_record_id": "naukri_33",
+      "title": "DATA SCIENTIST",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_34",
+      "source": "naukri",
+      "source_record_id": "naukri_34",
+      "title": "Principal Data Scientist - Digital Marketing",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_35",
+      "source": "naukri",
+      "source_record_id": "naukri_35",
+      "title": "Manager Applied Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_36",
+      "source": "naukri",
+      "source_record_id": "naukri_36",
+      "title": "Sr Data Scientist and Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_TENSORFLOW",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_37",
+      "source": "naukri",
+      "source_record_id": "naukri_37",
+      "title": "Data Scientist/ Sr Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_38",
+      "source": "naukri",
+      "source_record_id": "naukri_38",
+      "title": "Manager, Lead Data Scientist (R CoE)",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_39",
+      "source": "naukri",
+      "source_record_id": "naukri_39",
+      "title": "Data Scientist: Artificial Intelligence",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_40",
+      "source": "naukri",
+      "source_record_id": "naukri_40",
+      "title": "Data Scientist (AVP & Manager Roles)",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_41",
+      "source": "naukri",
+      "source_record_id": "naukri_41",
+      "title": "Principal Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_42",
+      "source": "naukri",
+      "source_record_id": "naukri_42",
+      "title": "Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_43",
+      "source": "naukri",
+      "source_record_id": "naukri_43",
+      "title": "Data Scientist: Advanced Analytics",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_44",
+      "source": "naukri",
+      "source_record_id": "naukri_44",
+      "title": "Data Scientist: Artificial Intelligence",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_45",
+      "source": "naukri",
+      "source_record_id": "naukri_45",
+      "title": "Data Scientist / Lead Data Engineer (SQL, Azure Synposys, Bigdata)",
+      "skills": [
+        {
+          "skill_id": "SK_EHR",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_46",
+      "source": "naukri",
+      "source_record_id": "naukri_46",
+      "title": "VP-Data Scientist-AI/ML with Leading Investment Bank",
+      "skills": [
+        {
+          "skill_id": "SK_PYTORCH",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_TENSORFLOW",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_47",
+      "source": "naukri",
+      "source_record_id": "naukri_47",
+      "title": "Senior Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_48",
+      "source": "naukri",
+      "source_record_id": "naukri_48",
+      "title": "Cognitive/AI Senior Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_49",
+      "source": "naukri",
+      "source_record_id": "naukri_49",
+      "title": "Analyst - Applied Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_50",
+      "source": "naukri",
+      "source_record_id": "naukri_50",
+      "title": "Research Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_51",
+      "source": "naukri",
+      "source_record_id": "naukri_51",
+      "title": "Freshers For Junior Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_52",
+      "source": "naukri",
+      "source_record_id": "naukri_52",
+      "title": "Lead - Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_53",
+      "source": "naukri",
+      "source_record_id": "naukri_53",
+      "title": "Data Scientist / Analyst",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_54",
+      "source": "naukri",
+      "source_record_id": "naukri_54",
+      "title": "Data Scientist - Machine Learning/APICS",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_55",
+      "source": "naukri",
+      "source_record_id": "naukri_55",
+      "title": "Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.99
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_56",
+      "source": "naukri",
+      "source_record_id": "naukri_56",
+      "title": "Assistant Manager/Manager/Senior Manager - Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_57",
+      "source": "naukri",
+      "source_record_id": "naukri_57",
+      "title": "Senior Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_58",
+      "source": "naukri",
+      "source_record_id": "naukri_58",
+      "title": "Job Opportunity || Data Scientist || HCL Technologies",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTORCH",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_TENSORFLOW",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_59",
+      "source": "naukri",
+      "source_record_id": "naukri_59",
+      "title": "Clinical Data Management Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_60",
+      "source": "naukri",
+      "source_record_id": "naukri_60",
+      "title": "Data Scientist: Advanced Analytics",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_61",
+      "source": "naukri",
+      "source_record_id": "naukri_61",
+      "title": "Data Scientist - KONE India Pvt. LTD",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.99
+        },
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_62",
+      "source": "naukri",
+      "source_record_id": "naukri_62",
+      "title": "Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_63",
+      "source": "naukri",
+      "source_record_id": "naukri_63",
+      "title": "Data Scientist - Leading Analytics Product Company in Mumbai",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_64",
+      "source": "naukri",
+      "source_record_id": "naukri_64",
+      "title": "Data Scientist - R/Python",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_65",
+      "source": "naukri",
+      "source_record_id": "naukri_65",
+      "title": "Data Scientist - Machine Learning",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_66",
+      "source": "naukri",
+      "source_record_id": "naukri_66",
+      "title": "Sr. Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.99
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_67",
+      "source": "naukri",
+      "source_record_id": "naukri_67",
+      "title": "Sr. Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_68",
+      "source": "naukri",
+      "source_record_id": "naukri_68",
+      "title": "Senior Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_69",
+      "source": "naukri",
+      "source_record_id": "naukri_69",
+      "title": "Digital-Senior Process Manager- Data Scientist SPM",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.99
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_70",
+      "source": "naukri",
+      "source_record_id": "naukri_70",
+      "title": "Senior Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_71",
+      "source": "naukri",
+      "source_record_id": "naukri_71",
+      "title": "Sr Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_72",
+      "source": "naukri",
+      "source_record_id": "naukri_72",
+      "title": "Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_73",
+      "source": "naukri",
+      "source_record_id": "naukri_73",
+      "title": "Data Scientist/ Analyst Specialist",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_74",
+      "source": "naukri",
+      "source_record_id": "naukri_74",
+      "title": "Data Scientist (freelance)",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_75",
+      "source": "naukri",
+      "source_record_id": "naukri_75",
+      "title": "Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_76",
+      "source": "naukri",
+      "source_record_id": "naukri_76",
+      "title": "Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_77",
+      "source": "naukri",
+      "source_record_id": "naukri_77",
+      "title": "Rolls-Royce Data Labs : Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_DATA_VIZ",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PANDAS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_78",
+      "source": "naukri",
+      "source_record_id": "naukri_78",
+      "title": "Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_NUMPY",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PANDAS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTORCH",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_79",
+      "source": "naukri",
+      "source_record_id": "naukri_79",
+      "title": "Staff Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_80",
+      "source": "naukri",
+      "source_record_id": "naukri_80",
+      "title": "Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_81",
+      "source": "naukri",
+      "source_record_id": "naukri_81",
+      "title": "Data Scientist: Artificial Intelligence",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_83",
+      "source": "naukri",
+      "source_record_id": "naukri_83",
+      "title": "Staff Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_84",
+      "source": "naukri",
+      "source_record_id": "naukri_84",
+      "title": "Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_85",
+      "source": "naukri",
+      "source_record_id": "naukri_85",
+      "title": "Data Scientist / Machine learning Engineer- Python/NLP",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_86",
+      "source": "naukri",
+      "source_record_id": "naukri_86",
+      "title": "Senior/ Lead Data Scientist - Market Mix Modelling ( MMM)",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_87",
+      "source": "naukri",
+      "source_record_id": "naukri_87",
+      "title": "Data Scientist-Client Engineering",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_88",
+      "source": "naukri",
+      "source_record_id": "naukri_88",
+      "title": "Sr. Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_89",
+      "source": "naukri",
+      "source_record_id": "naukri_89",
+      "title": "Sr Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SUPPLY_CHAIN",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_90",
+      "source": "naukri",
+      "source_record_id": "naukri_90",
+      "title": "Senior Data Scientist -Python+ML(5-7 years)",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_TENSORFLOW",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_91",
+      "source": "naukri",
+      "source_record_id": "naukri_91",
+      "title": "Hiring Senior Data Scientist - AI ( Remote) || Hanu",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_92",
+      "source": "naukri",
+      "source_record_id": "naukri_92",
+      "title": "Senior Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SUPPLY_CHAIN",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_93",
+      "source": "naukri",
+      "source_record_id": "naukri_93",
+      "title": "Data Scientist Opportunity with PayU - Diversity Hiring",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTORCH",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_94",
+      "source": "naukri",
+      "source_record_id": "naukri_94",
+      "title": "Data Scientist 1",
+      "skills": []
+    },
+    {
+      "job_id": "naukri_naukri_95",
+      "source": "naukri",
+      "source_record_id": "naukri_95",
+      "title": "Data Scientist: Advanced Analytics",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_96",
+      "source": "naukri",
+      "source_record_id": "naukri_96",
+      "title": "Data Scientist: Advanced Analytics",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_97",
+      "source": "naukri",
+      "source_record_id": "naukri_97",
+      "title": "Data Scientist: Artificial Intelligence",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_98",
+      "source": "naukri",
+      "source_record_id": "naukri_98",
+      "title": "Data Scientist: Artificial Intelligence",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_99",
+      "source": "naukri",
+      "source_record_id": "naukri_99",
+      "title": "Data Scientist",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "naukri_naukri_100",
+      "source": "naukri",
+      "source_record_id": "naukri_100",
+      "title": "Associate Data Scientist",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_c0ca96e7-85df-50df-a64e-d934cd02a170",
+      "source": "parquet",
+      "source_record_id": "c0ca96e7-85df-50df-a64e-d934cd02a170",
+      "title": "10 + Blockchain Nodes / Masternodes to set up",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_64f4b7ea-36e4-5bdd-a8b1-185f32f7dc7f",
+      "source": "parquet",
+      "source_record_id": "64f4b7ea-36e4-5bdd-a8b1-185f32f7dc7f",
+      "title": "10 .NET Developers (Middle and Senior level)",
+      "skills": [
+        {
+          "skill_id": "SK_REACT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_b9a1303e-dd0c-5ed1-8f62-be2bc4c7da4f",
+      "source": "parquet",
+      "source_record_id": "b9a1303e-dd0c-5ed1-8f62-be2bc4c7da4f",
+      "title": "10X Engineer (co-founder, #4 employee, USD 11-12k, 1-4% equity)",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REACT",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_99cb3f4a-9b4b-53d9-9a3b-bab2c22da346",
+      "source": "parquet",
+      "source_record_id": "99cb3f4a-9b4b-53d9-9a3b-bab2c22da346",
+      "title": "16 - Amazon Brand Manager",
+      "skills": [
+        {
+          "skill_id": "SK_INVENTORY_MGMT",
+          "confidence_score": 0.99
+        },
+        {
+          "skill_id": "SK_CUSTOMER_SERVICE",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SUPPLY_CHAIN",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_bc1419f7-28e2-582b-8d53-22e28b2f0210",
+      "source": "parquet",
+      "source_record_id": "bc1419f7-28e2-582b-8d53-22e28b2f0210",
+      "title": "16 - Amazon Brand Manager",
+      "skills": [
+        {
+          "skill_id": "SK_INVENTORY_MGMT",
+          "confidence_score": 0.99
+        },
+        {
+          "skill_id": "SK_CUSTOMER_SERVICE",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SUPPLY_CHAIN",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_30fa3946-0a8c-52c4-b1e7-3e5bfd80647c",
+      "source": "parquet",
+      "source_record_id": "30fa3946-0a8c-52c4-b1e7-3e5bfd80647c",
+      "title": "1806/01 PHP Developer",
+      "skills": [
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_b6f85c03-a633-5429-9172-821c43d23dfc",
+      "source": "parquet",
+      "source_record_id": "b6f85c03-a633-5429-9172-821c43d23dfc",
+      "title": "1806/03 Sales Manager",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_5ce407f2-4243-5eef-a3da-8450ae29d3b5",
+      "source": "parquet",
+      "source_record_id": "5ce407f2-4243-5eef-a3da-8450ae29d3b5",
+      "title": "1807/01 Middle+ / Senior marketing specialist",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_1dbc90e3-bc38-53b7-af46-bda5e1775c56",
+      "source": "parquet",
+      "source_record_id": "1dbc90e3-bc38-53b7-af46-bda5e1775c56",
+      "title": "1807/04 Business Development Manager",
+      "skills": [
+        {
+          "skill_id": "SK_CRM_RETAIL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_cd7fe1db-fb8c-5b8d-898b-49d6346b0f2e",
+      "source": "parquet",
+      "source_record_id": "cd7fe1db-fb8c-5b8d-898b-49d6346b0f2e",
+      "title": "1812/35 Middle DataBase developer",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_b326dd43-41f3-53b2-a1d8-63bed999aea8",
+      "source": "parquet",
+      "source_record_id": "b326dd43-41f3-53b2-a1d8-63bed999aea8",
+      "title": "1815/06 Lead/Senior Backend Engineer (Python)",
+      "skills": [
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_KUBERNETES",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTORCH",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_TENSORFLOW",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_5a2df212-d3cf-5223-8c79-6d9421826e99",
+      "source": "parquet",
+      "source_record_id": "5a2df212-d3cf-5223-8c79-6d9421826e99",
+      "title": "1831/29 Senior Java Developer",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_NODEJS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_4284f37e-1a57-5d53-aa11-6d6f8ba1ec9d",
+      "source": "parquet",
+      "source_record_id": "4284f37e-1a57-5d53-aa11-6d6f8ba1ec9d",
+      "title": "1913/06 Trainee/Junior Database developer",
+      "skills": [
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_c2d24e11-fdcd-523f-a390-6317c258b8cf",
+      "source": "parquet",
+      "source_record_id": "c2d24e11-fdcd-523f-a390-6317c258b8cf",
+      "title": "1919/08 Middle Python Developer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_761f5073-f471-51df-b9c9-7705a0369b8e",
+      "source": "parquet",
+      "source_record_id": "761f5073-f471-51df-b9c9-7705a0369b8e",
+      "title": "1919/10 Junior Ruby on Rails Developer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_79f61014-570d-5860-adc2-1caa8bce7430",
+      "source": "parquet",
+      "source_record_id": "79f61014-570d-5860-adc2-1caa8bce7430",
+      "title": "1926/05 DevOps Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REACT",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_0ee0827c-8b40-530a-b16f-b95d24d32b70",
+      "source": "parquet",
+      "source_record_id": "0ee0827c-8b40-530a-b16f-b95d24d32b70",
+      "title": "1926/07 Senior Java Software Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_f594db26-4594-5710-8c51-dbe79a9d49cc",
+      "source": "parquet",
+      "source_record_id": "f594db26-4594-5710-8c51-dbe79a9d49cc",
+      "title": "1940 Middle Java Developer + Welcome Bonus!",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_KUBERNETES",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_TELEMATICS",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_22d230a7-669d-5c5a-be97-bc7980419e1b",
+      "source": "parquet",
+      "source_record_id": "22d230a7-669d-5c5a-be97-bc7980419e1b",
+      "title": "1C/Baf developer",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_30e87102-4df5-5a48-a746-8811475e483b",
+      "source": "parquet",
+      "source_record_id": "30e87102-4df5-5a48-a746-8811475e483b",
+      "title": "1C bas erp",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_2c6d9770-5bf4-51dd-b4e8-bcd857879541",
+      "source": "parquet",
+      "source_record_id": "2c6d9770-5bf4-51dd-b4e8-bcd857879541",
+      "title": "1C Engineer",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_ddcdf438-aa18-5c11-919b-e4f12377a5dc",
+      "source": "parquet",
+      "source_record_id": "ddcdf438-aa18-5c11-919b-e4f12377a5dc",
+      "title": "1C\u00a0QA Specialist",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_1c8dd404-6909-58df-bbe4-705b3b2f1871",
+      "source": "parquet",
+      "source_record_id": "1c8dd404-6909-58df-bbe4-705b3b2f1871",
+      "title": "1C Solution and Support Developer",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_e11eff69-5736-589b-aeb7-4e1e2d85d54f",
+      "source": "parquet",
+      "source_record_id": "e11eff69-5736-589b-aeb7-4e1e2d85d54f",
+      "title": "1Full Stack Software Engineer - NY Startup (React, Node, REST API) + \u041e\u043f\u0446\u0456\u043e\u043d!",
+      "skills": [
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_NODEJS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REACT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_fa22a869-2b55-5bbb-9875-d3d688a73251",
+      "source": "parquet",
+      "source_record_id": "fa22a869-2b55-5bbb-9875-d3d688a73251",
+      "title": "1.Middle/Senior Embedded C/C++",
+      "skills": [
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SCADA",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_408a5918-20b9-57b8-8a58-ff2ef355c43b",
+      "source": "parquet",
+      "source_record_id": "408a5918-20b9-57b8-8a58-ff2ef355c43b",
+      "title": "#1 Senior Recruiter",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_85a70afa-cef9-5a10-88e8-5d7aac3328e9",
+      "source": "parquet",
+      "source_record_id": "85a70afa-cef9-5a10-88e8-5d7aac3328e9",
+      "title": "1st / 2nd Line IT Support Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_CUSTOMER_SERVICE",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_bc1b694a-544c-5c9a-957a-565f91bac3b7",
+      "source": "parquet",
+      "source_record_id": "bc1b694a-544c-5c9a-957a-565f91bac3b7",
+      "title": "1st and 2nd Level Support",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_4c940d37-cd24-5c2f-8769-5fb69c990c1f",
+      "source": "parquet",
+      "source_record_id": "4c940d37-cd24-5c2f-8769-5fb69c990c1f",
+      "title": "1st level customer support - FLUENT ENGLISH",
+      "skills": [
+        {
+          "skill_id": "SK_CUSTOMER_SERVICE",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_b3916c69-0670-5cb3-bfb7-e5b2fd3cf675",
+      "source": "parquet",
+      "source_record_id": "b3916c69-0670-5cb3-bfb7-e5b2fd3cf675",
+      "title": "1st line Customer Support Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_CUSTOMER_SERVICE",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_b591b7c5-212d-57de-bc7c-dec40e6c70b7",
+      "source": "parquet",
+      "source_record_id": "b591b7c5-212d-57de-bc7c-dec40e6c70b7",
+      "title": "1st Line Customer Support (night shifts)",
+      "skills": [
+        {
+          "skill_id": "SK_CUSTOMER_SERVICE",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_2e7aeb94-d9f8-52b0-8c2f-6278d0c57993",
+      "source": "parquet",
+      "source_record_id": "2e7aeb94-d9f8-52b0-8c2f-6278d0c57993",
+      "title": "1st Line Support Engineer",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_20cd2d93-0912-58e6-b838-fe3f8913ea61",
+      "source": "parquet",
+      "source_record_id": "20cd2d93-0912-58e6-b838-fe3f8913ea61",
+      "title": "1st. Line Support Engineer / Customer Success Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_CRM_RETAIL",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_CUSTOMER_SERVICE",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_UPSELLING",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_d75ce0b1-52ae-58a3-b527-941c157c2dd6",
+      "source": "parquet",
+      "source_record_id": "d75ce0b1-52ae-58a3-b527-941c157c2dd6",
+      "title": "1st. Line Support Engineer / Customer Success Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_CRM_RETAIL",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_CUSTOMER_SERVICE",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_UPSELLING",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_21b6b51d-a6c3-5125-b50e-c3a2c86588b5",
+      "source": "parquet",
+      "source_record_id": "21b6b51d-a6c3-5125-b50e-c3a2c86588b5",
+      "title": "1st Sales Development Representative",
+      "skills": [
+        {
+          "skill_id": "SK_CRM_RETAIL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_c90c29c1-4539-520b-8fba-e0e1f9973467",
+      "source": "parquet",
+      "source_record_id": "c90c29c1-4539-520b-8fba-e0e1f9973467",
+      "title": "1 to 4 Senior Backend .NET Developers",
+      "skills": [
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_92d5c93e-4cc1-5d7b-94fb-bcaf712e995f",
+      "source": "parquet",
+      "source_record_id": "92d5c93e-4cc1-5d7b-94fb-bcaf712e995f",
+      "title": "2004/07 Senior BackEnd Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_KUBERNETES",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_390b30c2-710d-5524-81a7-fd4418502465",
+      "source": "parquet",
+      "source_record_id": "390b30c2-710d-5524-81a7-fd4418502465",
+      "title": "2004/12 Database Administrator (DBA)",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_734ee1ed-c97c-5dc3-ab26-77ace2a90b28",
+      "source": "parquet",
+      "source_record_id": "734ee1ed-c97c-5dc3-ab26-77ace2a90b28",
+      "title": "2004/23 RoR Full Stack Developer",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_13285fa3-5b45-59a5-8f6d-31690a71cbc6",
+      "source": "parquet",
+      "source_record_id": "13285fa3-5b45-59a5-8f6d-31690a71cbc6",
+      "title": "2004/25 Middle Full Stack Developer",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REACT",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_6e732f79-f82a-5774-b0d6-dec36a943aef",
+      "source": "parquet",
+      "source_record_id": "6e732f79-f82a-5774-b0d6-dec36a943aef",
+      "title": "2004/30 Senior Software Development Engineer (Java)",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_cca4c5cd-8d55-5f05-aeb9-adebb15c10d0",
+      "source": "parquet",
+      "source_record_id": "cca4c5cd-8d55-5f05-aeb9-adebb15c10d0",
+      "title": "2004/35 Senior Java Developer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_eb6b0be6-1311-5d44-94c2-8d5ff9abfbf7",
+      "source": "parquet",
+      "source_record_id": "eb6b0be6-1311-5d44-94c2-8d5ff9abfbf7",
+      "title": "2004/37 Senior Back End Engineer (Python)",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_KUBERNETES",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_e19db489-2bb8-5763-8409-01c4fe68df40",
+      "source": "parquet",
+      "source_record_id": "e19db489-2bb8-5763-8409-01c4fe68df40",
+      "title": "2004/38 Senior DevOps Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_KUBERNETES",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_NODEJS",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_5297a7c7-6722-5684-8378-e6567dede5f8",
+      "source": "parquet",
+      "source_record_id": "5297a7c7-6722-5684-8378-e6567dede5f8",
+      "title": "2004/45 Senior DevOps Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_64a99699-7245-548a-a3ad-7d32b787d84e",
+      "source": "parquet",
+      "source_record_id": "64a99699-7245-548a-a3ad-7d32b787d84e",
+      "title": "2004/51 SRE Developer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_KUBERNETES",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_2003e579-d1a2-5882-9afd-f70192711bc1",
+      "source": "parquet",
+      "source_record_id": "2003e579-d1a2-5882-9afd-f70192711bc1",
+      "title": "2004/52 Senior Full Stack Developer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_93224c9a-8b8b-5973-a8b2-40ddd264c47e",
+      "source": "parquet",
+      "source_record_id": "93224c9a-8b8b-5973-a8b2-40ddd264c47e",
+      "title": "2004/53 Full Stack Developer",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_NODEJS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_ca98c09c-f084-5156-ba83-5c9cd151b1de",
+      "source": "parquet",
+      "source_record_id": "ca98c09c-f084-5156-ba83-5c9cd151b1de",
+      "title": "2014/02 Zoho CRM Developer",
+      "skills": [
+        {
+          "skill_id": "SK_CRM_RETAIL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_dd2f0eb3-08b6-512e-be18-ef0363d9970f",
+      "source": "parquet",
+      "source_record_id": "dd2f0eb3-08b6-512e-be18-ef0363d9970f",
+      "title": "2016/05 Junior+/Middle+/Senior IT Sales Manager",
+      "skills": [
+        {
+          "skill_id": "SK_UPSELLING",
+          "confidence_score": 0.99
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_6e4dfb17-0780-5cf1-93a6-6c76fdece7f6",
+      "source": "parquet",
+      "source_record_id": "6e4dfb17-0780-5cf1-93a6-6c76fdece7f6",
+      "title": "2017/07 Python Developer (Middle+)",
+      "skills": [
+        {
+          "skill_id": "SK_AIRFLOW",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_KUBERNETES",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PANDAS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SCIKIT_LEARN",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_TENSORFLOW",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_8a5a9381-711b-53d8-9eae-5a23bb8a6049",
+      "source": "parquet",
+      "source_record_id": "8a5a9381-711b-53d8-9eae-5a23bb8a6049",
+      "title": "2017/08 Middle DevOps Engineer (Kubernetes)",
+      "skills": [
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.99
+        },
+        {
+          "skill_id": "SK_AIRFLOW",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_KUBERNETES",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_bb013fed-800a-57cd-ba22-f2be041d7022",
+      "source": "parquet",
+      "source_record_id": "bb013fed-800a-57cd-ba22-f2be041d7022",
+      "title": "2017/12 Data Scientist (Middle/Senior)",
+      "skills": [
+        {
+          "skill_id": "SK_AIRFLOW",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_KUBERNETES",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SCIKIT_LEARN",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SPARK",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_TENSORFLOW",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_c8952883-9659-5993-b02b-91c59f421073",
+      "source": "parquet",
+      "source_record_id": "c8952883-9659-5993-b02b-91c59f421073",
+      "title": "2022/02 Full-Stack Developer (Ruby)",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_0f0baae9-23a8-512c-a71a-f9c268fb95b4",
+      "source": "parquet",
+      "source_record_id": "0f0baae9-23a8-512c-a71a-f9c268fb95b4",
+      "title": "2025/06 Production Specialist/Technical Support",
+      "skills": [
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_ae7272ac-9dab-5d84-80be-5b95fd8c9945",
+      "source": "parquet",
+      "source_record_id": "ae7272ac-9dab-5d84-80be-5b95fd8c9945",
+      "title": "2026/01 Flutter Developer",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_abd152aa-f2cf-5732-8830-78ce259c93e6",
+      "source": "parquet",
+      "source_record_id": "abd152aa-f2cf-5732-8830-78ce259c93e6",
+      "title": "2036/03 PHP developer",
+      "skills": [
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_NODEJS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REACT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_29f75f46-4e6b-5c26-94fb-788ca6a29645",
+      "source": "parquet",
+      "source_record_id": "29f75f46-4e6b-5c26-94fb-788ca6a29645",
+      "title": "2037/02 Middle/Senior React developer (with Java experience)",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REACT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_f830bf14-836d-50a7-a511-79e676e65a94",
+      "source": "parquet",
+      "source_record_id": "f830bf14-836d-50a7-a511-79e676e65a94",
+      "title": "2037/03 Middle/Senior Python Developer",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_759c0edc-e6a8-50c8-9be5-2cb593a0dffd",
+      "source": "parquet",
+      "source_record_id": "759c0edc-e6a8-50c8-9be5-2cb593a0dffd",
+      "title": "2037/03 Middle/Senior Python Developer",
+      "skills": [
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_f173e093-1292-5732-a93f-638a8bb9320c",
+      "source": "parquet",
+      "source_record_id": "f173e093-1292-5732-a93f-638a8bb9320c",
+      "title": "2040/01 Marketing Manager",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_d7f59265-ed25-5c5a-925d-86475012dd8b",
+      "source": "parquet",
+      "source_record_id": "d7f59265-ed25-5c5a-925d-86475012dd8b",
+      "title": "2040/02 Internet Marketer",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_48ca4231-72a3-5001-8f68-5d473441f777",
+      "source": "parquet",
+      "source_record_id": "48ca4231-72a3-5001-8f68-5d473441f777",
+      "title": "2041/06 Senior Solution Architect/ Blockchain Expert",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_NODEJS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_56a54bef-4eb5-5093-9ed8-cd546825210e",
+      "source": "parquet",
+      "source_record_id": "56a54bef-4eb5-5093-9ed8-cd546825210e",
+      "title": "2042/01 Middle Front End Developer",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REACT",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_3ead4f15-b585-5019-bc7a-d8aac7bdd81b",
+      "source": "parquet",
+      "source_record_id": "3ead4f15-b585-5019-bc7a-d8aac7bdd81b",
+      "title": "2043/06 Middle Java Developer",
+      "skills": [
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_70e699e1-42b4-5b49-8007-83a5578aac0e",
+      "source": "parquet",
+      "source_record_id": "70e699e1-42b4-5b49-8007-83a5578aac0e",
+      "title": "2045/01 Middle Python Developer",
+      "skills": [
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REACT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_4efcfbfe-5b76-52eb-9d16-fbc9cabe240a",
+      "source": "parquet",
+      "source_record_id": "4efcfbfe-5b76-52eb-9d16-fbc9cabe240a",
+      "title": "2045/02 Middle Python Web Developer",
+      "skills": [
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_KUBERNETES",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.9
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_2f23ba64-4e84-5a4f-ab59-56b5f844a60c",
+      "source": "parquet",
+      "source_record_id": "2f23ba64-4e84-5a4f-ab59-56b5f844a60c",
+      "title": "2-3 Application Security Engineers (only for Ukraine candidates)",
+      "skills": [
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_d62d9fa4-de52-5313-b930-33b78b267738",
+      "source": "parquet",
+      "source_record_id": "d62d9fa4-de52-5313-b930-33b78b267738",
+      "title": "24/7 DevOps Engineer",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_KUBERNETES",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_12ea1736-5014-53df-8f13-49c198e7d150",
+      "source": "parquet",
+      "source_record_id": "12ea1736-5014-53df-8f13-49c198e7d150",
+      "title": "24/7 EngOps",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_POS_SYSTEMS",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_65e21bb4-a53d-551c-88c1-2d8c6df74d12",
+      "source": "parquet",
+      "source_record_id": "65e21bb4-a53d-551c-88c1-2d8c6df74d12",
+      "title": "24/7 Junior DevOps",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_0b086bc5-0abd-5881-bfd8-90ae5033c6d1",
+      "source": "parquet",
+      "source_record_id": "0b086bc5-0abd-5881-bfd8-90ae5033c6d1",
+      "title": "24/7 NOC engineer/DevOps Trainee",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_PYTHON",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_CUSTOMER_SERVICE",
+          "confidence_score": 0.8
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_37321e2b-cb63-5268-bba8-51a971681b2b",
+      "source": "parquet",
+      "source_record_id": "37321e2b-cb63-5268-bba8-51a971681b2b",
+      "title": "24x7 EngOps",
+      "skills": [
+        {
+          "skill_id": "SK_AWS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_KUBERNETES",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_LINUX",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_4ed2ccc7-588f-5213-962c-1f4cb07cf5cf",
+      "source": "parquet",
+      "source_record_id": "4ed2ccc7-588f-5213-962c-1f4cb07cf5cf",
+      "title": "#2966  Senior / Middle Backend or FullStack Developer TypeScript / NodeJS / React",
+      "skills": [
+        {
+          "skill_id": "SK_REST_API",
+          "confidence_score": 0.99
+        },
+        {
+          "skill_id": "SK_GIT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_NODEJS",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_REACT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_SQL",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_7e802901-9d11-5f76-91ec-5a6e7f4c2329",
+      "source": "parquet",
+      "source_record_id": "7e802901-9d11-5f76-91ec-5a6e7f4c2329",
+      "title": "2 Cloud Solutions Azure architects",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_df3efce9-6632-589b-8080-1cd9e28b251c",
+      "source": "parquet",
+      "source_record_id": "df3efce9-6632-589b-8080-1cd9e28b251c",
+      "title": "2D/3D Animator",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_4adda434-cf6f-5ef5-8503-414d95af2709",
+      "source": "parquet",
+      "source_record_id": "4adda434-cf6f-5ef5-8503-414d95af2709",
+      "title": "2D/3D Animator",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_882199d4-1af8-5812-8f9a-8c331df7cf3e",
+      "source": "parquet",
+      "source_record_id": "882199d4-1af8-5812-8f9a-8c331df7cf3e",
+      "title": "2D/3D Animator",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_8d89accf-9cec-5759-a297-59c567e95f44",
+      "source": "parquet",
+      "source_record_id": "8d89accf-9cec-5759-a297-59c567e95f44",
+      "title": "2d/3d Animator (GameDev)",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_3c607fd8-6439-5fc1-b4bf-c31f57c23a34",
+      "source": "parquet",
+      "source_record_id": "3c607fd8-6439-5fc1-b4bf-c31f57c23a34",
+      "title": "2D-, 3D-Animator position",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_ae60ee13-4f21-5a6d-a24c-a9338a96074f",
+      "source": "parquet",
+      "source_record_id": "ae60ee13-4f21-5a6d-a24c-a9338a96074f",
+      "title": "2d-3d artist",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_548053c2-8e99-51ae-bfed-ed5307b19760",
+      "source": "parquet",
+      "source_record_id": "548053c2-8e99-51ae-bfed-ed5307b19760",
+      "title": "2D / 3D Artist",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_22cc3718-5a24-5bed-bf7c-313b7ea5848b",
+      "source": "parquet",
+      "source_record_id": "22cc3718-5a24-5bed-bf7c-313b7ea5848b",
+      "title": "2D/3D Artist(Designer)",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_8124ce2b-546b-5af5-ba80-edfa84ac89e4",
+      "source": "parquet",
+      "source_record_id": "8124ce2b-546b-5af5-ba80-edfa84ac89e4",
+      "title": "2D/3D Artist / Illustrator",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_505554d5-6e26-5251-95a0-277d497b0c3e",
+      "source": "parquet",
+      "source_record_id": "505554d5-6e26-5251-95a0-277d497b0c3e",
+      "title": "2D/3D Artist / Illustrator",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_e0f5294f-da55-58e4-85fe-e20f8307cc22",
+      "source": "parquet",
+      "source_record_id": "e0f5294f-da55-58e4-85fe-e20f8307cc22",
+      "title": "2D / 3D Art Lead",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_b991f61e-0b51-56b4-bfd1-846d9b939b8e",
+      "source": "parquet",
+      "source_record_id": "b991f61e-0b51-56b4-bfd1-846d9b939b8e",
+      "title": "2D/3D Developer",
+      "skills": [
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_NODEJS",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_9522ca50-208f-588b-aa26-b88d9b24a8df",
+      "source": "parquet",
+      "source_record_id": "9522ca50-208f-588b-aa26-b88d9b24a8df",
+      "title": "2D/3D FullStack developer",
+      "skills": [
+        {
+          "skill_id": "SK_DOCKER",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_JAVASCRIPT",
+          "confidence_score": 0.96
+        },
+        {
+          "skill_id": "SK_NODEJS",
+          "confidence_score": 0.96
+        }
+      ]
+    },
+    {
+      "job_id": "parquet_5479d41c-a159-5a5a-a403-8d5992573ece",
+      "source": "parquet",
+      "source_record_id": "5479d41c-a159-5a5a-a403-8d5992573ece",
+      "title": "2D/3D Generalist Artist",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_6ec5dbee-95e4-56bc-a547-fbc5dfbe2a3a",
+      "source": "parquet",
+      "source_record_id": "6ec5dbee-95e4-56bc-a547-fbc5dfbe2a3a",
+      "title": "2D/3D Illustrator",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_09d6bad5-23fe-5db7-b6c5-f51e40ed09c3",
+      "source": "parquet",
+      "source_record_id": "09d6bad5-23fe-5db7-b6c5-f51e40ed09c3",
+      "title": "2D/3D Motion Designer",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_706ae5dc-e768-5324-843f-4f33685cef0e",
+      "source": "parquet",
+      "source_record_id": "706ae5dc-e768-5324-843f-4f33685cef0e",
+      "title": "2D/3D Technical Artist for Mobile Games",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_b9670517-eb4a-574a-85fa-2f83e83280f0",
+      "source": "parquet",
+      "source_record_id": "b9670517-eb4a-574a-85fa-2f83e83280f0",
+      "title": "2D animation",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_23896e25-a6e8-5eaa-bb88-d8a03984026a",
+      "source": "parquet",
+      "source_record_id": "23896e25-a6e8-5eaa-bb88-d8a03984026a",
+      "title": "2d\u00a0animator",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_464cba28-bced-5e5e-93f4-58b46d4a85a9",
+      "source": "parquet",
+      "source_record_id": "464cba28-bced-5e5e-93f4-58b46d4a85a9",
+      "title": "2d Animator",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_b803fd19-a5d5-55f8-85dd-4bd35408adcf",
+      "source": "parquet",
+      "source_record_id": "b803fd19-a5d5-55f8-85dd-4bd35408adcf",
+      "title": "2d\u00a0Animator",
+      "skills": []
+    },
+    {
+      "job_id": "parquet_98cc4232-fd68-5492-93e2-d0a04d0d50bc",
+      "source": "parquet",
+      "source_record_id": "98cc4232-fd68-5492-93e2-d0a04d0d50bc",
+      "title": "2D animator",
+      "skills": []
+    }
+  ],
+  "errors": []
+}

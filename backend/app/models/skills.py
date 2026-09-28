@@ -6,6 +6,13 @@ from app.db.base import Base
 
 class Skill(Base):
     __tablename__ = "skills"
+    __table_args__ = {"extend_existing": True}
+
+    def __init__(self, **kwargs):
+        if "id" in kwargs and isinstance(kwargs["id"], str) and "skill_id" not in kwargs:
+            kwargs["skill_id"] = kwargs.pop("id")
+        kwargs.pop("version", None)
+        super().__init__(**kwargs)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, nullable=False, index=True)
     skill_id: Mapped[str] = mapped_column(String(50), unique=True, index=True, nullable=False)

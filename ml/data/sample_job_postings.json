@@ -1,0 +1,142 @@
+[
+  {
+    "id": 1,
+    "role": "EV Technician",
+    "location": "Bengaluru",
+    "date": "2026-06-10",
+    "text": "Seeking an EV Technician experienced in BMS, CAN bus protocol, and high voltage safety for battery pack assembly."
+  },
+  {
+    "id": 2,
+    "role": "EV Technician",
+    "location": "Bengaluru",
+    "date": "2026-06-25",
+    "text": "Hiring Electric Vehicle Service Engineer. Must know CAN-Bus troubleshooting, vehicle diagnostics via OBD-II, and thermal management."
+  },
+  {
+    "id": 3,
+    "role": "EV Technician",
+    "location": "Pune",
+    "date": "2026-07-05",
+    "text": "EV Maintenance Specialist required. Skills: Battery Management System, CAN bus communication, regenerative braking, and traction inverters."
+  },
+  {
+    "id": 4,
+    "role": "EV Technician",
+    "location": "Pune",
+    "date": "2026-07-20",
+    "text": "Electric Powertrain and EV Technician with strong grasp of cell balancing, CAN protocol, and thermal management systems."
+  },
+  {
+    "id": 5,
+    "role": "EV Technician",
+    "location": "Delhi NCR",
+    "date": "2026-08-04",
+    "text": "Urgent opening for EV Technician: Hands-on experience with BMS, CAN bus diagnostics, and EV charging systems required."
+  },
+  {
+    "id": 6,
+    "role": "EV Technician",
+    "location": "Bengaluru",
+    "date": "2026-08-18",
+    "text": "Lead EV Diagnostic Tech: Must be proficient with Controller Area Network, OBD scan tools, high voltage systems, and telematics."
+  },
+  {
+    "id": 7,
+    "role": "EV Technician",
+    "location": "Chennai",
+    "date": "2026-09-02",
+    "text": "EV Service Specialist: Expertise in lithium battery testing, BMS calibration, and CAN bus wiring analysis is mandatory."
+  },
+  {
+    "id": 8,
+    "role": "Data Engineer",
+    "location": "Bengaluru",
+    "date": "2026-06-15",
+    "text": "Looking for Data Engineer with strong Python, SQL, Docker, and Apache Airflow data orchestration experience."
+  },
+  {
+    "id": 9,
+    "role": "Data Engineer",
+    "location": "Hyderabad",
+    "date": "2026-07-12",
+    "text": "Senior Data Platform Engineer: Proficient in Python 3, PostgreSQL, Spark big data processing, and AWS cloud deployment."
+  },
+  {
+    "id": 10,
+    "role": "Software Developer",
+    "location": "Bengaluru",
+    "date": "2026-07-28",
+    "text": "Full Stack Developer needed with React.js frontend, FastAPI backend services, RESTful API design, and Docker containerization."
+  },
+  {
+    "id": 11,
+    "role": "Software Developer",
+    "location": "Pune",
+    "date": "2026-08-15",
+    "text": "Backend Engineer: Hands-on expertise in Node.js, REST API development, Git version control, and Kubernetes orchestration on Linux."
+  },
+  {
+    "id": 12,
+    "role": "Industrial Electrician",
+    "location": "Ahmedabad",
+    "date": "2026-06-20",
+    "text": "Industrial Electrician needed with PLC programming, control panel wiring, AC/DC motor drives, and circuit design knowledge."
+  },
+  {
+    "id": 13,
+    "role": "Industrial Electrician",
+    "location": "Pune",
+    "date": "2026-07-22",
+    "text": "Electrical Maintenance Engineer: Skilled in SCADA systems, relay protection, transformer maintenance, and oscilloscope testing."
+  },
+  {
+    "id": 14,
+    "role": "Industrial Electrician",
+    "location": "Chennai",
+    "date": "2026-08-25",
+    "text": "Factory Electrician: Expertise in switchgear panel wiring, earthing & grounding, soldering, and digital multimeter troubleshooting."
+  },
+  {
+    "id": 15,
+    "role": "General Duty Assistant",
+    "location": "Mumbai",
+    "date": "2026-06-18",
+    "text": "Hiring Healthcare Support Assistant: Basic Life Support CPR certified, skilled in patient care, vital signs monitoring, and infection control."
+  },
+  {
+    "id": 16,
+    "role": "General Duty Assistant",
+    "location": "Bengaluru",
+    "date": "2026-07-19",
+    "text": "Hospital Nursing Assistant: Experience in bedside patient care, wound dressing, patient mobility transfer, and basic EHR recordkeeping."
+  },
+  {
+    "id": 17,
+    "role": "General Duty Assistant",
+    "location": "Delhi NCR",
+    "date": "2026-08-29",
+    "text": "Clinical Assistant: Certified in Phlebotomy blood collection, ECG recording, first aid emergency response, and sanitization protocols."
+  },
+  {
+    "id": 18,
+    "role": "Retail Sales Associate",
+    "location": "Mumbai",
+    "date": "2026-06-22",
+    "text": "Retail Associate: Proficient in POS billing cash registers, inventory management, customer service, and upselling retail products."
+  },
+  {
+    "id": 19,
+    "role": "Retail Sales Associate",
+    "location": "Bengaluru",
+    "date": "2026-07-30",
+    "text": "Store Sales Executive: Hands-on with barcode scanning, visual merchandising displays, cash handling reconciliation, and retail CRM."
+  },
+  {
+    "id": 20,
+    "role": "Retail Sales Associate",
+    "location": "Hyderabad",
+    "date": "2026-09-05",
+    "text": "Retail Operations Assistant: Experience in store opening/closing procedures, loss prevention, stock auditing, and e-commerce order fulfillment."
+  }
+]

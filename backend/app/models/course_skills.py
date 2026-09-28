@@ -9,7 +9,12 @@ class CourseSkill(Base):
     __tablename__ = "course_skills"
     __table_args__ = (
         UniqueConstraint("course_id", "skill_id", name="uq_course_skills_course_skill"),
+        {"extend_existing": True}
     )
+
+    def __init__(self, **kwargs):
+        kwargs.pop("coverage_pct", None)
+        super().__init__(**kwargs)
 
     id: Mapped[int] = mapped_column(
         Integer,

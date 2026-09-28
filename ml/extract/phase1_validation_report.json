@@ -1,0 +1,132 @@
+{
+  "total_records": 295,
+  "records_with_skills": 211,
+  "records_without_skills": 84,
+  "total_skill_occurrences": 536,
+  "unique_skills_detected": 30,
+  "match_type_counts": {
+    "exact_canonical (0.99)": 15,
+    "exact_alias (0.96)": 519,
+    "normalized_phrase (0.90)": 1,
+    "fuzzy (0.80)": 1
+  },
+  "top_skills": [
+    {
+      "skill_id": "SK_SQL",
+      "name": "SQL Database Management",
+      "count": 99
+    },
+    {
+      "skill_id": "SK_PYTHON",
+      "name": "Python Programming",
+      "count": 98
+    },
+    {
+      "skill_id": "SK_AWS",
+      "name": "AWS Cloud Services",
+      "count": 51
+    },
+    {
+      "skill_id": "SK_JAVASCRIPT",
+      "name": "JavaScript Programming",
+      "count": 37
+    },
+    {
+      "skill_id": "SK_REST_API",
+      "name": "RESTful API Design",
+      "count": 31
+    },
+    {
+      "skill_id": "SK_GIT",
+      "name": "Git Version Control",
+      "count": 30
+    },
+    {
+      "skill_id": "SK_LINUX",
+      "name": "Linux System Administration",
+      "count": 21
+    },
+    {
+      "skill_id": "SK_DATA_VIZ",
+      "name": "Data Visualization",
+      "count": 21
+    },
+    {
+      "skill_id": "SK_SPARK",
+      "name": "Apache Spark Big Data",
+      "count": 21
+    },
+    {
+      "skill_id": "SK_DOCKER",
+      "name": "Docker Containerization",
+      "count": 17
+    },
+    {
+      "skill_id": "SK_KUBERNETES",
+      "name": "Kubernetes Orchestration",
+      "count": 14
+    },
+    {
+      "skill_id": "SK_NODEJS",
+      "name": "Node.js Backend",
+      "count": 12
+    },
+    {
+      "skill_id": "SK_AIRFLOW",
+      "name": "Apache Airflow",
+      "count": 11
+    },
+    {
+      "skill_id": "SK_CUSTOMER_SERVICE",
+      "name": "Customer Relationship & Service",
+      "count": 11
+    },
+    {
+      "skill_id": "SK_REACT",
+      "name": "React.js Frontend",
+      "count": 11
+    },
+    {
+      "skill_id": "SK_CRM_RETAIL",
+      "name": "Retail CRM Software",
+      "count": 9
+    },
+    {
+      "skill_id": "SK_TENSORFLOW",
+      "name": "TensorFlow Framework",
+      "count": 8
+    },
+    {
+      "skill_id": "SK_EHR",
+      "name": "Electronic Health Records (EHR)",
+      "count": 7
+    },
+    {
+      "skill_id": "SK_SUPPLY_CHAIN",
+      "name": "Supply Chain Coordination",
+      "count": 6
+    },
+    {
+      "skill_id": "SK_PYTORCH",
+      "name": "PyTorch Framework",
+      "count": 5
+    }
+  ],
+  "fuzzy_matches_count": 1,
+  "fuzzy_matches": [
+    {
+      "canonical_id": "parquet_0b086bc5-0abd-5881-bfd8-90ae5033c6d1",
+      "source": "parquet",
+      "job_title": "24/7 NOC engineer/DevOps Trainee",
+      "company": "Automat-IT",
+      "skill_id": "SK_CUSTOMER_SERVICE",
+      "skill_name": "Customer Relationship & Service",
+      "confidence_score": 0.8
+    }
+  ],
+  "performance": {
+    "total_time_seconds": 36.984,
+    "avg_time_ms_per_record": 125.37,
+    "peak_memory_mb": 1.08
+  }
+}

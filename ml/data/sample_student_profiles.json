@@ -1,0 +1,138 @@
+[
+  {
+    "student_id": "STU_001",
+    "profile_name": "Synthetic Data Engineering Student",
+    "skills": [
+      {
+        "skill_id": "SK_PYTHON",
+        "evidence": [
+          {
+            "evidence_type": "project",
+            "evidence_strength": "intermediate"
+          },
+          {
+            "evidence_type": "certification",
+            "evidence_strength": "basic"
+          }
+        ]
+      },
+      {
+        "skill_id": "SK_SQL",
+        "evidence_type": "course_completed",
+        "evidence_strength": "intermediate"
+      },
+      {
+        "skill_id": "SK_GIT",
+        "evidence_type": "self_reported",
+        "evidence_strength": "basic"
+      }
+    ]
+  },
+  {
+    "student_id": "STU_002",
+    "profile_name": "Synthetic Beginner EV Technician Student",
+    "skills": [
+      {
+        "skill_id": "SK_BMS",
+        "evidence_type": "course_completed",
+        "evidence_strength": "basic"
+      },
+      {
+        "skill_id": "SK_BATTERY_CELL",
+        "evidence_type": "self_reported",
+        "evidence_strength": "basic"
+      },
+      {
+        "skill_id": "SK_HIGH_VOLTAGE",
+        "evidence_type": "assessment",
+        "evidence_strength": "basic"
+      }
+    ]
+  },
+  {
+    "student_id": "STU_003",
+    "profile_name": "Synthetic Advanced Full Stack Student",
+    "skills": [
+      {
+        "skill_id": "SK_PYTHON",
+        "evidence_type": "project",
+        "evidence_strength": "advanced"
+      },
+      {
+        "skill_id": "SK_JAVASCRIPT",
+        "evidence_type": "certification",
+        "evidence_strength": "advanced"
+      },
+      {
+        "skill_id": "SK_REACT",
+        "evidence_type": "project",
+        "evidence_strength": "advanced"
+      },
+      {
+        "skill_id": "SK_DOCKER",
+        "evidence_type": "assessment",
+        "evidence_strength": "intermediate"
+      }
+    ]
+  },
+  {
+    "student_id": "STU_004",
+    "profile_name": "Synthetic Healthcare Support Student",
+    "skills": [
+      {
+        "skill_id": "SK_PATIENT_CARE",
+        "evidence_type": "course_completed",
+        "evidence_strength": "intermediate"
+      },
+      {
+        "skill_id": "SK_VITAL_SIGNS",
+        "evidence_type": "assessment",
+        "evidence_strength": "intermediate"
+      },
+      {
+        "skill_id": "SK_CPR_BLS",
+        "evidence_type": "certification",
+        "evidence_strength": "advanced"
+      },
+      {
+        "skill_id": "SK_FIRST_AID",
+        "evidence_type": "certification",
+        "evidence_strength": "intermediate"
+      }
+    ]
+  },
+  {
+    "student_id": "STU_005",
+    "profile_name": "Synthetic Cross-Disciplinary Automation Student",
+    "skills": [
+      {
+        "skill_id": "SK_PLC",
+        "evidence_type": "course_completed",
+        "evidence_strength": "intermediate"
+      },
+      {
+        "skill_id": "SK_PYTHON",
+        "evidence_type": "project",
+        "evidence_strength": "intermediate"
+      },
+      {
+        "skill_id": "SK_CAN",
+        "evidence": [
+          {
+            "evidence_type": "project",
+            "evidence_strength": "advanced"
+          },
+          {
+            "evidence_type": "assessment",
+            "evidence_strength": "intermediate"
+          }
+        ]
+      },
+      {
+        "skill_id": "SK_CIRCUIT_DESIGN",
+        "evidence_type": "assessment",
+        "evidence_strength": "basic"
+      }
+    ]
+  }
+]

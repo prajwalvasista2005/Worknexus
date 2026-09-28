@@ -1,0 +1,6 @@
+{
+  "name": "WorkNexus",
+  "description": "Enterprise labour-market intelligence and workforce curriculum-alignment platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

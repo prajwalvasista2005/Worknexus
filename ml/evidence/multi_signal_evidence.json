@@ -1,0 +1,1307 @@
+{
+  "metadata": {
+    "phase": "5B",
+    "pipeline": "multi_signal_skill_evidence",
+    "job_demand_input": "C:/Users/Nehal Jois/Documents/SIH/ml/demand/demand_analysis.json",
+    "employer_feedback_input": "C:/Users/Nehal Jois/Documents/SIH/ml/employer/employer_feedback_analysis.json",
+    "taxonomy_version": "1",
+    "job_dataset_total_jobs": 295,
+    "job_dataset_skill_count": 30,
+    "employer_feedback_total_records": 5,
+    "employer_feedback_skill_count": 9,
+    "union_skill_count": 35,
+    "both_sources_skill_count": 4,
+    "job_only_skill_count": 26,
+    "employer_only_skill_count": 5,
+    "scope_note": "Multi-signal evidence record combining job posting demand and employer feedback validation without arbitrary score synthesis."
+  },
+  "skills": [
+    {
+      "skill_id": "SK_AIRFLOW",
+      "skill_name": "Apache Airflow",
+      "category": "IT / Data",
+      "evidence_relationship": "both",
+      "evidence_sources": [
+        "job_postings",
+        "employer_feedback"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 11,
+        "total_jobs": 295,
+        "demand_share": 0.0373,
+        "demand_percentage": 3.73,
+        "source_coverage_count": 2,
+        "sources_present": [
+          "linkedin_india",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": true,
+        "feedback_count": 1,
+        "unique_employer_count": 1,
+        "weighted_signal_sum": 0.9405,
+        "average_weighted_signal": 0.9405,
+        "max_weighted_signal": 0.9405
+      },
+      "description": "Observed in 11 of 295 job postings and mentioned across 1 feedback records from 1 employer(s)."
+    },
+    {
+      "skill_id": "SK_AWS",
+      "skill_name": "AWS Cloud Services",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 51,
+        "total_jobs": 295,
+        "demand_share": 0.1729,
+        "demand_percentage": 17.29,
+        "source_coverage_count": 3,
+        "sources_present": [
+          "linkedin_india",
+          "naukri",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 51 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_BATTERY_CELL",
+      "skill_name": "Cell Balancing and Testing",
+      "category": "EV / Automotive",
+      "evidence_relationship": "employer_feedback_only",
+      "evidence_sources": [
+        "employer_feedback"
+      ],
+      "job_demand": {
+        "observed": false,
+        "job_count": null,
+        "total_jobs": null,
+        "demand_share": null,
+        "demand_percentage": null,
+        "source_coverage_count": null,
+        "sources_present": null
+      },
+      "employer_validation": {
+        "observed": true,
+        "feedback_count": 1,
+        "unique_employer_count": 1,
+        "weighted_signal_sum": 0.864,
+        "average_weighted_signal": 0.864,
+        "max_weighted_signal": 0.864
+      },
+      "description": "Mentioned across 1 feedback records from 1 employer(s); no job posting occurrences in current sample."
+    },
+    {
+      "skill_id": "SK_BMS",
+      "skill_name": "Battery Management Systems",
+      "category": "EV / Automotive",
+      "evidence_relationship": "both",
+      "evidence_sources": [
+        "job_postings",
+        "employer_feedback"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 1,
+        "total_jobs": 295,
+        "demand_share": 0.0034,
+        "demand_percentage": 0.34,
+        "source_coverage_count": 1,
+        "sources_present": [
+          "linkedin_india"
+        ]
+      },
+      "employer_validation": {
+        "observed": true,
+        "feedback_count": 1,
+        "unique_employer_count": 1,
+        "weighted_signal_sum": 0.96,
+        "average_weighted_signal": 0.96,
+        "max_weighted_signal": 0.96
+      },
+      "description": "Observed in 1 of 295 job postings and mentioned across 1 feedback records from 1 employer(s)."
+    },
+    {
+      "skill_id": "SK_CAN",
+      "skill_name": "CAN Bus",
+      "category": "EV / Automotive",
+      "evidence_relationship": "employer_feedback_only",
+      "evidence_sources": [
+        "employer_feedback"
+      ],
+      "job_demand": {
+        "observed": false,
+        "job_count": null,
+        "total_jobs": null,
+        "demand_share": null,
+        "demand_percentage": null,
+        "source_coverage_count": null,
+        "sources_present": null
+      },
+      "employer_validation": {
+        "observed": true,
+        "feedback_count": 3,
+        "unique_employer_count": 3,
+        "weighted_signal_sum": 2.523,
+        "average_weighted_signal": 0.841,
+        "max_weighted_signal": 0.96
+      },
+      "description": "Mentioned across 3 feedback records from 3 employer(s); no job posting occurrences in current sample."
+    },
+    {
+      "skill_id": "SK_CRM_RETAIL",
+      "skill_name": "Retail CRM Software",
+      "category": "Retail / Sales",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 9,
+        "total_jobs": 295,
+        "demand_share": 0.0305,
+        "demand_percentage": 3.05,
+        "source_coverage_count": 2,
+        "sources_present": [
+          "linkedin_india",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 9 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_CUSTOMER_SERVICE",
+      "skill_name": "Customer Relationship & Service",
+      "category": "Retail / Sales",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 11,
+        "total_jobs": 295,
+        "demand_share": 0.0373,
+        "demand_percentage": 3.73,
+        "source_coverage_count": 2,
+        "sources_present": [
+          "linkedin_india",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 11 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_DATA_VIZ",
+      "skill_name": "Data Visualization",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 21,
+        "total_jobs": 295,
+        "demand_share": 0.0712,
+        "demand_percentage": 7.12,
+        "source_coverage_count": 2,
+        "sources_present": [
+          "linkedin_india",
+          "naukri"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 21 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_DIAG",
+      "skill_name": "Vehicle Diagnostics",
+      "category": "EV / Automotive",
+      "evidence_relationship": "employer_feedback_only",
+      "evidence_sources": [
+        "employer_feedback"
+      ],
+      "job_demand": {
+        "observed": false,
+        "job_count": null,
+        "total_jobs": null,
+        "demand_share": null,
+        "demand_percentage": null,
+        "source_coverage_count": null,
+        "sources_present": null
+      },
+      "employer_validation": {
+        "observed": true,
+        "feedback_count": 1,
+        "unique_employer_count": 1,
+        "weighted_signal_sum": 0.693,
+        "average_weighted_signal": 0.693,
+        "max_weighted_signal": 0.693
+      },
+      "description": "Mentioned across 1 feedback records from 1 employer(s); no job posting occurrences in current sample."
+    },
+    {
+      "skill_id": "SK_DOCKER",
+      "skill_name": "Docker Containerization",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 17,
+        "total_jobs": 295,
+        "demand_share": 0.0576,
+        "demand_percentage": 5.76,
+        "source_coverage_count": 3,
+        "sources_present": [
+          "linkedin_india",
+          "naukri",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 17 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_EHR",
+      "skill_name": "Electronic Health Records (EHR)",
+      "category": "Healthcare Support",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 7,
+        "total_jobs": 295,
+        "demand_share": 0.0237,
+        "demand_percentage": 2.37,
+        "source_coverage_count": 2,
+        "sources_present": [
+          "linkedin_india",
+          "naukri"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 7 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_FASTAPI",
+      "skill_name": "FastAPI Framework",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 1,
+        "total_jobs": 295,
+        "demand_share": 0.0034,
+        "demand_percentage": 0.34,
+        "source_coverage_count": 1,
+        "sources_present": [
+          "linkedin_india"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 1 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_GIT",
+      "skill_name": "Git Version Control",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 30,
+        "total_jobs": 295,
+        "demand_share": 0.1017,
+        "demand_percentage": 10.17,
+        "source_coverage_count": 3,
+        "sources_present": [
+          "linkedin_india",
+          "naukri",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 30 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_HIGH_VOLTAGE",
+      "skill_name": "High Voltage Safety",
+      "category": "EV / Automotive",
+      "evidence_relationship": "employer_feedback_only",
+      "evidence_sources": [
+        "employer_feedback"
+      ],
+      "job_demand": {
+        "observed": false,
+        "job_count": null,
+        "total_jobs": null,
+        "demand_share": null,
+        "demand_percentage": null,
+        "source_coverage_count": null,
+        "sources_present": null
+      },
+      "employer_validation": {
+        "observed": true,
+        "feedback_count": 1,
+        "unique_employer_count": 1,
+        "weighted_signal_sum": 0.8415,
+        "average_weighted_signal": 0.8415,
+        "max_weighted_signal": 0.8415
+      },
+      "description": "Mentioned across 1 feedback records from 1 employer(s); no job posting occurrences in current sample."
+    },
+    {
+      "skill_id": "SK_INVENTORY_MGMT",
+      "skill_name": "Inventory Management",
+      "category": "Retail / Sales",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 2,
+        "total_jobs": 295,
+        "demand_share": 0.0068,
+        "demand_percentage": 0.68,
+        "source_coverage_count": 1,
+        "sources_present": [
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 2 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_JAVASCRIPT",
+      "skill_name": "JavaScript Programming",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 37,
+        "total_jobs": 295,
+        "demand_share": 0.1254,
+        "demand_percentage": 12.54,
+        "source_coverage_count": 3,
+        "sources_present": [
+          "linkedin_india",
+          "naukri",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 37 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_KUBERNETES",
+      "skill_name": "Kubernetes Orchestration",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 14,
+        "total_jobs": 295,
+        "demand_share": 0.0475,
+        "demand_percentage": 4.75,
+        "source_coverage_count": 2,
+        "sources_present": [
+          "linkedin_india",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 14 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_LINUX",
+      "skill_name": "Linux System Administration",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 21,
+        "total_jobs": 295,
+        "demand_share": 0.0712,
+        "demand_percentage": 7.12,
+        "source_coverage_count": 3,
+        "sources_present": [
+          "linkedin_india",
+          "naukri",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 21 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_NODEJS",
+      "skill_name": "Node.js Backend",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 12,
+        "total_jobs": 295,
+        "demand_share": 0.0407,
+        "demand_percentage": 4.07,
+        "source_coverage_count": 2,
+        "sources_present": [
+          "linkedin_india",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 12 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_NUMPY",
+      "skill_name": "NumPy Numerical Computing",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 1,
+        "total_jobs": 295,
+        "demand_share": 0.0034,
+        "demand_percentage": 0.34,
+        "source_coverage_count": 1,
+        "sources_present": [
+          "naukri"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 1 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_PANDAS",
+      "skill_name": "Pandas Data Analysis",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 3,
+        "total_jobs": 295,
+        "demand_share": 0.0102,
+        "demand_percentage": 1.02,
+        "source_coverage_count": 2,
+        "sources_present": [
+          "naukri",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 3 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_POS_SYSTEMS",
+      "skill_name": "Point of Sale (POS) Systems",
+      "category": "Retail / Sales",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 1,
+        "total_jobs": 295,
+        "demand_share": 0.0034,
+        "demand_percentage": 0.34,
+        "source_coverage_count": 1,
+        "sources_present": [
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 1 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_PYTHON",
+      "skill_name": "Python Programming",
+      "category": "IT / Data",
+      "evidence_relationship": "both",
+      "evidence_sources": [
+        "job_postings",
+        "employer_feedback"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 98,
+        "total_jobs": 295,
+        "demand_share": 0.3322,
+        "demand_percentage": 33.22,
+        "source_coverage_count": 3,
+        "sources_present": [
+          "linkedin_india",
+          "naukri",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": true,
+        "feedback_count": 1,
+        "unique_employer_count": 1,
+        "weighted_signal_sum": 0.912,
+        "average_weighted_signal": 0.912,
+        "max_weighted_signal": 0.912
+      },
+      "description": "Observed in 98 of 295 job postings and mentioned across 1 feedback records from 1 employer(s)."
+    },
+    {
+      "skill_id": "SK_PYTORCH",
+      "skill_name": "PyTorch Framework",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 5,
+        "total_jobs": 295,
+        "demand_share": 0.0169,
+        "demand_percentage": 1.69,
+        "source_coverage_count": 2,
+        "sources_present": [
+          "naukri",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 5 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_REACT",
+      "skill_name": "React.js Frontend",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 11,
+        "total_jobs": 295,
+        "demand_share": 0.0373,
+        "demand_percentage": 3.73,
+        "source_coverage_count": 2,
+        "sources_present": [
+          "linkedin_india",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 11 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_REST_API",
+      "skill_name": "RESTful API Design",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 31,
+        "total_jobs": 295,
+        "demand_share": 0.1051,
+        "demand_percentage": 10.51,
+        "source_coverage_count": 2,
+        "sources_present": [
+          "linkedin_india",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 31 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_SCADA",
+      "skill_name": "SCADA Industrial Systems",
+      "category": "Electrician / Electronics",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 1,
+        "total_jobs": 295,
+        "demand_share": 0.0034,
+        "demand_percentage": 0.34,
+        "source_coverage_count": 1,
+        "sources_present": [
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 1 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_SCIKIT_LEARN",
+      "skill_name": "Scikit-Learn ML",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 2,
+        "total_jobs": 295,
+        "demand_share": 0.0068,
+        "demand_percentage": 0.68,
+        "source_coverage_count": 1,
+        "sources_present": [
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 2 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_SPARK",
+      "skill_name": "Apache Spark Big Data",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 21,
+        "total_jobs": 295,
+        "demand_share": 0.0712,
+        "demand_percentage": 7.12,
+        "source_coverage_count": 3,
+        "sources_present": [
+          "linkedin_india",
+          "naukri",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 21 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_SQL",
+      "skill_name": "SQL Database Management",
+      "category": "IT / Data",
+      "evidence_relationship": "both",
+      "evidence_sources": [
+        "job_postings",
+        "employer_feedback"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 99,
+        "total_jobs": 295,
+        "demand_share": 0.3356,
+        "demand_percentage": 33.56,
+        "source_coverage_count": 3,
+        "sources_present": [
+          "linkedin_india",
+          "naukri",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": true,
+        "feedback_count": 1,
+        "unique_employer_count": 1,
+        "weighted_signal_sum": 0.912,
+        "average_weighted_signal": 0.912,
+        "max_weighted_signal": 0.912
+      },
+      "description": "Observed in 99 of 295 job postings and mentioned across 1 feedback records from 1 employer(s)."
+    },
+    {
+      "skill_id": "SK_SUPPLY_CHAIN",
+      "skill_name": "Supply Chain Coordination",
+      "category": "Retail / Sales",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 6,
+        "total_jobs": 295,
+        "demand_share": 0.0203,
+        "demand_percentage": 2.03,
+        "source_coverage_count": 3,
+        "sources_present": [
+          "linkedin_india",
+          "naukri",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 6 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_TELEMATICS",
+      "skill_name": "Vehicle Telematics & IoT",
+      "category": "EV / Automotive",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 1,
+        "total_jobs": 295,
+        "demand_share": 0.0034,
+        "demand_percentage": 0.34,
+        "source_coverage_count": 1,
+        "sources_present": [
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 1 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_TENSORFLOW",
+      "skill_name": "TensorFlow Framework",
+      "category": "IT / Data",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 8,
+        "total_jobs": 295,
+        "demand_share": 0.0271,
+        "demand_percentage": 2.71,
+        "source_coverage_count": 2,
+        "sources_present": [
+          "naukri",
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 8 of 295 job postings; no employer feedback observed in current sample."
+    },
+    {
+      "skill_id": "SK_THERMAL",
+      "skill_name": "Thermal Management",
+      "category": "EV / Automotive",
+      "evidence_relationship": "employer_feedback_only",
+      "evidence_sources": [
+        "employer_feedback"
+      ],
+      "job_demand": {
+        "observed": false,
+        "job_count": null,
+        "total_jobs": null,
+        "demand_share": null,
+        "demand_percentage": null,
+        "source_coverage_count": null,
+        "sources_present": null
+      },
+      "employer_validation": {
+        "observed": true,
+        "feedback_count": 1,
+        "unique_employer_count": 1,
+        "weighted_signal_sum": 0.8415,
+        "average_weighted_signal": 0.8415,
+        "max_weighted_signal": 0.8415
+      },
+      "description": "Mentioned across 1 feedback records from 1 employer(s); no job posting occurrences in current sample."
+    },
+    {
+      "skill_id": "SK_UPSELLING",
+      "skill_name": "Upselling and Cross-selling",
+      "category": "Retail / Sales",
+      "evidence_relationship": "job_only",
+      "evidence_sources": [
+        "job_postings"
+      ],
+      "job_demand": {
+        "observed": true,
+        "job_count": 3,
+        "total_jobs": 295,
+        "demand_share": 0.0102,
+        "demand_percentage": 1.02,
+        "source_coverage_count": 1,
+        "sources_present": [
+          "parquet"
+        ]
+      },
+      "employer_validation": {
+        "observed": false,
+        "feedback_count": null,
+        "unique_employer_count": null,
+        "weighted_signal_sum": null,
+        "average_weighted_signal": null,
+        "max_weighted_signal": null
+      },
+      "description": "Observed in 3 of 295 job postings; no employer feedback observed in current sample."
+    }
+  ],
+  "evidence_matrix": [
+    {
+      "skill_id": "SK_AIRFLOW",
+      "skill_name": "Apache Airflow",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": true
+    },
+    {
+      "skill_id": "SK_AWS",
+      "skill_name": "AWS Cloud Services",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_BATTERY_CELL",
+      "skill_name": "Cell Balancing and Testing",
+      "category": "EV / Automotive",
+      "job_postings": false,
+      "employer_feedback": true
+    },
+    {
+      "skill_id": "SK_BMS",
+      "skill_name": "Battery Management Systems",
+      "category": "EV / Automotive",
+      "job_postings": true,
+      "employer_feedback": true
+    },
+    {
+      "skill_id": "SK_CAN",
+      "skill_name": "CAN Bus",
+      "category": "EV / Automotive",
+      "job_postings": false,
+      "employer_feedback": true
+    },
+    {
+      "skill_id": "SK_CRM_RETAIL",
+      "skill_name": "Retail CRM Software",
+      "category": "Retail / Sales",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_CUSTOMER_SERVICE",
+      "skill_name": "Customer Relationship & Service",
+      "category": "Retail / Sales",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_DATA_VIZ",
+      "skill_name": "Data Visualization",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_DIAG",
+      "skill_name": "Vehicle Diagnostics",
+      "category": "EV / Automotive",
+      "job_postings": false,
+      "employer_feedback": true
+    },
+    {
+      "skill_id": "SK_DOCKER",
+      "skill_name": "Docker Containerization",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_EHR",
+      "skill_name": "Electronic Health Records (EHR)",
+      "category": "Healthcare Support",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_FASTAPI",
+      "skill_name": "FastAPI Framework",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_GIT",
+      "skill_name": "Git Version Control",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_HIGH_VOLTAGE",
+      "skill_name": "High Voltage Safety",
+      "category": "EV / Automotive",
+      "job_postings": false,
+      "employer_feedback": true
+    },
+    {
+      "skill_id": "SK_INVENTORY_MGMT",
+      "skill_name": "Inventory Management",
+      "category": "Retail / Sales",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_JAVASCRIPT",
+      "skill_name": "JavaScript Programming",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_KUBERNETES",
+      "skill_name": "Kubernetes Orchestration",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_LINUX",
+      "skill_name": "Linux System Administration",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_NODEJS",
+      "skill_name": "Node.js Backend",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_NUMPY",
+      "skill_name": "NumPy Numerical Computing",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_PANDAS",
+      "skill_name": "Pandas Data Analysis",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_POS_SYSTEMS",
+      "skill_name": "Point of Sale (POS) Systems",
+      "category": "Retail / Sales",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_PYTHON",
+      "skill_name": "Python Programming",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": true
+    },
+    {
+      "skill_id": "SK_PYTORCH",
+      "skill_name": "PyTorch Framework",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_REACT",
+      "skill_name": "React.js Frontend",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_REST_API",
+      "skill_name": "RESTful API Design",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_SCADA",
+      "skill_name": "SCADA Industrial Systems",
+      "category": "Electrician / Electronics",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_SCIKIT_LEARN",
+      "skill_name": "Scikit-Learn ML",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_SPARK",
+      "skill_name": "Apache Spark Big Data",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_SQL",
+      "skill_name": "SQL Database Management",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": true
+    },
+    {
+      "skill_id": "SK_SUPPLY_CHAIN",
+      "skill_name": "Supply Chain Coordination",
+      "category": "Retail / Sales",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_TELEMATICS",
+      "skill_name": "Vehicle Telematics & IoT",
+      "category": "EV / Automotive",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_TENSORFLOW",
+      "skill_name": "TensorFlow Framework",
+      "category": "IT / Data",
+      "job_postings": true,
+      "employer_feedback": false
+    },
+    {
+      "skill_id": "SK_THERMAL",
+      "skill_name": "Thermal Management",
+      "category": "EV / Automotive",
+      "job_postings": false,
+      "employer_feedback": true
+    },
+    {
+      "skill_id": "SK_UPSELLING",
+      "skill_name": "Upselling and Cross-selling",
+      "category": "Retail / Sales",
+      "job_postings": true,
+      "employer_feedback": false
+    }
+  ],
+  "errors": []
+}

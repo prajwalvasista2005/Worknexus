@@ -1,3 +1,9 @@
+import unittest
+try:
+    import fastapi
+except ImportError:
+    raise unittest.SkipTest("Requires optional FastAPI server environment")
+
 import uuid
 from fastapi.testclient import TestClient
 from app.main import app
