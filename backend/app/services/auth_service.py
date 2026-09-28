@@ -131,7 +131,18 @@ class AuthService:
             return None
 
         db_token = AuthService.get_refresh_token_record(db, token=old_token)
-        if not db_token or db_token.revoked:
+        if not db_token:
+            return None
+
+        if db_token.revoked:
+            # Replay attack detected: token was already revoked. Invalidate all active tokens for this user.
+            if user:
+                db.execute(
+                    update(RefreshToken)
+                    .where(RefreshToken.user_id == user.id)
+                    .values(revoked=True)
+                )
+                db.commit()
             return None
 
         now = datetime.now(timezone.utc)
