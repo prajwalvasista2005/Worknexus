@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.dependencies import get_db
-from app.models.employers import EmployerFeedback, EmployerFeedbackSignal
+from app.models.employers import Employer, EmployerFeedback, EmployerFeedbackSignal
 from app.schemas.schemas import (
     EmployerFeedbackCreateSchema,
     EmployerFeedbackResponseSchema,

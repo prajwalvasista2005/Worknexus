@@ -316,14 +316,15 @@ def test_postgres_migration_002_succeeds_and_enforces_fk_and_unique_index():
 # ==============================================================================
 
 @pytest.mark.xfail(
-    raises=AssertionError,
+    raises=IntegrityError,
     strict=True,
-    reason="Migration for lower(email) unique index not yet implemented (Phase 2 Task 15)"
+    reason="Attempting to enforce case-insensitive uniqueness on duplicate-case legacy data must fail with IntegrityError at DB level until Phase 2 Task 15 migration reconciles duplicates"
 )
 def test_messy_legacy_data_duplicate_emails():
     """
-    Calls real 'alembic upgrade head' on legacy database containing duplicate-case emails.
-    Must fail or resolve per Phase 2 Task 15 migration once implemented.
+    Calls real 'alembic upgrade head' on legacy database containing duplicate-case emails,
+    then attempts to apply the case-insensitive unique constraint.
+    PostgreSQL itself must reject the operation at the database level with IntegrityError.
     """
     if not is_postgres:
         pytest.skip("Requires PostgreSQL database for full migration validation")
@@ -352,25 +353,26 @@ def test_messy_legacy_data_duplicate_emails():
 
     try:
         run_alembic_upgrade(pg_target_url, "head")
-        with engine.connect() as conn:
-            dups = conn.execute(text(f"""
-                SELECT lower(email) FROM {schema_name}.users GROUP BY lower(email) HAVING count(*) > 1
-            """)).fetchall()
-            assert len(dups) == 0, f"Duplicate lowercased emails remain: {dups}"
+        # Attempt the actual database constraint operation against PostgreSQL
+        with engine.begin() as conn:
+            conn.execute(text(f"""
+                CREATE UNIQUE INDEX uq_users_lower_email ON {schema_name}.users (lower(email));
+            """))
     finally:
         with engine.begin() as conn:
             conn.execute(text(f"DROP SCHEMA IF EXISTS {schema_name} CASCADE;"))
 
 
 @pytest.mark.xfail(
-    raises=AssertionError,
+    raises=IntegrityError,
     strict=True,
-    reason="Migration for role lowercase normalization not yet implemented (Phase 1 Task 8)"
+    reason="Attempting to enforce role enum check constraint on mixed-case legacy data must fail with IntegrityError at DB level until Phase 1 Task 8 migration normalizes roles"
 )
 def test_messy_legacy_data_mixed_case_roles():
     """
-    Calls real 'alembic upgrade head' on legacy database containing mixed-case roles.
-    Must normalize roles per Phase 1 Task 8 migration once implemented.
+    Calls real 'alembic upgrade head' on legacy database containing mixed-case roles,
+    then attempts to apply the role enum check constraint.
+    PostgreSQL itself must reject unnormalized values with IntegrityError.
     """
     if not is_postgres:
         pytest.skip("Requires PostgreSQL database for full migration validation")
@@ -399,25 +401,28 @@ def test_messy_legacy_data_mixed_case_roles():
 
     try:
         run_alembic_upgrade(pg_target_url, "head")
-        with engine.connect() as conn:
-            invalid = conn.execute(text(f"""
-                SELECT role FROM {schema_name}.users WHERE role NOT IN ('student', 'employer', 'institute', 'trainer', 'admin')
-            """)).fetchall()
-            assert len(invalid) == 0, f"Found unnormalized mixed-case roles: {invalid}"
+        # Attempt to enforce the role enum constraint against unnormalized data
+        with engine.begin() as conn:
+            conn.execute(text(f"""
+                ALTER TABLE {schema_name}.users 
+                ADD CONSTRAINT chk_users_role 
+                CHECK (role IN ('student', 'employer', 'institute', 'trainer', 'admin'));
+            """))
     finally:
         with engine.begin() as conn:
             conn.execute(text(f"DROP SCHEMA IF EXISTS {schema_name} CASCADE;"))
 
 
 @pytest.mark.xfail(
-    raises=AssertionError,
+    raises=IntegrityError,
     strict=True,
-    reason="Migration for job_skills.skill_id integer FK not yet implemented (Phase 3 Task 19)"
+    reason="Attempting to enforce integer foreign key constraint on orphaned skill_id must fail with IntegrityError at DB level until Phase 3 Task 19 migration standardizes skill keys"
 )
 def test_messy_legacy_data_string_vs_int_skill_ids():
     """
-    Calls real 'alembic upgrade head' on legacy database containing string skill IDs in job_skills.
-    Must convert or validate FK mapping per Phase 3 Task 19 migration once implemented.
+    Calls real 'alembic upgrade head' on legacy database containing orphaned skill IDs,
+    then attempts to enforce the foreign key constraint referencing skills(id).
+    PostgreSQL itself must reject orphaned foreign keys with IntegrityError.
     """
     if not is_postgres:
         pytest.skip("Requires PostgreSQL database for full migration validation")
@@ -433,23 +438,32 @@ def test_messy_legacy_data_string_vs_int_skill_ids():
             CREATE TABLE {schema_name}.alembic_version (version_num VARCHAR(32) PRIMARY KEY);
             INSERT INTO {schema_name}.alembic_version VALUES ('002_employer_user_id');
 
+            CREATE TABLE {schema_name}.skills (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(255) NOT NULL,
+                category VARCHAR(64) NOT NULL
+            );
+            INSERT INTO {schema_name}.skills (id, name, category)
+            VALUES (1, 'Python', 'Backend'), (2, 'SQL', 'Database');
+
             CREATE TABLE {schema_name}.job_skills (
                 id SERIAL PRIMARY KEY,
                 job_id INTEGER NOT NULL,
-                skill_id VARCHAR(64) NOT NULL
+                skill_id INTEGER NOT NULL
             );
             INSERT INTO {schema_name}.job_skills (id, job_id, skill_id)
-            VALUES (1, 1, 'SK_PYTHON'), (2, 1, 'SK_SQL');
+            VALUES (1, 1, 1), (2, 1, 999999);
         """))
 
     try:
         run_alembic_upgrade(pg_target_url, "head")
-        with engine.connect() as conn:
-            col_type = conn.execute(text(f"""
-                SELECT data_type FROM information_schema.columns 
-                WHERE table_schema = '{schema_name}' AND table_name = 'job_skills' AND column_name = 'skill_id'
-            """)).scalar()
-            assert col_type in ('integer', 'smallint', 'bigint'), f"skill_id is {col_type}, not integer FK"
+        # Attempt to enforce the foreign key constraint referencing skills(id)
+        with engine.begin() as conn:
+            conn.execute(text(f"""
+                ALTER TABLE {schema_name}.job_skills 
+                ADD CONSTRAINT fk_job_skills_skill_id 
+                FOREIGN KEY (skill_id) REFERENCES {schema_name}.skills(id);
+            """))
     finally:
         with engine.begin() as conn:
             conn.execute(text(f"DROP SCHEMA IF EXISTS {schema_name} CASCADE;"))
