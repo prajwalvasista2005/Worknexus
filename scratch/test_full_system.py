@@ -11,7 +11,7 @@ class FullSystemIntegrationTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.client = TestClient(app)
-        
+
         # Test accounts seeded in database
         cls.accounts = {
             "Student": {"email": "student@worknexus.io", "password": "SecurePassword123!"},

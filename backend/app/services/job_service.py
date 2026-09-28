@@ -64,7 +64,7 @@ class JobService:
             for s in ml_result.extracted_skills:
                 sk_id = s["skill_id"]
                 conf = float(s["confidence_score"])
-                
+
                 job_skill = JobSkill(
                     job_id=job.id,
                     skill_id=sk_id,

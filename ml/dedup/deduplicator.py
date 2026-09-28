@@ -110,7 +110,7 @@ class ConservativeDeduplicator:
 
         for record in records:
             matched_cluster = None
-            
+
             for cluster in clusters:
                 is_dup, reason = self.are_potential_duplicates(cluster[0], record)
                 if is_dup:
@@ -137,7 +137,7 @@ class ConservativeDeduplicator:
         deduped_records: List[DeduplicatedJobRecord] = []
         for cluster in clusters:
             primary = cluster[0]
-            
+
             longest_desc = max(cluster, key=lambda r: len(r.description or "")).description
             best_title = max(cluster, key=lambda r: len(r.title or "")).title
             best_company = primary.company

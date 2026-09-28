@@ -20,7 +20,7 @@ class TestDemandAggregator(unittest.TestCase):
         # Verify that for any skill, job_count <= total_jobs and matches unique jobs containing that skill
         with open(DEFAULT_INPUT_ARTIFACT_PATH, 'r', encoding='utf-8') as f:
             p2_data = json.load(f)
-        
+
         expected_counts = {}
         for job in p2_data['jobs']:
             seen_in_job = {s['skill_id'] for s in job.get('skills', [])}

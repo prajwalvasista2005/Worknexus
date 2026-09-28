@@ -70,7 +70,7 @@ def run_audit():
     records_with_skills = sum(1 for r in extraction_results if r["extracted_skills"])
     records_without_skills = total_records - records_with_skills
     total_skill_occurrences = sum(len(r["extracted_skills"]) for r in extraction_results)
-    
+
     unique_skills_detected = set()
     skill_freq: Dict[str, int] = {}
     match_type_counts = {"exact_canonical (0.99)": 0, "exact_alias (0.96)": 0, "normalized_phrase (0.90)": 0, "fuzzy (0.80)": 0}

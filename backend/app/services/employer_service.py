@@ -308,7 +308,7 @@ class EmployerService:
                             DO $$
                             BEGIN
                                 IF NOT EXISTS (
-                                    SELECT 1 FROM information_schema.columns 
+                                    SELECT 1 FROM information_schema.columns
                                     WHERE table_name = 'employers' AND column_name = 'user_id'
                                 ) THEN
                                     ALTER TABLE employers ADD COLUMN user_id INTEGER;
@@ -436,11 +436,11 @@ class EmployerService:
                             DO $$
                             BEGIN
                                 IF NOT EXISTS (
-                                    SELECT 1 FROM information_schema.table_constraints 
+                                    SELECT 1 FROM information_schema.table_constraints
                                     WHERE constraint_name = 'fk_employers_user_id_users'
                                 ) THEN
-                                    ALTER TABLE employers 
-                                    ADD CONSTRAINT fk_employers_user_id_users 
+                                    ALTER TABLE employers
+                                    ADD CONSTRAINT fk_employers_user_id_users
                                     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
                                 END IF;
                             END $$;

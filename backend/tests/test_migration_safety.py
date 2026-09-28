@@ -404,8 +404,8 @@ def test_messy_legacy_data_mixed_case_roles():
         # Attempt to enforce the role enum constraint against unnormalized data
         with engine.begin() as conn:
             conn.execute(text(f"""
-                ALTER TABLE {schema_name}.users 
-                ADD CONSTRAINT chk_users_role 
+                ALTER TABLE {schema_name}.users
+                ADD CONSTRAINT chk_users_role
                 CHECK (role IN ('student', 'employer', 'institute', 'trainer', 'admin'));
             """))
     finally:
@@ -460,8 +460,8 @@ def test_messy_legacy_data_string_vs_int_skill_ids():
         # Attempt to enforce the foreign key constraint referencing skills(id)
         with engine.begin() as conn:
             conn.execute(text(f"""
-                ALTER TABLE {schema_name}.job_skills 
-                ADD CONSTRAINT fk_job_skills_skill_id 
+                ALTER TABLE {schema_name}.job_skills
+                ADD CONSTRAINT fk_job_skills_skill_id
                 FOREIGN KEY (skill_id) REFERENCES {schema_name}.skills(id);
             """))
     finally:

@@ -19,7 +19,7 @@ from ml.dedup.deduplicator import ConservativeDeduplicator
 def test_all_records_processed():
     print("\n--- TEST 1: All Records Processed (No Silent Record Loss) ---")
     extractor = BatchJobSkillExtractor()
-    
+
     # Create sample mock records
     records = [
         DeduplicatedJobRecord(
@@ -39,10 +39,10 @@ def test_all_records_processed():
             source_records=[{"source": "naukri", "source_record_id": "2"}]
         )
     ]
-    
+
     artifact = extractor.process_jobs(records)
     meta = artifact["metadata"]
-    
+
     assert meta["total_input_jobs"] == 2
     assert meta["total_processed_jobs"] == 2
     assert meta["total_failed_jobs"] == 0
@@ -63,10 +63,10 @@ def test_output_contract_and_taxonomy():
             source_records=[{"source": "naukri", "source_record_id": "10"}]
         )
     ]
-    
+
     artifact = extractor.process_jobs(records)
     job = artifact["jobs"][0]
-    
+
     assert len(job["skills"]) >= 3
     for s in job["skills"]:
         assert set(s.keys()) == {"skill_id", "confidence_score"}
@@ -88,7 +88,7 @@ def test_zero_skill_jobs():
             source_records=[{"source": "naukri", "source_record_id": "20"}]
         )
     ]
-    
+
     artifact = extractor.process_jobs(records)
     assert len(artifact["jobs"]) == 1
     job = artifact["jobs"][0]
@@ -111,7 +111,7 @@ def test_no_duplicate_skills():
             source_records=[{"source": "parquet", "source_record_id": "30"}]
         )
     ]
-    
+
     artifact = extractor.process_jobs(records)
     job = artifact["jobs"][0]
     skill_ids = [s["skill_id"] for s in job["skills"]]
@@ -133,7 +133,7 @@ def test_provenance():
             source_records=[{"source": "linkedin_india", "source_record_id": "999"}]
         )
     ]
-    
+
     artifact = extractor.process_jobs(records)
     job = artifact["jobs"][0]
     assert job["job_id"] == "linkedin_india_999"
@@ -164,10 +164,10 @@ def test_determinism():
             source_records=[{"source": "linkedin_india", "source_record_id": "2"}]
         )
     ]
-    
+
     run_1 = extractor.process_jobs(records)
     run_2 = extractor.process_jobs(records)
-    
+
     assert json.dumps(run_1, sort_keys=True) == json.dumps(run_2, sort_keys=True)
     print("  [PASS] Multiple runs on identical input produce byte-for-byte equivalent output.")
 
@@ -187,11 +187,11 @@ def test_extraction_input_boundary():
             source_records=[{"source": "naukri", "source_record_id": "55"}]
         )
     ]
-    
+
     artifact = extractor.process_jobs(records)
     job = artifact["jobs"][0]
     extracted_ids = [s["skill_id"] for s in job["skills"]]
-    
+
     assert "SK_PYTHON" in extracted_ids
     assert "SK_CAN" not in extracted_ids
     assert "SK_BMS" not in extracted_ids
@@ -213,7 +213,7 @@ def test_error_visibility():
             source_records=[{"source": "naukri", "source_record_id": "1"}]
         )
     ]
-    
+
     artifact = extractor.process_jobs(records)
     assert artifact["metadata"]["total_failed_jobs"] == 0
     assert len(artifact["errors"]) == 0

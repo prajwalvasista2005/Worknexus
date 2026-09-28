@@ -19,7 +19,7 @@ def analyze_source_stats(source_name: str, records: List[JobRecord]):
     with_company = sum(1 for r in records if r.company and r.company.strip())
     with_location = sum(1 for r in records if r.location and r.location.strip())
     with_skills = sum(1 for r in records if r.explicit_skills and len(r.explicit_skills) > 0)
-    
+
     print(f"\n--- Statistics for Source: '{source_name}' ---")
     print(f"  • Total records loaded:      {total}")
     print(f"  • With Title:                {with_title} (Missing: {total - with_title})")
@@ -164,7 +164,7 @@ def main():
     print(f"• Duplicate Matches Identified:      {merged_count}")
     print(f"• Records Merged:                   {merged_count}")
     print(f"• Final Unique Records Retained:    {retained_count}")
-    
+
     # Counts by primary source
     source_counts = {}
     for r in unique_records:

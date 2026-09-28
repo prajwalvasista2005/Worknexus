@@ -81,10 +81,10 @@ class MLService:
         """
         if not isinstance(text, str):
             raise InvalidInputError(f"extract_skills expects text of type str, got {type(text).__name__}")
-        
+
         from ml.extract.extractor import extract_skills as _extract
         raw_results = _extract(text)
-        
+
         return [
             {
                 "skill_id": r["skill_id"],
@@ -192,7 +192,7 @@ class MLService:
             emp_id = rec.get("employer_id", "EMP_UNKNOWN")
             course_id = rec.get("course_id")
             trust = rec.get("trust_weight", 1.0)
-            
+
             normalized_records.append({
                 "feedback_id": fb_id,
                 "employer_id": emp_id,
@@ -442,7 +442,7 @@ class MLService:
         Preserves Phase 3 job-based distinct counting and zero-skill denominator semantics.
         """
         from collections import defaultdict
-        
+
         actual_total = total_jobs if total_jobs is not None else len(jobs)
         if actual_total == 0:
             return SkillDemandResult(
@@ -521,7 +521,7 @@ class MLService:
             c_id = c.get("course_id", c.get("id"))
             c_name = c.get("course_name", c.get("name", f"Course {c_id}"))
             taught_skills = list(c.get("taught_skills", []))
-            
+
             covered = sorted([s for s in taught_skills if s in demanded_skill_ids])
             missing = sorted([s for s in demanded_skill_ids if s not in taught_skills])
             not_in_demand = sorted([s for s in taught_skills if s not in demanded_skill_ids])
@@ -578,7 +578,7 @@ class MLService:
             emp_signals = employer_feedback_data.get("detected_skills", employer_feedback_data.get("skill_signals", []))
         else:
             emp_signals = employer_feedback_data
-        
+
         emp_map = {}
         for sig in emp_signals:
             sk_id = sig["skill_id"]
@@ -833,7 +833,7 @@ class MLService:
         """
         stu_id = student_profile.student_id if isinstance(student_profile, StudentProfileResult) else student_profile.get("student_id", "")
         profile_skills = student_profile.profile_skills if isinstance(student_profile, StudentProfileResult) else student_profile.get("skills", student_profile.get("profile_skills", []))
-        
+
         student_skill_ids = {s["skill_id"] for s in profile_skills}
         student_evidence_map = {s["skill_id"]: s.get("evidence", []) for s in profile_skills}
 
@@ -849,7 +849,7 @@ class MLService:
             sk_id = item["skill_id"]
             is_present = sk_id in student_skill_ids
             stu_status = "present" if is_present else "missing"
-            
+
             if is_present:
                 present_count += 1
             else:

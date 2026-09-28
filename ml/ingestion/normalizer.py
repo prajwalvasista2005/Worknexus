@@ -88,14 +88,14 @@ def normalize_location(location: str) -> str:
     if not location:
         return ""
     cleaned = clean_text_for_comparison(location)
-    
+
     if "remote" in cleaned or "wfh" in cleaned or "work from home" in cleaned:
         return "remote"
-        
+
     for alias, standard in LOCATION_MAP.items():
         if alias in cleaned.split() or alias in cleaned:
             return standard
-            
+
     return cleaned
 
 def tokenize_and_clean(text: str) -> Set[str]:

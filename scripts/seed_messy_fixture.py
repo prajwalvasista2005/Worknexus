@@ -115,14 +115,14 @@ def seed_fixture(mode: str = "messy"):
             # 4. Unmapped job_skill: references non-existent skill id 9999
             conn.execute(text("""
                 INSERT INTO users (id, email, hashed_password, full_name, role)
-                VALUES 
+                VALUES
                     (1, 'emp_one@worknexus.io', 'hash123', 'Acme Corporation', 'EMPLOYER'),
                     (2, 'student@worknexus.io', 'hash123', 'Alice Student', 'Student'),
                     (3, 'Student@worknexus.io', 'hash123', 'Alice Duplicate Case', 'student'),
                     (4, 'invalid_role@worknexus.io', 'hash123', 'Bob Invalid', 'SuperAdmin');
 
                 INSERT INTO employers (id, company_name)
-                VALUES 
+                VALUES
                     (1, 'Acme Corporation'),
                     (99, 'Orphaned Mystery Corp');
 
@@ -139,13 +139,13 @@ def seed_fixture(mode: str = "messy"):
             print("==> Seeding clean unambiguous legacy data where dry-run passes green...")
             conn.execute(text("""
                 INSERT INTO users (id, email, hashed_password, full_name, role)
-                VALUES 
+                VALUES
                     (1, 'emp_one@worknexus.io', 'hash123', 'Acme Corporation', 'employer'),
                     (2, 'emp_two@worknexus.io', 'hash123', 'Global Logistics', 'employer'),
                     (3, 'student@worknexus.io', 'hash123', 'Student Alice', 'student');
 
                 INSERT INTO employers (id, company_name)
-                VALUES 
+                VALUES
                     (1, 'Acme Corporation'),
                     (2, 'Global Logistics');
 
