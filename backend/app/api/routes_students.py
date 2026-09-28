@@ -36,7 +36,7 @@ def create_or_update_student_profile(
     try:
         return StudentService.create_or_get_profile(actual_db, profile_in)
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
 @router.get(
@@ -87,7 +87,7 @@ def add_student_skill_evidence(
     try:
         return StudentService.add_skill_evidence(actual_db, user_id, evidence_in)
     except ValueError as e:
-        raise HTTPException(status_code=422, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
 
 
 @router.get(

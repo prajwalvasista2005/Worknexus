@@ -57,4 +57,4 @@ def create_target_role(
     try:
         return RoleService.create_role(actual_db, role_in)
     except ValueError as e:
-        raise HTTPException(status_code=422, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))

@@ -114,6 +114,7 @@ def create_app() -> FastAPI:
         return {"status": "healthy", "service": "worknexus-backend", "message": "WorkNexus API"}
 
     @app.get("/health", tags=["Health"])
+    @app.get(f"{settings.API_V1_STR}/health", tags=["Health"], include_in_schema=False)
     def health_check():
         return {"status": "healthy", "service": "worknexus-backend"}
 
