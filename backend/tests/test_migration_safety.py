@@ -316,8 +316,9 @@ def test_postgres_migration_002_succeeds_and_enforces_fk_and_unique_index():
 # ==============================================================================
 
 @pytest.mark.xfail(
-    reason="Migration for lower(email) unique index not yet implemented (Phase 2 Task 15)",
-    strict=False
+    raises=AssertionError,
+    strict=True,
+    reason="Migration for lower(email) unique index not yet implemented (Phase 2 Task 15)"
 )
 def test_messy_legacy_data_duplicate_emails():
     """
@@ -350,16 +351,21 @@ def test_messy_legacy_data_duplicate_emails():
         """))
 
     try:
-        # Once migration Phase 2 Task 15 exists, this will exercise the case-insensitive migration
         run_alembic_upgrade(pg_target_url, "head")
+        with engine.connect() as conn:
+            dups = conn.execute(text(f"""
+                SELECT lower(email) FROM {schema_name}.users GROUP BY lower(email) HAVING count(*) > 1
+            """)).fetchall()
+            assert len(dups) == 0, f"Duplicate lowercased emails remain: {dups}"
     finally:
         with engine.begin() as conn:
             conn.execute(text(f"DROP SCHEMA IF EXISTS {schema_name} CASCADE;"))
 
 
 @pytest.mark.xfail(
-    reason="Migration for role lowercase normalization not yet implemented (Phase 1 Task 8)",
-    strict=False
+    raises=AssertionError,
+    strict=True,
+    reason="Migration for role lowercase normalization not yet implemented (Phase 1 Task 8)"
 )
 def test_messy_legacy_data_mixed_case_roles():
     """
@@ -392,16 +398,21 @@ def test_messy_legacy_data_mixed_case_roles():
         """))
 
     try:
-        # Once migration Phase 1 Task 8 exists, this will exercise lowercase normalization
         run_alembic_upgrade(pg_target_url, "head")
+        with engine.connect() as conn:
+            invalid = conn.execute(text(f"""
+                SELECT role FROM {schema_name}.users WHERE role NOT IN ('student', 'employer', 'institute', 'trainer', 'admin')
+            """)).fetchall()
+            assert len(invalid) == 0, f"Found unnormalized mixed-case roles: {invalid}"
     finally:
         with engine.begin() as conn:
             conn.execute(text(f"DROP SCHEMA IF EXISTS {schema_name} CASCADE;"))
 
 
 @pytest.mark.xfail(
-    reason="Migration for job_skills.skill_id integer FK not yet implemented (Phase 3 Task 19)",
-    strict=False
+    raises=AssertionError,
+    strict=True,
+    reason="Migration for job_skills.skill_id integer FK not yet implemented (Phase 3 Task 19)"
 )
 def test_messy_legacy_data_string_vs_int_skill_ids():
     """
@@ -432,8 +443,13 @@ def test_messy_legacy_data_string_vs_int_skill_ids():
         """))
 
     try:
-        # Once migration Phase 3 Task 19 exists, this will exercise string-to-int FK migration
         run_alembic_upgrade(pg_target_url, "head")
+        with engine.connect() as conn:
+            col_type = conn.execute(text(f"""
+                SELECT data_type FROM information_schema.columns 
+                WHERE table_schema = '{schema_name}' AND table_name = 'job_skills' AND column_name = 'skill_id'
+            """)).scalar()
+            assert col_type in ('integer', 'smallint', 'bigint'), f"skill_id is {col_type}, not integer FK"
     finally:
         with engine.begin() as conn:
             conn.execute(text(f"DROP SCHEMA IF EXISTS {schema_name} CASCADE;"))
