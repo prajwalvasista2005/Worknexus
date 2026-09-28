@@ -1,0 +1,4 @@
+# Enforce consistent line endings across platforms
+* text=auto eol=lf
+*.sh text eol=lf
+*.py text eol=lf
