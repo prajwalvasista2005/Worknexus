@@ -57,8 +57,8 @@ class Settings:
     if _can_resolve_raw:
         DATABASE_URL = _raw_url
     elif _db_user and _db_pass and _can_resolve_db_host:
-        _encoded_user = urllib.parse.quote_plus(_db_user)
-        _encoded_pass = urllib.parse.quote_plus(_db_pass)
+        _encoded_user = urllib.parse.quote(_db_user, safe="")
+        _encoded_pass = urllib.parse.quote(_db_pass, safe="")
         DATABASE_URL = f"postgresql://{_encoded_user}:{_encoded_pass}@{_db_host}:{_db_port}/{_db_name}"
     else:
         DATABASE_URL = "sqlite:///./test.db"

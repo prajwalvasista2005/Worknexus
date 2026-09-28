@@ -94,7 +94,7 @@ done
 # Step c: Run alembic upgrade head against dryrun database
 echo "==> Step (c): Executing 'alembic upgrade head' against '${DRYRUN_DB}'..."
 ALEMBIC_CONFIG="${REPO_ROOT}/backend/alembic.ini"
-ENCODED_PASS=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote_plus(sys.argv[1]))" "${DB_PASS}" 2>/dev/null || echo "${DB_PASS}")
+ENCODED_PASS=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1], safe=''))" "${DB_PASS}" 2>/dev/null || echo "${DB_PASS}")
 DRYRUN_URL="postgresql://${DB_USER}:${ENCODED_PASS}@${DB_HOST}:${DB_PORT}/${DRYRUN_DB}"
 
 # Execute alembic in backend dir
