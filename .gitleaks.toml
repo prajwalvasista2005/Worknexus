@@ -1,0 +1,9 @@
+# ==============================================================================
+# Gitleaks Configuration File
+# Allowlist legacy historical compromised commit 4e3e94f
+# ==============================================================================
+[allowlist]
+description = "Baseline allowlist for historical commit 4e3e94f"
+commits = [
+  "4e3e94fd1a5cc367766b0204e61264f0b5a19e05"
+]
