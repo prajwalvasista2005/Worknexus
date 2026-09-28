@@ -419,15 +419,10 @@ def test_messy_legacy_data_mixed_case_roles():
             conn.execute(text(f"DROP SCHEMA IF EXISTS {schema_name} CASCADE;"))
 
 
-@pytest.mark.xfail(
-    raises=IntegrityError,
-    strict=True,
-    reason="Attempting to enforce integer foreign key constraint on orphaned skill_id must fail with IntegrityError at DB level until Phase 3 Task 19 migration standardizes skill keys"
-)
 def test_messy_legacy_data_string_vs_int_skill_ids():
     """
     Calls real 'alembic upgrade head' on legacy database containing orphaned skill IDs,
-    then attempts to enforce the foreign key constraint referencing skills(id).
+    verifies migration 005 cleans up orphans and enforces foreign key constraint referencing skills(id).
     PostgreSQL itself must reject orphaned foreign keys with IntegrityError.
     """
     if not is_postgres:
@@ -463,13 +458,21 @@ def test_messy_legacy_data_string_vs_int_skill_ids():
 
     try:
         run_alembic_upgrade(pg_target_url, "head")
-        # Attempt to enforce the foreign key constraint referencing skills(id)
-        with engine.begin() as conn:
-            conn.execute(text(f"""
-                ALTER TABLE {schema_name}.job_skills
-                ADD CONSTRAINT fk_job_skills_skill_id
-                FOREIGN KEY (skill_id) REFERENCES {schema_name}.skills(id);
-            """))
+
+        # Verify orphaned skill_id was pruned
+        with engine.connect() as conn:
+            rows = conn.execute(text(f"SELECT id, job_id, skill_id FROM {schema_name}.job_skills ORDER BY id")).fetchall()
+            assert len(rows) == 1
+            assert rows[0][1] == 1
+            assert rows[0][2] == 1
+
+        # Attempting to insert an orphaned skill_id must fail with IntegrityError
+        with pytest.raises(IntegrityError):
+            with engine.begin() as conn:
+                conn.execute(text(f"""
+                    INSERT INTO {schema_name}.job_skills (job_id, skill_id)
+                    VALUES (1, 999999);
+                """))
     finally:
         with engine.begin() as conn:
             conn.execute(text(f"DROP SCHEMA IF EXISTS {schema_name} CASCADE;"))

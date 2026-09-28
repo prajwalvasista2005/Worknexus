@@ -60,18 +60,27 @@ class JobService:
             })
 
             # 3. Persist extracted skills mapped to canonical taxonomy
+            from .skill_service import SkillService
             extracted_items: List[SkillExtractionItem] = []
             for s in ml_result.extracted_skills:
-                sk_id = s["skill_id"]
+                sk_code = s["skill_id"]
                 conf = float(s["confidence_score"])
 
-                job_skill = JobSkill(
-                    job_id=job.id,
-                    skill_id=sk_id,
-                    confidence_score=conf
-                )
-                db.add(job_skill)
-                extracted_items.append(SkillExtractionItem(skill_id=sk_id, confidence_score=conf))
+                sk_obj = None
+                if isinstance(sk_code, int) or (isinstance(sk_code, str) and sk_code.isdigit()):
+                    sk_obj = SkillService.get_skill_by_id(db, int(sk_code))
+                if not sk_obj and isinstance(sk_code, str):
+                    sk_obj = SkillService.get_skill_by_code(db, sk_code) or SkillService.get_skill_by_name(db, sk_code)
+
+                resolved_id = sk_obj.id if sk_obj else (int(sk_code) if str(sk_code).isdigit() else None)
+                if resolved_id is not None:
+                    job_skill = JobSkill(
+                        job_id=job.id,
+                        skill_id=resolved_id,
+                        confidence_score=conf
+                    )
+                    db.add(job_skill)
+                extracted_items.append(SkillExtractionItem(skill_id=sk_code, confidence_score=conf))
 
             db.commit()
             try:

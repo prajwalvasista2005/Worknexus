@@ -42,6 +42,14 @@ class SkillService:
         return db.execute(stmt).scalar_one_or_none()
 
     @staticmethod
+    def get_skill_by_name(
+        db: Session,
+        name: str,
+    ) -> Skill | None:
+        stmt = select(Skill).where(Skill.name.ilike(name))
+        return db.execute(stmt).scalar_one_or_none()
+
+    @staticmethod
     def get_all_skills(
         db: Session,
         category: str | None = None,

@@ -82,7 +82,12 @@ def create_job_skill(
         )
 
     # Verify skill exists
-    skill = SkillService.get_skill_by_code(db=db, skill_code=job_skill_data.skill_id)
+    skill = None
+    if isinstance(job_skill_data.skill_id, int) or (isinstance(job_skill_data.skill_id, str) and job_skill_data.skill_id.isdigit()):
+        skill = SkillService.get_skill_by_id(db=db, skill_id=int(job_skill_data.skill_id))
+    if not skill and isinstance(job_skill_data.skill_id, str):
+        skill = SkillService.get_skill_by_code(db=db, skill_code=job_skill_data.skill_id) or SkillService.get_skill_by_name(db=db, name=job_skill_data.skill_id)
+
     if not skill:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
