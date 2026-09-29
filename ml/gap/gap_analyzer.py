@@ -73,7 +73,7 @@ class SkillGapAnalyzer:
 
         courses_output: List[Dict[str, Any]] = []
         unmapped_course_skills: List[Dict[str, Any]] = []
-        
+
         # Track global skill coverage: skill_id -> list of course_ids covering it
         global_skill_course_coverage: Dict[str, Set[Any]] = defaultdict(set)
 

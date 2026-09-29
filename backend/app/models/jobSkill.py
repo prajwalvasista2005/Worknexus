@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import DateTime, Float, ForeignKey, UniqueConstraint, func
+from sqlalchemy import DateTime, Float, ForeignKey, Integer, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -24,8 +24,9 @@ class JobSkill(Base):
         nullable=False,
         index=True,
     )
-    skill_id: Mapped[str] = mapped_column(
-        ForeignKey("skills.skill_id"),
+    skill_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("skills.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )

@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 from app.db.dependencies import get_db
 from app.schemas.job_postings import JobPostingCreate, JobPostingResponse
 from app.services.job_posting_service import JobPostingService
+from app.services.employer_service import EmployerService
+from app.auth.rbac import require_role, CurrentUser
 
 router = APIRouter(
     prefix="/job-postings",
@@ -62,6 +64,7 @@ def get_job_posting(
 def create_job_posting(
     job_data: JobPostingCreate,
     db: Session = Depends(get_db),
+    _user: CurrentUser = Depends(require_role(["Employer", "Admin"])),
 ):
     return JobPostingService.create_job_posting(db=db, job_data=job_data)
 
@@ -74,11 +77,26 @@ def create_job_posting(
 def delete_job_posting(
     job_id: int,
     db: Session = Depends(get_db),
+    _user: CurrentUser = Depends(require_role(["Employer", "Admin"])),
 ):
-    deleted = JobPostingService.delete_job_posting(db=db, job_id=job_id)
-    if not deleted:
+    from inspect import isgenerator
+    actual_db = next(db) if isgenerator(db) else db
+    job = JobPostingService.get_job_posting(db=actual_db, job_id=job_id)
+    if not job:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Job posting not found",
         )
+
+    user_role = getattr(_user, "role", "").lower()
+    if user_role == "employer":
+        employer = EmployerService.get_employer_by_user_id(actual_db, _user.user_id)
+        if not employer or job.employer_id != employer.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have permission to delete this job posting",
+            )
+
+    actual_db.delete(job)
+    actual_db.commit()
     return {"message": "Job posting deleted successfully"}

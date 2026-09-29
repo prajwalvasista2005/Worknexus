@@ -63,10 +63,10 @@ class DemandAggregator:
         jobs_with_skills_count = 0
         total_skill_mentions_count = 0
         source_job_counts: Dict[str, int] = defaultdict(int)
-        
+
         # Skill-level aggregators: skill_id -> list of (source, confidence)
         skill_occurrences: Dict[str, List[Tuple[str, float]]] = defaultdict(list)
-        
+
         # Category-level trackers: category -> set of job_ids
         category_job_sets: Dict[str, Set[str]] = defaultdict(set)
         category_skill_assignments: Dict[str, int] = defaultdict(int)
@@ -120,7 +120,7 @@ class DemandAggregator:
             job_count = len(occurrences)
             demand_share = job_count / total_jobs
             demand_pct = demand_share * 100.0
-            
+
             confidences = [c for _, c in occurrences]
             avg_conf = sum(confidences) / len(confidences) if confidences else 0.0
 

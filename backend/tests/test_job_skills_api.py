@@ -43,16 +43,22 @@ def test_create_job_skill_success():
     mock_exec_job.scalar_one_or_none.return_value = mock_job
     mock_exec_skill = MagicMock()
     mock_exec_skill.scalar_one_or_none.return_value = mock_skill
-    mock_exec_existing = MagicMock()
-    mock_exec_existing.scalar_one_or_none.return_value = None
+    mock_exec_empty = MagicMock()
+    mock_exec_empty.scalar_one_or_none.return_value = None
 
-    mock_db.execute.side_effect = [mock_exec_job, mock_exec_skill, mock_exec_existing]
+    mock_db.execute.side_effect = [
+        mock_exec_job,
+        mock_exec_skill,
+        mock_exec_empty,
+        mock_exec_empty,
+        mock_exec_skill,
+    ]
 
     data = JobSkillCreate(job_id=1, skill_id="SKL-PY-01")
     result = create_job_skill(job_skill_data=data, db=mock_db)
 
     assert result.job_id == 1
-    assert result.skill_id == "SKL-PY-01"
+    assert result.skill_id == 10
     assert mock_db.add.called
     assert mock_db.commit.called
 
@@ -83,10 +89,10 @@ def test_create_job_skill_skill_not_found():
 
     mock_exec_job = MagicMock()
     mock_exec_job.scalar_one_or_none.return_value = mock_job
-    mock_exec_skill = MagicMock()
-    mock_exec_skill.scalar_one_or_none.return_value = None
+    mock_exec_empty = MagicMock()
+    mock_exec_empty.scalar_one_or_none.return_value = None
 
-    mock_db.execute.side_effect = [mock_exec_job, mock_exec_skill]
+    mock_db.execute.side_effect = [mock_exec_job, mock_exec_empty, mock_exec_empty]
 
     data = JobSkillCreate(job_id=1, skill_id="NON-EXISTENT")
     try:

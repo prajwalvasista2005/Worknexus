@@ -47,7 +47,7 @@ class TestPhase10DatabaseFoundation(unittest.TestCase):
 
     def test_03_student_profile_creation(self):
         """Test StudentProfile creation linked to existing User."""
-        user = User(id=10, email="alice@student.org", role="Student")
+        user = User(id=10, email="alice@student.org", role="student")
         self.db.add(user)
 
         # Seed benchmark roles so target_role_id is valid
@@ -71,7 +71,7 @@ class TestPhase10DatabaseFoundation(unittest.TestCase):
 
     def test_05_student_skill_evidence_valid_types_and_strengths(self):
         """Test adding skill evidence with valid types and strength categories."""
-        user = User(id=11, email="bob@student.org", role="Student")
+        user = User(id=11, email="bob@student.org", role="student")
         self.db.add(user)
 
         valid_types = ["self_reported", "course_completed", "project", "certification", "assessment"]
@@ -93,7 +93,7 @@ class TestPhase10DatabaseFoundation(unittest.TestCase):
 
     def test_06_student_skill_evidence_invalid_type_rejection(self):
         """Test student skill evidence rejects invalid evidence_type."""
-        user = User(id=12, email="charlie@student.org", role="Student")
+        user = User(id=12, email="charlie@student.org", role="student")
         self.db.add(user)
 
         ev_schema = StudentSkillEvidenceCreateSchema(
@@ -107,7 +107,7 @@ class TestPhase10DatabaseFoundation(unittest.TestCase):
 
     def test_07_student_skill_evidence_invalid_strength_rejection(self):
         """Test student skill evidence rejects invalid strength category."""
-        user = User(id=13, email="david@student.org", role="Student")
+        user = User(id=13, email="david@student.org", role="student")
         self.db.add(user)
 
         ev_schema = StudentSkillEvidenceCreateSchema(
@@ -121,7 +121,7 @@ class TestPhase10DatabaseFoundation(unittest.TestCase):
 
     def test_08_multiple_legitimate_evidence_records_same_skill(self):
         """Test student can hold multiple distinct evidence records for the same skill."""
-        user = User(id=14, email="emma@student.org", role="Student")
+        user = User(id=14, email="emma@student.org", role="student")
         self.db.add(user)
 
         # Record 1: Project with intermediate strength

@@ -53,17 +53,17 @@ def run_phase1_validation():
 
     for idx, rec in enumerate(deduped_records):
         text_to_extract = f"{rec.title} {rec.description}".strip()
-        
+
         try:
             skills_out = extract_skills(text_to_extract)
-            
+
             # Strict contract validation
             seen_in_job = set()
             for item in skills_out:
                 keys = set(item.keys())
                 if keys != {"skill_id", "confidence_score"}:
                     errors.append(f"Record {rec.canonical_id}: Output keys {keys} != {{'skill_id', 'confidence_score'}}")
-                
+
                 s_id = item["skill_id"]
                 if s_id not in valid_skill_ids:
                     errors.append(f"Record {rec.canonical_id}: Unknown skill_id '{s_id}'")
@@ -96,7 +96,7 @@ def run_phase1_validation():
     records_with_skills = sum(1 for r in extraction_results if r["extracted_skills"])
     records_without_skills = total_records - records_with_skills
     total_skill_occurrences = sum(len(r["extracted_skills"]) for r in extraction_results)
-    
+
     unique_skills_detected = set()
     skill_freq: Dict[str, int] = {}
     match_type_counts = {"exact_canonical (0.99)": 0, "exact_alias (0.96)": 0, "normalized_phrase (0.90)": 0, "fuzzy (0.80)": 0}
@@ -107,7 +107,7 @@ def run_phase1_validation():
         src = rec.source_records[0]["source"]
         if src not in source_stats:
             source_stats[src] = {"total_jobs": 0, "jobs_with_skills": 0, "total_skills_extracted": 0}
-        
+
         source_stats[src]["total_jobs"] += 1
         if item["extracted_skills"]:
             source_stats[src]["jobs_with_skills"] += 1

@@ -1,0 +1,31 @@
+repos:
+  # Secret detection: blocks commits containing credentials, tokens, or private keys
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.0
+    hooks:
+      - id: gitleaks
+
+  # Code hygiene & EOL enforcement using pre-commit's own hook collection
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      # Enforce LF line endings on .sh and .py files (mirrors .gitattributes)
+      - id: mixed-line-ending
+        args: [--fix=lf]
+        types_or: [shell, python]
+      # Prevent trailing whitespace creeping in
+      - id: trailing-whitespace
+        types_or: [shell, python]
+      # Ensure files end with a newline
+      - id: end-of-file-fixer
+        types_or: [shell, python]
+      # Catch common accidental large-file commits
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+      # Validate YAML syntax (workflow files, pre-commit config, etc.)
+      - id: check-yaml
+      # Validate JSON syntax (package.json, package-lock.json, etc.)
+      - id: check-json
+        exclude: "tsconfig\\.json$"
+      # Detect private keys accidentally staged for commit
+      - id: detect-private-key

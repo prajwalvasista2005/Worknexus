@@ -31,7 +31,7 @@ def load_linkedin_india_sample(
     """
     resolved_dir = get_data_dir(data_dir)
     archive_path = resolved_dir / "archive3.zip"
-    
+
     if not archive_path.exists():
         raise FileNotFoundError(f"Missing dataset archive: {archive_path}")
 
@@ -40,7 +40,7 @@ def load_linkedin_india_sample(
     with zipfile.ZipFile(archive_path, "r") as zf:
         if "linkdin_Job_data.csv" not in zf.namelist():
             raise FileNotFoundError("linkdin_Job_data.csv not found inside archive3.zip")
-            
+
         with zf.open("linkdin_Job_data.csv") as f:
             # Handle possible UTF-8 BOM encoding safely
             text_stream = io.TextIOWrapper(f, encoding="utf-8-sig", errors="replace")
@@ -159,7 +159,7 @@ def load_parquet_sample(
 
     records: List[JobRecord] = []
     parquet_file = pq.ParquetFile(str(parquet_path))
-    
+
     # Check actual column names
     available_cols = set(parquet_file.schema.names)
 
@@ -184,7 +184,7 @@ def load_parquet_sample(
             keyword = get_val(batch_dict, ["Primary Keyword", "Primary_Keyword", "keyword"], i)
             published = get_val(batch_dict, ["Published", "published", "date"], i) or None
             record_id = get_val(batch_dict, ["id", "ID"], i) or f"parquet_{len(records) + 1}"
-            
+
             explicit_skills = [keyword] if keyword else []
 
             records.append(

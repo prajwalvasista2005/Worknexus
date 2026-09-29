@@ -18,21 +18,18 @@ from .api import (
 )
 
 def create_app() -> FastAPI:
+    # 1. Enforce production cryptographic key security invariants
+    settings.validate_production_security()
+
     app = FastAPI(
         title=settings.PROJECT_NAME,
         version="1.0.0",
         description="WorkNexus / SkillMesh Core Backend API with Integrated ML Engine"
     )
 
-    # Initialize tables and seed canonical taxonomy
+    # Startup audit and self-healing validation for employer profiles
     try:
-        from .db.base import Base
-        from .db.session import engine, SessionLocal
-        # Import all SQLAlchemy models to bind metadata
-        from .models import users, skills, courses, course_skills, job_postings, jobSkill, refresh_tokens, user_skills, student_roles, employers
-        Base.metadata.create_all(bind=engine)
-
-        # Startup audit and self-healing validation for employer profiles
+        from .db.session import SessionLocal
         from .services.employer_service import EmployerService
         with SessionLocal() as db_session:
             EmployerService.verify_employer_profiles(db_session)
@@ -41,7 +38,7 @@ def create_app() -> FastAPI:
             seed_all(db_session)
     except Exception as e:
         import logging
-        logging.getLogger(__name__).warning(f"Database initialization warning: {e}")
+        logging.getLogger(__name__).warning(f"Database startup check warning: {e}")
 
     app.add_middleware(
         CORSMiddleware,
@@ -117,6 +114,7 @@ def create_app() -> FastAPI:
         return {"status": "healthy", "service": "worknexus-backend", "message": "WorkNexus API"}
 
     @app.get("/health", tags=["Health"])
+    @app.get(f"{settings.API_V1_STR}/health", tags=["Health"], include_in_schema=False)
     def health_check():
         return {"status": "healthy", "service": "worknexus-backend"}
 

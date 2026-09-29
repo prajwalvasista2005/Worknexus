@@ -287,7 +287,7 @@ def seed_demo_students(db) -> Dict[str, int]:
         if is_mock:
             user = db.users.get(user_id)
             if not user:
-                user = SqlUser(id=user_id, email=f"{stu_str_id.lower()}@demo.worknexus.org", role="Student")
+                user = SqlUser(id=user_id, email=f"{stu_str_id.lower()}@demo.worknexus.org", role="student")
                 db.add(user)
 
             profile = next((p for p in db.student_profiles.values() if p.user_id == user_id), None)
@@ -370,11 +370,11 @@ def seed_portal_accounts(db) -> Dict[str, int]:
     - admin@worknexus.io (Role: Admin)
     """
     demo_users = [
-        {"email": "student@worknexus.io", "name": "Alex Student", "role": "Student"},
-        {"email": "employer@worknexus.io", "name": "Elena Employer", "role": "Employer"},
-        {"email": "institute@worknexus.io", "name": "Irene Institute", "role": "Institute"},
-        {"email": "trainer@worknexus.io", "name": "Trevor Trainer", "role": "Trainer"},
-        {"email": "admin@worknexus.io", "name": "Arthur Admin", "role": "Admin"},
+        {"email": "student@worknexus.io", "name": "Alex Student", "role": "student"},
+        {"email": "employer@worknexus.io", "name": "Elena Employer", "role": "employer"},
+        {"email": "institute@worknexus.io", "name": "Irene Institute", "role": "institute"},
+        {"email": "trainer@worknexus.io", "name": "Trevor Trainer", "role": "trainer"},
+        {"email": "admin@worknexus.io", "name": "Arthur Admin", "role": "admin"},
     ]
     is_mock = _is_mock(db)
     seeded = 0

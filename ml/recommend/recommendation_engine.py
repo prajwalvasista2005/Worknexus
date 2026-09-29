@@ -120,7 +120,7 @@ class GenericSkillRecommendationEngine:
             if is_recommended:
                 recommended_count += 1
                 status = "recommended"
-                
+
                 if market_demand:
                     reason_ids.append("observed_market_demand")
                 if employer_validation:

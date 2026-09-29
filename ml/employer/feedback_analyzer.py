@@ -59,7 +59,7 @@ class EmployerFeedbackAnalyzer:
         # Aggregation structures:
         # skill_id -> list of dicts: {"employer_id": ..., "feedback_id": ..., "weighted_signal": ...}
         skill_signal_records: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
-        
+
         # course_id -> dict with feedback_count, employers set, skill_records dict
         course_signal_records: Dict[Any, Dict[str, Any]] = defaultdict(lambda: {
             "feedback_count": 0,
@@ -76,7 +76,7 @@ class EmployerFeedbackAnalyzer:
             feedback_id = str(item.get("feedback_id") or f"fb_{idx}")
             employer_id = item.get("employer_id")
             course_id = item.get("course_id")
-            
+
             # Trust weight handling
             raw_trust = item.get("trust_weight")
             if raw_trust is not None:
@@ -205,7 +205,7 @@ class EmployerFeedbackAnalyzer:
         for c_id in sorted(list(course_signal_records.keys()), key=lambda x: (isinstance(x, str), x)):
             c_data = course_signal_records[c_id]
             c_skills_dict = c_data["skill_records"]
-            
+
             c_skill_summaries: List[Dict[str, Any]] = []
             for s_id in sorted(list(c_skills_dict.keys())):
                 sigs = c_skills_dict[s_id]

@@ -194,7 +194,7 @@ class MLDataService:
             sk_id = getattr(sig, "skill_id", "")
             fb = next((f for f in all_fb if f.id == getattr(sig, "feedback_id", None)), None)
             emp_id = getattr(fb, "employer_id", None) if fb else None
-            
+
             signal_agg[sk_id]["feedback_count"] += 1
             if emp_id:
                 signal_agg[sk_id]["employers"].add(emp_id)

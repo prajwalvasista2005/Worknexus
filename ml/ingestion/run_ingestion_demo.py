@@ -45,7 +45,7 @@ def run_real_data_ingestion_pipeline():
     # 3. Execute Conservative Cross-Source Deduplication
     print("\n[STEP 3] Executing conservative cross-source deduplication...")
     all_jobs: List[JobRecord] = linkedin_jobs + naukri_jobs + parquet_jobs
-    
+
     # Inject a known cross-source duplicate to verify real merging in action
     mock_cross_source_dup = JobRecord(
         source="naukri_mirror",

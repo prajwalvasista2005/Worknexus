@@ -25,7 +25,7 @@ class TestLivePersonalization(unittest.TestCase):
         self.assertEqual(res.role_name, "Full Stack Developer")
         self.assertFalse(res.is_synthetic_artifact)
         self.assertEqual(res.summary["target_skill_count"], 6)
-        
+
         # Verify skills present
         skill_ids = [s["skill_id"] for s in res.contextual_recommendations]
         self.assertIn("SK_PYTHON", skill_ids)
@@ -62,7 +62,7 @@ class TestLivePersonalization(unittest.TestCase):
         self.assertEqual(res.student_id, "STU_003")
         self.assertEqual(res.role["role_id"], "ROLE_FULL_STACK_DEV")
         self.assertFalse(res.is_synthetic_artifact)
-        
+
         # Verify gap semantics (present + missing = total)
         total = res.summary["total_role_skills"]
         present = res.summary["present_skills_count"]
@@ -80,7 +80,7 @@ class TestLivePersonalization(unittest.TestCase):
         res = self.adapter.get_personalized_recommendations("STU_003", "ROLE_FULL_STACK_DEV", db=self.db, mode="live")
         self.assertEqual(res.student_id, "STU_003")
         self.assertFalse(res.is_synthetic_artifact)
-        
+
         summary = res.summary
         self.assertEqual(summary["total_role_skills"], 6)
         self.assertEqual(
@@ -98,7 +98,7 @@ class TestLivePersonalization(unittest.TestCase):
         res = self.adapter.get_course_candidates("STU_003", "ROLE_FULL_STACK_DEV", db=self.db, mode="live")
         self.assertEqual(res.student_id, "STU_003")
         self.assertFalse(res.is_synthetic_artifact)
-        
+
         # Candidates must have covered_personalized_skills_count >= 1
         for cand in res.candidate_courses:
             self.assertGreaterEqual(cand["covered_personalized_skills_count"], 1)

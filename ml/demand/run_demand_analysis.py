@@ -6,10 +6,10 @@ def main():
     print("==================================================")
     print("PHASE 3: RUNNING SKILL DEMAND AGGREGATION & TRENDS")
     print("==================================================")
-    
+
     aggregator = DemandAggregator()
     artifact, output_path = aggregator.run_and_save()
-    
+
     meta = artifact["metadata"]
     print(f"Input artifact: {meta['input_artifact']}")
     print(f"Output artifact: {output_path}")

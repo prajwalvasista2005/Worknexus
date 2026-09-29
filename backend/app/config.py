@@ -3,11 +3,29 @@ import os
 import urllib.parse
 from pathlib import Path
 
+_root_env_path = Path(__file__).resolve().parent.parent.parent / ".env"
 _env_path = Path(__file__).resolve().parent.parent / ".env"
+if _root_env_path.exists():
+    load_dotenv(dotenv_path=_root_env_path)
 if _env_path.exists():
-    load_dotenv(dotenv_path=_env_path)
+    load_dotenv(dotenv_path=_env_path, override=False)
 else:
     load_dotenv()
+
+
+INSECURE_SECRET_KEYS = {
+    "default-dev-secret-key-replace-in-production",
+    "default-dev-refresh-secret-key-replace-in-production",
+    "secret",
+    "secretkey",
+    "changeme",
+    "password",
+    "insecure",
+    "testsecret",
+    "admin",
+    "123456",
+}
+
 
 class Settings:
     PROJECT_NAME: str = "WorkNexus / SkillMesh"
@@ -15,11 +33,11 @@ class Settings:
 
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
 
-    _db_user = os.getenv("DB_USER")
-    _db_pass = os.getenv("DB_PASSWORD")
+    _db_user = os.getenv("DB_USER") or os.getenv("POSTGRES_USER")
+    _db_pass = os.getenv("DB_PASSWORD") or os.getenv("POSTGRES_PASSWORD")
     _db_host = os.getenv("DB_HOST", "localhost")
     _db_port = os.getenv("DB_PORT", "5432")
-    _db_name = os.getenv("DB_NAME", "SkillSync")
+    _db_name = os.getenv("DB_NAME") or os.getenv("POSTGRES_DB", "SkillSync")
 
     _raw_url = os.getenv("DATABASE_URL")
 
@@ -54,12 +72,18 @@ class Settings:
     if _can_resolve_raw:
         DATABASE_URL = _raw_url
     elif _db_user and _db_pass and _can_resolve_db_host:
-        _encoded_pass = urllib.parse.quote_plus(_db_pass)
-        DATABASE_URL = f"postgresql://{_db_user}:{_encoded_pass}@{_db_host}:{_db_port}/{_db_name}"
+        _encoded_user = urllib.parse.quote(_db_user, safe="")
+        _encoded_pass = urllib.parse.quote(_db_pass, safe="")
+        DATABASE_URL = f"postgresql://{_encoded_user}:{_encoded_pass}@{_db_host}:{_db_port}/{_db_name}"
     else:
         DATABASE_URL = "sqlite:///./test.db"
 
+    # Core Cryptographic & Token Configuration
     SECRET_KEY: str = os.getenv("SECRET_KEY", "default-dev-secret-key-replace-in-production")
+    REFRESH_SECRET_KEY: str = os.getenv(
+        "REFRESH_SECRET_KEY",
+        os.getenv("SECRET_KEY", "default-dev-refresh-secret-key-replace-in-production")
+    )
     ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(
@@ -77,5 +101,25 @@ class Settings:
         "http://127.0.0.1:3000",
         "http://127.0.0.1:5173",
     ] + _custom_cors))
+
+    def validate_production_security(self) -> None:
+        """
+        Enforce strict security validation for production environments:
+        Refuses to start if SECRET_KEY or REFRESH_SECRET_KEY are unset, empty,
+        shorter than 16 characters, or match known insecure defaults.
+        """
+        env = (self.ENVIRONMENT or "").strip().lower()
+        if env in ("production", "prod"):
+            if not self.SECRET_KEY or self.SECRET_KEY in INSECURE_SECRET_KEYS or len(self.SECRET_KEY) < 16:
+                raise RuntimeError(
+                    "FATAL SECURITY VIOLATION: Insecure or default SECRET_KEY detected in production environment. "
+                    "A secure, randomly generated SECRET_KEY (min 16 characters) must be configured."
+                )
+            if not self.REFRESH_SECRET_KEY or self.REFRESH_SECRET_KEY in INSECURE_SECRET_KEYS or len(self.REFRESH_SECRET_KEY) < 16:
+                raise RuntimeError(
+                    "FATAL SECURITY VIOLATION: Insecure or default REFRESH_SECRET_KEY detected in production environment. "
+                    "A secure, randomly generated REFRESH_SECRET_KEY (min 16 characters) must be configured."
+                )
+
 
 settings = Settings()

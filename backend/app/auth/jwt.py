@@ -34,7 +34,7 @@ def create_refresh_token(
     data: dict[str, Any],
     expires_delta: timedelta | None = None,
 ) -> tuple[str, datetime]:
-    """Creates a signed refresh token and returns (token_string, expires_at)."""
+    """Creates a signed refresh token using dedicated REFRESH_SECRET_KEY and returns (token_string, expires_at)."""
     to_encode = data.copy()
     now = datetime.now(timezone.utc)
     if expires_delta is not None:
@@ -50,26 +50,40 @@ def create_refresh_token(
     })
     token = jwt.encode(
         to_encode,
-        settings.SECRET_KEY,
+        settings.REFRESH_SECRET_KEY,
         algorithm=settings.ALGORITHM,
     )
     return token, expire
 
 
 def verify_token(token: str, expected_type: str | None = None) -> dict[str, Any] | None:
-    try:
-        payload = jwt.decode(
-            token,
-            settings.SECRET_KEY,
-            algorithms=[settings.ALGORITHM],
-        )
-        if expected_type is not None:
-            token_type = payload.get("type")
-            # If expected is access and type is missing, accept for backward compatibility
-            if token_type is not None and token_type != expected_type:
-                return None
-            if token_type is None and expected_type != "access":
-                return None
-        return payload
-    except JWTError:
-        return None
+    """
+    Verifies a JWT token against the appropriate key (access or refresh).
+    Supports token type enforcement and safe fallback.
+    """
+    keys_to_try = []
+    if expected_type == "refresh":
+        keys_to_try = [settings.REFRESH_SECRET_KEY, settings.SECRET_KEY]
+    elif expected_type == "access":
+        keys_to_try = [settings.SECRET_KEY]
+    else:
+        keys_to_try = [settings.SECRET_KEY, settings.REFRESH_SECRET_KEY]
+
+    for key in keys_to_try:
+        try:
+            payload = jwt.decode(
+                token,
+                key,
+                algorithms=[settings.ALGORITHM],
+            )
+            if expected_type is not None:
+                token_type = payload.get("type")
+                # If expected is access and type is missing, accept for backward compatibility
+                if token_type is not None and token_type != expected_type:
+                    return None
+                if token_type is None and expected_type != "access":
+                    return None
+            return payload
+        except JWTError:
+            continue
+    return None

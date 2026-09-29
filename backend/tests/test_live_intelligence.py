@@ -102,15 +102,15 @@ class TestLiveIntelligenceIntegration(unittest.TestCase):
         """Test live multi-signal evidence uniting live demand and employer signals."""
         evidence = self.adapter.get_skill_evidence(db=self.db, mode="live")
         self.assertFalse(evidence.is_synthetic_artifact)
-        
+
         skills_map = {s["skill_id"]: s for s in evidence.multi_signal_skills}
-        
+
         # SK_BMS in both job demand and employer feedback
         self.assertEqual(skills_map["SK_BMS"]["evidence_relationship"], "both")
-        
+
         # SK_PYTHON only in job demand
         self.assertEqual(skills_map["SK_PYTHON"]["evidence_relationship"], "job_only")
-        
+
         # SK_CAN only in employer feedback
         self.assertEqual(skills_map["SK_CAN"]["evidence_relationship"], "employer_feedback_only")
         self.assertAlmostEqual(skills_map["SK_CAN"]["employer_validation"]["weighted_signal_sum"], 0.768, places=3)
@@ -119,7 +119,7 @@ class TestLiveIntelligenceIntegration(unittest.TestCase):
         """Test live generic skill recommendations evaluated with Phase 6A rules."""
         recs = self.adapter.get_skill_recommendations(db=self.db, mode="live")
         self.assertFalse(recs.is_synthetic_artifact)
-        
+
         rec_ids = {s["skill_id"] for s in recs.recommended_skills}
         not_rec_ids = {s["skill_id"] for s in recs.not_recommended_skills}
 

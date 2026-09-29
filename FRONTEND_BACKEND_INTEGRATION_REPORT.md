@@ -378,7 +378,7 @@ The following table traces each user action through frontend components, backend
 2. **`backend` (FastAPI Container)**:
    - Base image: `python:3.13-slim`
    - Depends on: `db` (`service_healthy` condition)
-   - Connection URL: `postgresql://postgres:prajwal%40123@db:5432/SkillSync`
+   - Connection URL: `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}`
    - Port: `8000:8000`
    - Command: `uvicorn app.main:app --host 0.0.0.0 --port 8000`
    - Automatic DB Seed: `app/main.py` invokes `seed_all(db)` on startup, provisioning skills, courses, roles, demo students, and portal demo accounts.

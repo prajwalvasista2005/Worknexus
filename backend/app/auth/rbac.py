@@ -1,7 +1,9 @@
 from typing import List, Optional
 from pydantic import BaseModel
 from fastapi import HTTPException, status, Header, Depends
+from sqlalchemy.orm import Session
 from ..config import settings
+from ..db.dependencies import get_db
 
 
 class CurrentUser(BaseModel):
@@ -78,6 +80,7 @@ def require_role(allowed_roles: List[str]):
 
 def get_current_employer(
     current_user: CurrentUser = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     """
     Helper dependency that:
@@ -88,7 +91,6 @@ def get_current_employer(
     5. Returns authoritative employer entity.
     Never uses current_user.id as employer_id.
     """
-    from ..db.dependencies import get_db
     from ..services.employer_service import EmployerService
 
     role = (current_user.role or "").strip().lower()
@@ -98,27 +100,19 @@ def get_current_employer(
             detail=f"User role '{current_user.role}' not permitted to perform employer operations. Required: Employer or Admin."
         )
 
-    db_gen = get_db()
-    db = next(db_gen) if hasattr(db_gen, "__next__") else db_gen
-    try:
-        employer = EmployerService.get_employer_by_user_id(db, current_user.user_id)
-        if not employer:
-            employer = EmployerService.get_or_create_employer_by_user_id(
-                db,
-                user_id=current_user.user_id,
-            )
+    actual_db = next(db) if hasattr(db, "__next__") else db
+    employer = EmployerService.get_employer_by_user_id(actual_db, current_user.user_id)
+    if not employer:
+        employer = EmployerService.get_or_create_employer_by_user_id(
+            actual_db,
+            user_id=current_user.user_id,
+        )
 
-        if not employer:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Employer profile not found for user {current_user.user_id}."
-            )
-        return employer
-    finally:
-        if hasattr(db_gen, "close"):
-            try:
-                db_gen.close()
-            except Exception:
-                pass
+    if not employer:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Employer profile not found for user {current_user.user_id}."
+        )
+    return employer
 
 

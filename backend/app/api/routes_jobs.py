@@ -86,14 +86,14 @@ def list_job_postings(
         conf_scores = {}
         if job_skills:
             for js in job_skills:
-                sk_id = js.skill_id
+                sk_id = str(js.skill_id)
                 conf = float(js.confidence_score) if js.confidence_score is not None else 1.0
                 extracted.append(SkillExtractionItem(skill_id=sk_id, confidence_score=conf))
                 conf_scores[sk_id] = conf
         elif hasattr(actual_db, "query"):
             js_rows = actual_db.query(JobSkill).filter(JobSkill.job_id == p.id).all()
             for js in js_rows:
-                sk_id = js.skill_id
+                sk_id = str(js.skill_id)
                 conf = float(js.confidence_score) if js.confidence_score is not None else 1.0
                 extracted.append(SkillExtractionItem(skill_id=sk_id, confidence_score=conf))
                 conf_scores[sk_id] = conf
@@ -137,14 +137,14 @@ def get_job_posting_by_id(
     conf_scores = {}
     if job_skills:
         for js in job_skills:
-            sk_id = js.skill_id
+            sk_id = str(js.skill_id)
             conf = float(js.confidence_score) if js.confidence_score is not None else 1.0
             extracted.append(SkillExtractionItem(skill_id=sk_id, confidence_score=conf))
             conf_scores[sk_id] = conf
     elif hasattr(actual_db, "query"):
         js_rows = actual_db.query(JobSkill).filter(JobSkill.job_id == job.id).all()
         for js in js_rows:
-            sk_id = js.skill_id
+            sk_id = str(js.skill_id)
             conf = float(js.confidence_score) if js.confidence_score is not None else 1.0
             extracted.append(SkillExtractionItem(skill_id=sk_id, confidence_score=conf))
             conf_scores[sk_id] = conf
@@ -175,8 +175,19 @@ def delete_job_posting_by_id(
 ):
     from fastapi import HTTPException
     actual_db = next(db) if hasattr(db, "__next__") else db
-    deleted = JobPostingService.delete_job_posting(db=actual_db, job_id=job_id)
-    if not deleted:
+    job = JobPostingService.get_job_posting(db=actual_db, job_id=job_id)
+    if not job:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job posting not found")
+
+    user_role = getattr(_user, "role", "").lower()
+    if user_role == "employer":
+        employer = EmployerService.get_employer_by_user_id(actual_db, _user.user_id)
+        if not employer or job.employer_id != employer.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have permission to delete this job posting"
+            )
+
+    deleted = JobPostingService.delete_job_posting(db=actual_db, job_id=job_id)
     return {"message": "Job posting deleted successfully"}
 

@@ -49,7 +49,7 @@ class SkillExtractor:
         self.exact_name_patterns: List[Tuple[re.Pattern, str, str]] = []
         self.exact_alias_patterns: List[Tuple[re.Pattern, str, str]] = []
         self.norm_phrase_map: Dict[str, List[str]] = {}
-        
+
         # Indexed fuzzy targets grouped by word count:
         # word_count -> list of (norm_target_phrase, skill_id, list_of_words, first_char)
         self.fuzzy_targets_by_len: Dict[int, List[Tuple[str, str, List[str], str]]] = {}
@@ -80,7 +80,7 @@ class SkillExtractor:
                 if not alias_clean:
                     continue
                 esc_alias = re.escape(alias_clean)
-                
+
                 if alias_clean.upper() in CASE_SENSITIVE_ACRONYMS:
                     p_alias = re.compile(rf"(?<!\w){esc_alias}(?!\w)")
                 else:

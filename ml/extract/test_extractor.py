@@ -12,10 +12,10 @@ def test_contract_json_shape():
     print("\n--- TEST 1: Contract JSON Output Shape & Exact Fields ---")
     text = "EV technician experienced in BMS and CAN bus"
     result = extract_skills(text)
-    
+
     print(f"Input:  '{text}'")
     print(f"Output: {json.dumps(result, indent=2)}")
-    
+
     assert isinstance(result, list), "Output must be a list"
     assert len(result) >= 2, f"Expected at least 2 skills extracted, got {len(result)}"
 
@@ -32,7 +32,7 @@ def test_contract_json_shape():
 
 def test_fixed_confidence_scores():
     print("\n--- TEST 2: Deterministic Fixed Confidence Scores (0.99, 0.96, 0.90, 0.80) ---")
-    
+
     # 1. Exact Canonical Name Match -> 0.99
     res1 = extract_skills("Specialist in Thermal Management for EVs")
     thermal = next((s for s in res1 if s["skill_id"] == "SK_THERMAL"), None)
@@ -90,10 +90,10 @@ def test_fuzzy_false_positive_regressions():
 
 def test_false_positive_avoidance():
     print("\n--- TEST 4: Word Boundary & Acronym Stopword Protection ---")
-    
+
     negative_text = "The doctor is scanning patient records for cancer treatment, taking possession of task updates without broadcast."
     result = extract_skills(negative_text)
-    
+
     extracted_ids = [s["skill_id"] for s in result]
     print(f"Negative Text: '{negative_text}'")
     print(f"Extracted IDs: {extracted_ids}")

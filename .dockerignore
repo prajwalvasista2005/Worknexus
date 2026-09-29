@@ -1,9 +1,12 @@
 **/.git
 **/.gitignore
+**/.github
 **/node_modules
 **/venv
 **/.venv
 **/env
+**/.env*
+!**/.env.example
 **/__pycache__
 **/*.pyc
 **/*.pyo
@@ -13,3 +16,8 @@
 **/htmlcov
 **/.vscode
 **/.idea
+**/*.db
+**/*.sqlite3
+**/*.log
+**/dist
+**/build
