@@ -63,7 +63,7 @@ export default function App() {
             <Route
               path="/student"
               element={
-                <ProtectedRoute allowedRole="Student">
+                <ProtectedRoute allowedRole="student">
                   <StudentPortal />
                 </ProtectedRoute>
               }
@@ -72,7 +72,7 @@ export default function App() {
             <Route
               path="/employer"
               element={
-                <ProtectedRoute allowedRole="Employer">
+                <ProtectedRoute allowedRole="employer">
                   <EmployerPortal />
                 </ProtectedRoute>
               }
@@ -81,7 +81,7 @@ export default function App() {
             <Route
               path="/institute"
               element={
-                <ProtectedRoute allowedRole="Institute">
+                <ProtectedRoute allowedRole="institute">
                   <InstitutePortal />
                 </ProtectedRoute>
               }
@@ -90,7 +90,7 @@ export default function App() {
             <Route
               path="/trainer"
               element={
-                <ProtectedRoute allowedRole="Trainer">
+                <ProtectedRoute allowedRole="trainer">
                   <TrainerHub />
                 </ProtectedRoute>
               }
@@ -99,7 +99,7 @@ export default function App() {
             <Route
               path="/admin"
               element={
-                <ProtectedRoute allowedRole="Admin">
+                <ProtectedRoute allowedRole="admin">
                   <AdminPortal />
                 </ProtectedRoute>
               }
