@@ -297,34 +297,18 @@ class EmployerService:
         try:
             from ..models.users import User
             from ..models.employers import Employer
-            from sqlalchemy import text
+            from sqlalchemy import inspect, text
 
-            # 1. Self-healing DDL: ensure user_id column exists
+            # 1. Schema check: Ensure governed tables exist before querying
             bind = actual_db.get_bind() if hasattr(actual_db, "get_bind") else getattr(actual_db, "bind", None)
             if bind:
-                from contextlib import nullcontext
-                conn_cm = bind.connect() if hasattr(bind, "connect") else nullcontext(bind)
-                with conn_cm as conn:
-                    if bind.dialect.name == "postgresql":
-                        conn.execute(text("""
-                            DO $$
-                            BEGIN
-                                IF NOT EXISTS (
-                                    SELECT 1 FROM information_schema.columns
-                                    WHERE table_name = 'employers' AND column_name = 'user_id'
-                                ) THEN
-                                    ALTER TABLE employers ADD COLUMN user_id INTEGER;
-                                END IF;
-                            END $$;
-                        """))
-                        if hasattr(conn, "commit"):
-                            conn.commit()
-                    elif bind.dialect.name == "sqlite":
-                        cols = [r[1] for r in conn.execute(text("PRAGMA table_info(employers)")).fetchall()]
-                        if cols and "user_id" not in cols:
-                            conn.execute(text("ALTER TABLE employers ADD COLUMN user_id INTEGER;"))
-                            if hasattr(conn, "commit"):
-                                conn.commit()
+                try:
+                    inspector = inspect(bind)
+                    table_names = inspector.get_table_names()
+                    if "employers" not in table_names or "users" not in table_names:
+                        return {"status": "skipped", "healed_employers": 0}
+                except Exception:
+                    pass
 
             # 2. Check 2: Deduplicate profiles (if duplicate user_id exists)
             all_employers = actual_db.query(Employer).all()
@@ -350,20 +334,35 @@ class EmployerService:
                         duplicates_resolved += 1
 
             # 3. Canonical Employer 1 linkage
+            # Only link or create a fallback employer profile if an employer user actually exists,
+            # or create the parent employer user first to satisfy foreign key constraints.
             emp_1 = actual_db.query(Employer).filter(Employer.id == 1).first()
             if emp_1 and emp_1.user_id is None:
-                user_1 = actual_db.query(User).filter(User.id == 1).first()
-                if user_1 and user_1.role.lower() == "employer":
-                    dup_for_1 = actual_db.query(Employer).filter(Employer.user_id == 1, Employer.id != 1).all()
-                    for d in dup_for_1:
-                        d.user_id = None
-                        actual_db.flush()
-                        actual_db.delete(d)
-                        actual_db.flush()
-                    emp_1.user_id = 1
+                user_employer = actual_db.query(User).filter(User.id == 1, User.role.ilike("employer")).first()
+                if not user_employer:
+                    user_employer = actual_db.query(User).filter(User.role.ilike("employer")).order_by(User.id).first()
+                if not user_employer:
+                    # Create parent employer user first to satisfy foreign key constraints
+                    from ..auth.security import hash_password
+                    user_employer = User(
+                        email="employer@worknexus.io",
+                        full_name=emp_1.company_name or "Main EV Corp",
+                        role="employer",
+                        hashed_password=hash_password("SecurePassword123!"),
+                        is_active=True
+                    )
+                    actual_db.add(user_employer)
                     actual_db.flush()
-                    healed_count += 1
-                    logger.info("[AUDIT] Linked canonical benchmark employer id=1 to user_id=1")
+                dup_for_1 = actual_db.query(Employer).filter(Employer.user_id == user_employer.id, Employer.id != 1).all()
+                for d in dup_for_1:
+                    d.user_id = None
+                    actual_db.flush()
+                    actual_db.delete(d)
+                    actual_db.flush()
+                emp_1.user_id = user_employer.id
+                actual_db.flush()
+                healed_count += 1
+                logger.info(f"[AUDIT] Linked canonical benchmark employer id=1 to user_id={user_employer.id}")
 
             # 4. Check 1: Every employer user has employer profile
             employer_users = actual_db.query(User).filter(User.role.ilike("employer")).order_by(User.id).all()
@@ -431,37 +430,20 @@ class EmployerService:
             # Flush/commit changes
             actual_db.commit()
 
-            # 5. Ensure UNIQUE and FOREIGN KEY constraints on DB
-            if bind:
-                from contextlib import nullcontext
-                conn_cm = bind.connect() if hasattr(bind, "connect") else nullcontext(bind)
-                with conn_cm as conn:
-                    if bind.dialect.name == "postgresql":
+            # Sequence synchronization for PostgreSQL
+            if bind and bind.dialect.name == "postgresql":
+                try:
+                    from contextlib import nullcontext
+                    conn_cm = bind.connect() if hasattr(bind, "connect") else nullcontext(bind)
+                    with conn_cm as conn:
                         conn.execute(text("""
-                            CREATE UNIQUE INDEX IF NOT EXISTS ix_employers_user_id ON employers (user_id);
-                            DO $$
-                            BEGIN
-                                IF NOT EXISTS (
-                                    SELECT 1 FROM information_schema.table_constraints
-                                    WHERE constraint_name = 'fk_employers_user_id_users'
-                                ) THEN
-                                    ALTER TABLE employers
-                                    ADD CONSTRAINT fk_employers_user_id_users
-                                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-                                END IF;
-                            END $$;
                             SELECT setval(pg_get_serial_sequence('users', 'id'), COALESCE(MAX(id), 1)) FROM users;
                             SELECT setval(pg_get_serial_sequence('employers', 'id'), COALESCE(MAX(id), 1)) FROM employers;
                         """))
                         if hasattr(conn, "commit"):
                             conn.commit()
-                    elif bind.dialect.name == "sqlite":
-                        try:
-                            conn.execute(text("CREATE UNIQUE INDEX IF NOT EXISTS ix_employers_user_id ON employers (user_id);"))
-                            if hasattr(conn, "commit"):
-                                conn.commit()
-                        except Exception:
-                            pass
+                except Exception:
+                    pass
 
         except Exception as e:
             logger.error(f"[AUDIT] Error during verify_employer_profiles: {e}", exc_info=True)

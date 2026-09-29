@@ -56,9 +56,40 @@ def seed_canonical_employers(db) -> int:
     else:
         existing = db.query(SqlEmployer).filter(SqlEmployer.id == 1).first()
         if not existing:
-            db.add(SqlEmployer(id=1, company_name="Main EV Corp", trust_weight=1.0, user_id=1))
-            db.commit()
-            return 1
+            # Check if an employer user exists, or create parent employer user first
+            emp_user = db.query(SqlUser).filter(SqlUser.id == 1, SqlUser.role.ilike("employer")).first()
+            if not emp_user:
+                emp_user = db.query(SqlUser).filter(SqlUser.role.ilike("employer")).first()
+            if not emp_user:
+                # Check if user with id=1 already exists for a different role
+                user_1 = db.query(SqlUser).filter(SqlUser.id == 1).first()
+                if not user_1:
+                    emp_user = SqlUser(
+                        id=1,
+                        email="employer@worknexus.io",
+                        hashed_password=hash_password("SecurePassword123!"),
+                        full_name="Main EV Corp",
+                        role="employer",
+                        is_active=True
+                    )
+                else:
+                    emp_user = SqlUser(
+                        email="employer@worknexus.io",
+                        hashed_password=hash_password("SecurePassword123!"),
+                        full_name="Main EV Corp",
+                        role="employer",
+                        is_active=True
+                    )
+                db.add(emp_user)
+                db.flush()
+
+            # Ensure this user doesn't already have another employer profile
+            existing_user_emp = db.query(SqlEmployer).filter(SqlEmployer.user_id == emp_user.id).first()
+            if not existing_user_emp:
+                db.add(SqlEmployer(id=1, company_name="Main EV Corp", trust_weight=1.0, user_id=emp_user.id))
+                db.commit()
+                return 1
+            return 0
         return 0
 
 
