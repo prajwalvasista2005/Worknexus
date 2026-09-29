@@ -3,7 +3,7 @@
  * Enterprise labour-market intelligence and workforce curriculum-alignment platform.
  */
 
-export type UserRole = 'Student' | 'Employer' | 'Institute' | 'Trainer' | 'Admin';
+export type UserRole = 'student' | 'employer' | 'institute' | 'trainer' | 'admin';
 
 export interface User {
   id: string | number;

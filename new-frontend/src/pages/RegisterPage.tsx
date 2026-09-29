@@ -12,7 +12,7 @@ export const RegisterPage: React.FC = () => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('Student');
+  const [role, setRole] = useState<UserRole>('student');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -157,10 +157,10 @@ export const RegisterPage: React.FC = () => {
                   onChange={(e) => setRole(e.target.value as UserRole)}
                   className="block w-full pl-9 pr-3 py-2 text-sm text-slate-900 bg-white border border-slate-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 >
-                  <option value="Student">Student (Career & Gap Analysis)</option>
-                  <option value="Employer">Employer (Talent & Requisition)</option>
-                  <option value="Institute">Institute (Curriculum Alignment)</option>
-                  <option value="Trainer">Trainer (Labour-Market Intelligence)</option>
+                  <option value="student">Student (Career & Gap Analysis)</option>
+                  <option value="employer">Employer (Talent & Requisition)</option>
+                  <option value="institute">Institute (Curriculum Alignment)</option>
+                  <option value="trainer">Trainer (Labour-Market Intelligence)</option>
                 </select>
               </div>
               <p className="mt-1 text-[11px] text-slate-400">
