@@ -189,7 +189,10 @@ def _setup_test_database():
     for name in ("./test_harness.db", "./test_harness.db-wal", "./test_harness.db-shm"):
         p = Path(name)
         if p.exists():
-            p.unlink()
+            try:
+                p.unlink()
+            except Exception:
+                pass
 
 
 # ---------------------------------------------------------------------------
@@ -259,3 +262,21 @@ def _isolated_test_transaction(request, _setup_test_database):
             pass
         connection.close()
         _global_session_proxy.reset_factory(_TestSessionLocal)
+
+
+@pytest.fixture(autouse=True)
+def _isolate_rate_limiter(request):
+    """
+    Ensures that general unit/integration tests running dozens of rapid logins
+    from 'testclient' do not get blocked by IP sliding window rate limits,
+    while Phase 5 rate-limiting tests remain strictly enabled.
+    """
+    from app.middleware.rate_limit import rate_limiter_instance
+    is_rate_limit_test = "rate_limit" in request.node.nodeid or "phase5" in request.node.nodeid
+    rate_limiter_instance.enabled = is_rate_limit_test
+    rate_limiter_instance.clear()
+    try:
+        yield
+    finally:
+        rate_limiter_instance.clear()
+        rate_limiter_instance.enabled = True

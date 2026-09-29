@@ -1,3 +1,5 @@
+import logging
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, APIRouter, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -17,16 +19,9 @@ from .api import (
     user_skills_router,
 )
 
-def create_app() -> FastAPI:
-    # 1. Enforce production cryptographic key security invariants
-    settings.validate_production_security()
 
-    app = FastAPI(
-        title=settings.PROJECT_NAME,
-        version="1.0.0",
-        description="WorkNexus / SkillMesh Core Backend API with Integrated ML Engine"
-    )
-
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     # Startup audit and self-healing validation for employer profiles
     try:
         from .db.session import SessionLocal
@@ -37,9 +32,42 @@ def create_app() -> FastAPI:
             from .db.seed import seed_all
             seed_all(db_session)
     except Exception as e:
-        import logging
         logging.getLogger(__name__).warning(f"Database startup check warning: {e}")
 
+    yield
+
+    # Graceful shutdown: cleanly dispose of SQLAlchemy engine connections
+    try:
+        from .db.session import engine
+        engine.dispose()
+        logging.getLogger(__name__).info("Database engine connection pool cleanly disposed.")
+    except Exception as e:
+        logging.getLogger(__name__).warning(f"Error disposing database engine on shutdown: {e}")
+
+
+def create_app() -> FastAPI:
+    # 1. Enforce production cryptographic key security invariants
+    settings.validate_production_security()
+
+    app = FastAPI(
+        title=settings.PROJECT_NAME,
+        version="1.0.0",
+        description="WorkNexus / SkillMesh Core Backend API with Integrated ML Engine",
+        lifespan=lifespan,
+    )
+
+    from .middleware import (
+        RequestCorrelationMiddleware,
+        RequestIdFilter,
+        SensitiveDataFilter,
+        get_request_id,
+        RateLimitMiddleware,
+        SecurityHeadersMiddleware,
+    )
+
+    app.add_middleware(RateLimitMiddleware)
+    app.add_middleware(RequestCorrelationMiddleware)
+    app.add_middleware(SecurityHeadersMiddleware)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.CORS_ORIGINS,
@@ -48,23 +76,38 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    # Configure structured logging filters
+    req_filter = RequestIdFilter()
+    sec_filter = SensitiveDataFilter()
+    logging.getLogger().addFilter(req_filter)
+    logging.getLogger().addFilter(sec_filter)
+
     # Global Exception Handlers
     from fastapi.responses import JSONResponse
     from fastapi.exceptions import RequestValidationError
     from starlette.exceptions import HTTPException as StarletteHTTPException
-    import logging
 
     logger = logging.getLogger("worknexus")
+    logger.addFilter(req_filter)
+    logger.addFilter(sec_filter)
 
     def _cors_headers(request):
         origin = request.headers.get("origin")
         allowed = origin if (origin and (origin in settings.CORS_ORIGINS or "*" in settings.CORS_ORIGINS)) else (origin or "*")
-        return {
+        headers = {
             "Access-Control-Allow-Origin": allowed,
             "Access-Control-Allow-Credentials": "true",
             "Access-Control-Allow-Methods": "*",
             "Access-Control-Allow-Headers": "*",
+            "X-Content-Type-Options": "nosniff",
+            "X-Frame-Options": "DENY",
+            "Referrer-Policy": "strict-origin-when-cross-origin",
+            "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
         }
+        rid = get_request_id()
+        if rid:
+            headers["X-Request-ID"] = rid
+        return headers
 
     @app.exception_handler(StarletteHTTPException)
     async def http_exception_handler(request, exc):

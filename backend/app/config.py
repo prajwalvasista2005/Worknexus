@@ -121,13 +121,19 @@ class Settings:
         os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "7")
     )
 
-    _custom_cors = [x.strip() for x in os.getenv("CORS_ORIGINS", "").split(",") if x.strip()]
-    CORS_ORIGINS: list[str] = list(set([
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:5173",
-    ] + _custom_cors))
+    _env_origins = os.getenv("ALLOWED_ORIGINS") or os.getenv("CORS_ORIGINS") or ""
+    _custom_cors = [x.strip() for x in _env_origins.split(",") if x.strip()]
+    if (os.getenv("ENVIRONMENT", "development").lower() in ("production", "prod")) and _custom_cors:
+        CORS_ORIGINS: list[str] = _custom_cors
+    else:
+        CORS_ORIGINS: list[str] = list(set([
+            "http://localhost:3000",
+            "http://localhost:5173",
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:5173",
+        ] + _custom_cors))
+    ALLOWED_ORIGINS: list[str] = CORS_ORIGINS
+    RATE_LIMITING_ENABLED: bool = os.getenv("RATE_LIMITING_ENABLED", "true").lower() in ("true", "1", "yes")
 
     def validate_production_security(self) -> None:
         """
