@@ -33,23 +33,50 @@ class Settings:
 
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
 
-    _db_user = os.getenv("DB_USER") or os.getenv("POSTGRES_USER")
-    _db_pass = os.getenv("DB_PASSWORD") or os.getenv("POSTGRES_PASSWORD")
-    _db_host = os.getenv("DB_HOST", "localhost")
-    _db_port = os.getenv("DB_PORT", "5432")
-    _db_name = os.getenv("DB_NAME") or os.getenv("POSTGRES_DB", "SkillSync")
+    DB_USER: str = os.getenv("DB_USER") or os.getenv("POSTGRES_USER") or "postgres"
+    DB_PASSWORD: str = os.getenv("DB_PASSWORD") or os.getenv("POSTGRES_PASSWORD") or "postgres"
+    DB_HOST: str = os.getenv("DB_HOST", "localhost")
+    DB_PORT: str = os.getenv("DB_PORT", "5432")
+    DB_NAME: str = os.getenv("DB_NAME") or os.getenv("POSTGRES_DB", "SkillSync")
+
+    _db_user = DB_USER
+    _db_pass = DB_PASSWORD
+    _db_host = DB_HOST
+    _db_port = DB_PORT
+    _db_name = DB_NAME
+
+    @staticmethod
+    def _sanitize_url(url: str) -> str:
+        """
+        Sanitize database connection URL by ensuring special characters (e.g. '@')
+        in credentials are safely URL-encoded to avoid splitting errors.
+        """
+        if not url or "://" not in url:
+            return url
+        prefix, _, host_part = url.rpartition("@")
+        if "://" in prefix:
+            scheme, _, user_pass = prefix.partition("://")
+            if ":" in user_pass:
+                user, _, password = user_pass.partition(":")
+                encoded_password = urllib.parse.quote_plus(urllib.parse.unquote(password))
+                encoded_user = urllib.parse.quote_plus(urllib.parse.unquote(user))
+                return f"{scheme}://{encoded_user}:{encoded_password}@{host_part}"
+        return url
 
     _raw_url = os.getenv("DATABASE_URL")
+    if _raw_url:
+        _raw_url = _sanitize_url(_raw_url)
 
     _can_resolve_raw = False
     if _raw_url and ":password@db" not in _raw_url:
         try:
             parsed = urllib.parse.urlparse(_raw_url)
             raw_host = parsed.hostname
+            is_in_docker = DB_HOST == "db" or Path("/.dockerenv").exists()
             if raw_host in ("localhost", "127.0.0.1"):
+                _can_resolve_raw = not is_in_docker
+            elif raw_host == "db":
                 _can_resolve_raw = True
-            elif raw_host == "db" and not Path("/.dockerenv").exists():
-                _can_resolve_raw = False
             elif raw_host:
                 import socket
                 socket.gethostbyname(raw_host)
@@ -58,23 +85,23 @@ class Settings:
             _can_resolve_raw = False
 
     _can_resolve_db_host = False
-    if _db_host:
-        if _db_host in ("localhost", "127.0.0.1"):
+    if DB_HOST:
+        if DB_HOST in ("localhost", "127.0.0.1") or DB_HOST == "db":
             _can_resolve_db_host = True
         else:
             try:
                 import socket
-                socket.gethostbyname(_db_host)
+                socket.gethostbyname(DB_HOST)
                 _can_resolve_db_host = True
             except Exception:
                 _can_resolve_db_host = False
 
-    if _can_resolve_raw:
+    if _can_resolve_raw and _raw_url:
         DATABASE_URL = _raw_url
-    elif _db_user and _db_pass and _can_resolve_db_host:
-        _encoded_user = urllib.parse.quote(_db_user, safe="")
-        _encoded_pass = urllib.parse.quote(_db_pass, safe="")
-        DATABASE_URL = f"postgresql://{_encoded_user}:{_encoded_pass}@{_db_host}:{_db_port}/{_db_name}"
+    elif DB_USER and DB_PASSWORD and _can_resolve_db_host:
+        _encoded_user = urllib.parse.quote_plus(urllib.parse.unquote(DB_USER))
+        _encoded_pass = urllib.parse.quote_plus(urllib.parse.unquote(DB_PASSWORD))
+        DATABASE_URL = f"postgresql://{_encoded_user}:{_encoded_pass}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     else:
         DATABASE_URL = "sqlite:///./test.db"
 

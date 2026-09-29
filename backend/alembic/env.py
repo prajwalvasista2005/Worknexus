@@ -17,7 +17,8 @@ config = context.config
 # Override URL from environment or config.py if not already explicitly configured
 existing_url = config.get_main_option("sqlalchemy.url")
 if not existing_url or existing_url == "sqlite:///./worknexus.db":
-    effective_url = os.environ.get("DATABASE_URL") or settings.DATABASE_URL
+    raw_target = os.environ.get("DATABASE_URL") or settings.DATABASE_URL
+    effective_url = settings._sanitize_url(raw_target) if hasattr(settings, "_sanitize_url") else raw_target
     config.set_main_option(
         "sqlalchemy.url",
         effective_url.replace("%", "%%")
