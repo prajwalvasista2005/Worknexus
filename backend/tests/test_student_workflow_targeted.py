@@ -172,3 +172,48 @@ def test_04_view_curriculum_recommendations(client, student_auth):
         assert isinstance(sk, str)
         assert not sk.isdigit(), f"Taught skill '{sk}' should be canonical string, not digit"
     print(f"       Course: {first_candidate.get('title') or first_candidate.get('course_name')} (ID: {first_candidate['course_id']}) covers {skills_covered}")
+
+
+def test_05_evidence_submission_updates_gap_and_match_percentage(client, student_auth):
+    """Workflow Step 5: Evidence submission dynamically clears gaps and updates match score"""
+    user_id = student_auth["user_id"]
+    headers = student_auth["headers"]
+    role_id = "ROLE_EV_TECHNICIAN"
+
+    # 1. Fetch initial gap
+    init_res = client.get(f"/api/v1/ml/students/{user_id}/gap/{role_id}?mode=live", headers=headers)
+    assert init_res.status_code == 200
+    init_data = init_res.json()
+    init_missing = init_data.get("missing_skills", [])
+    init_acquired = init_data.get("acquired_skills", [])
+    init_score = init_data.get("overall_match_score", init_data.get("match_score", 0))
+
+    assert len(init_missing) > 0, "Expected missing skills initially"
+    target_skill = init_missing[0]
+    target_skill_id = target_skill.get("skill_id", target_skill.get("id")) if isinstance(target_skill, dict) else str(target_skill)
+
+    # 2. Submit verified evidence for the missing skill
+    payload = {
+        "skill_id": target_skill_id,
+        "evidence_type": "project",
+        "strength": "advanced",
+        "metadata": {
+            "repo": "https://github.com/worknexus/verified-proof-repo",
+            "notes": f"Submitted proof for {target_skill_id}"
+        }
+    }
+    sub_res = client.post(f"/api/v1/students/{user_id}/evidence", json=payload, headers=headers)
+    assert sub_res.status_code in [200, 201]
+
+    # 3. Fetch updated gap and verify state synchronization
+    updated_res = client.get(f"/api/v1/ml/students/{user_id}/gap/{role_id}?mode=live", headers=headers)
+    assert updated_res.status_code == 200
+    updated_data = updated_res.json()
+    updated_missing = updated_data.get("missing_skills", [])
+    updated_acquired = updated_data.get("acquired_skills", [])
+    updated_score = updated_data.get("overall_match_score", updated_data.get("match_score", 0))
+
+    assert len(updated_acquired) == len(init_acquired) + 1, "Acquired skills count should increment"
+    assert len(updated_missing) == len(init_missing) - 1, "Missing skills count should decrement"
+    assert updated_score >= init_score, "Match score should improve after submitting evidence"
+    print(f"\n[PASS] Step 5 Dynamic Gap Update: Match score updated from {init_score} to {updated_score}")

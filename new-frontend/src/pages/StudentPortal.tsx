@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { PortalLayout } from '../components/layout/PortalLayout';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
@@ -6,6 +6,7 @@ import { rolesApi } from '../api/roles';
 import { mlApi } from '../api/ml';
 import { studentsApi } from '../api/students';
 import { skillsApi } from '../api/skills';
+import { coursesApi } from '../api/courses';
 import {
   Role,
   StudentGap,
@@ -13,6 +14,8 @@ import {
   SkillEvidence,
   Skill,
   UserSkill,
+  Course,
+  CourseSkill,
 } from '../types';
 import { CircularProgress } from '../components/ui/CircularProgress';
 import { EmptyState } from '../components/ui/EmptyState';
@@ -38,6 +41,9 @@ import {
   Trash2,
   Compass,
   Lightbulb,
+  X,
+  Clock,
+  FileText,
 } from 'lucide-react';
 
 export const StudentPortal: React.FC = () => {
@@ -77,12 +83,19 @@ export const StudentPortal: React.FC = () => {
   const [coursesError, setCoursesError] = useState<string | null>(null);
   const [evidenceError, setEvidenceError] = useState<string | null>(null);
 
-  // Evidence submission form state
+  // Evidence submission form state & ref
+  const evidenceFormRef = useRef<HTMLDivElement>(null);
   const [evidenceSkillId, setEvidenceSkillId] = useState('');
   const [evidenceType, setEvidenceType] = useState('project');
   const [evidenceStrength, setEvidenceStrength] = useState<number>(8);
   const [evidenceRepo, setEvidenceRepo] = useState('');
   const [isSubmittingEvidence, setIsSubmittingEvidence] = useState(false);
+
+  // Recommended Course Syllabus modal state
+  const [selectedSyllabusCandidate, setSelectedSyllabusCandidate] = useState<CourseCandidate | null>(null);
+  const [syllabusDetails, setSyllabusDetails] = useState<Course | null>(null);
+  const [syllabusSkills, setSyllabusSkills] = useState<CourseSkill[]>([]);
+  const [isLoadingSyllabus, setIsLoadingSyllabus] = useState<boolean>(false);
 
   // 1. Fetch available career roles
   const fetchRoles = useCallback(async () => {
@@ -227,15 +240,36 @@ export const StudentPortal: React.FC = () => {
 
       showToast('Skill evidence successfully submitted!', 'success');
       setEvidenceRepo('');
-      // Refresh evidence list
+      setEvidenceSkillId('');
+
+      // Automated state re-fetch for instant UI synchronization:
+      // 1. Refresh verified evidence records list
       await fetchEvidence();
 
-      // Refresh gap analysis & recommendations if role is selected
+      // 2. Refresh acquired competencies list (direct profile skills)
+      await fetchMySkills();
+
+      // 3. Refresh gap analysis, course candidates & recommendations if role is selected
       if (selectedRole) {
-        const updatedGap = await mlApi.getStudentGap(studentId, selectedRole.id);
-        setGapData(updatedGap);
-        const updatedCandidates = await mlApi.getCourseCandidates(studentId, selectedRole.id);
-        setCourseCandidates(updatedCandidates || []);
+        setIsLoadingGap(true);
+        try {
+          const [updatedGap, updatedCandidates, updatedRecs] = await Promise.all([
+            mlApi.getStudentGap(studentId, selectedRole.id),
+            mlApi.getCourseCandidates(studentId, selectedRole.id),
+            mlApi.getStudentRecommendations(studentId, selectedRole.id).catch(() => null),
+          ]);
+          setGapData(updatedGap);
+          setCourseCandidates(updatedCandidates || []);
+          if (updatedRecs?.recommendations && Array.isArray(updatedRecs.recommendations)) {
+            setStudentRecs(updatedRecs.recommendations.map((r: any) => typeof r === 'string' ? r : r.action || r.recommendation || JSON.stringify(r)));
+          } else if (Array.isArray(updatedRecs)) {
+            setStudentRecs(updatedRecs.map((r: any) => typeof r === 'string' ? r : r.action || r.recommendation || JSON.stringify(r)));
+          }
+        } catch {
+          // Keep existing states if fetch error
+        } finally {
+          setIsLoadingGap(false);
+        }
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to submit evidence.';
@@ -243,6 +277,52 @@ export const StudentPortal: React.FC = () => {
     } finally {
       setIsSubmittingEvidence(false);
     }
+  };
+
+  // Handle "Submit Proof" click on individual gap rows: set skill and scroll into view
+  const handleInitiateProof = (skill: unknown) => {
+    const skKey = getSkillKey(skill);
+    const label = getSkillLabel(skill);
+    setEvidenceSkillId(skKey);
+    showToast(`Selected "${label}" for evidence verification.`, 'info');
+    if (evidenceFormRef.current) {
+      evidenceFormRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => {
+        const repoInput = document.getElementById('evidence-repo');
+        if (repoInput) repoInput.focus();
+      }, 300);
+    }
+  };
+
+  // Handle "View Syllabus" click on recommended course cards
+  const handleOpenSyllabus = async (candidate: CourseCandidate) => {
+    setSelectedSyllabusCandidate(candidate);
+    setIsLoadingSyllabus(true);
+    setSyllabusDetails(null);
+    setSyllabusSkills([]);
+    try {
+      const courseId = candidate.course_id;
+      const [courseRes, skillsRes] = await Promise.allSettled([
+        coursesApi.getCourse(courseId),
+        coursesApi.getCourseSkills(courseId),
+      ]);
+      if (courseRes.status === 'fulfilled' && courseRes.value) {
+        setSyllabusDetails(courseRes.value);
+      }
+      if (skillsRes.status === 'fulfilled' && skillsRes.value) {
+        setSyllabusSkills(skillsRes.value || []);
+      }
+    } catch {
+      // Fallback to candidate metadata
+    } finally {
+      setIsLoadingSyllabus(false);
+    }
+  };
+
+  const handleCloseSyllabus = () => {
+    setSelectedSyllabusCandidate(null);
+    setSyllabusDetails(null);
+    setSyllabusSkills([]);
   };
 
   // Fetch direct user skills from database
@@ -644,7 +724,7 @@ export const StudentPortal: React.FC = () => {
                                 )}
                                 <button
                                   type="button"
-                                  onClick={() => setEvidenceSkillId(getSkillKey(skill))}
+                                  onClick={() => handleInitiateProof(skill)}
                                   className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors cursor-pointer"
                                 >
                                   Submit Proof
@@ -806,7 +886,7 @@ export const StudentPortal: React.FC = () => {
         {/* Section 2: Submit Skill Evidence & Evidence List */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Evidence Submission Form */}
-          <div className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-6 shadow-xs">
+          <div ref={evidenceFormRef} id="evidence-form-card" className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-6 shadow-xs scroll-mt-6">
             <div className="flex items-center gap-2 mb-1">
               <Award className="w-5 h-5 text-indigo-600" />
               <h2 className="text-base font-bold text-slate-900">
@@ -1144,15 +1224,160 @@ export const StudentPortal: React.FC = () => {
 
                   <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                     <span>{candidate.duration || 'Self-paced'}</span>
-                    <span className="font-semibold text-indigo-600 hover:underline inline-flex items-center gap-1 cursor-pointer">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenSyllabus(candidate)}
+                      className="font-semibold text-indigo-600 hover:text-indigo-800 hover:underline inline-flex items-center gap-1 cursor-pointer bg-transparent border-none p-0 text-xs"
+                    >
                       View Syllabus <ChevronRight className="w-3.5 h-3.5" />
-                    </span>
+                    </button>
                   </div>
                 </div>
               ))}
             </div>
           )}
         </div>
+
+        {/* Syllabus Breakdown Modal */}
+        {selectedSyllabusCandidate && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200"
+            onClick={handleCloseSyllabus}
+          >
+            <div
+              className="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="flex items-start justify-between p-6 border-b border-slate-100 bg-slate-50/50">
+                <div>
+                  <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                    <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-100">
+                      ID: {selectedSyllabusCandidate.course_id}
+                    </span>
+                    <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
+                      {formatPercentage(selectedSyllabusCandidate.skill_coverage_score)} Role Coverage
+                    </span>
+                    {selectedSyllabusCandidate.duration && (
+                      <span className="text-xs text-slate-500 flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5 text-slate-400" /> {selectedSyllabusCandidate.duration}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 leading-tight">
+                    {selectedSyllabusCandidate.course_name || selectedSyllabusCandidate.title || `Curriculum #${selectedSyllabusCandidate.course_id}`}
+                  </h3>
+                  {selectedSyllabusCandidate.provider && (
+                    <p className="text-xs text-slate-500 mt-1">
+                      Offered by: <strong className="text-slate-700">{selectedSyllabusCandidate.provider}</strong>
+                    </p>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={handleCloseSyllabus}
+                  className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+                  title="Close syllabus modal"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-6 overflow-y-auto space-y-6">
+                {isLoadingSyllabus ? (
+                  <div className="space-y-4">
+                    <Skeleton className="h-20 w-full rounded-xl" />
+                    <Skeleton className="h-32 w-full rounded-xl" />
+                  </div>
+                ) : (
+                  <>
+                    {/* Course Overview & Syllabus Content */}
+                    <div>
+                      <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <FileText className="w-4 h-4 text-indigo-600" />
+                        Curriculum Overview & Syllabus Modules
+                      </h4>
+                      <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700 leading-relaxed space-y-2">
+                        <p>
+                          {syllabusDetails?.description ||
+                            `Comprehensive curriculum designed to bridge technical industry competencies for the ${selectedRole?.name || 'target'} role. Structured into foundational theory, hands-on lab modules, and applied project deliverables.`}
+                        </p>
+                        {syllabusDetails?.department && (
+                          <p className="text-slate-500 pt-2 border-t border-slate-200/80">
+                            Academic Department: <span className="font-semibold text-slate-800">{syllabusDetails.department}</span>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Explicitly Mapped Competencies */}
+                    <div>
+                      <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <Award className="w-4 h-4 text-indigo-600" />
+                        Explicitly Mapped Competencies ({syllabusSkills.length || (selectedSyllabusCandidate.skills_covered?.length || selectedSyllabusCandidate.covered_personalized_skills?.length || 0)})
+                      </h4>
+                      {syllabusSkills.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                          {syllabusSkills.map((cs, cIdx) => (
+                            <div
+                              key={cs.id || cIdx}
+                              className="p-2.5 rounded-lg border border-indigo-100 bg-indigo-50/40 flex items-center justify-between"
+                            >
+                              <div className="flex items-center gap-2">
+                                <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                                <span className="text-xs font-semibold text-slate-900">
+                                  {cs.skill_name || cs.skill_id}
+                                </span>
+                              </div>
+                              {cs.coverage_pct !== undefined && (
+                                <span className="text-[11px] font-bold text-indigo-700 tabular-nums">
+                                  {cs.coverage_pct}%
+                                </span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {(selectedSyllabusCandidate.skills_covered ||
+                            selectedSyllabusCandidate.covered_personalized_skills ||
+                            []
+                          ).map((sc, sIdx) => {
+                            const scName = catalogSkills.find((s) => s.skill_id === sc || String(s.id) === sc)?.name || sc;
+                            return (
+                              <div
+                                key={sIdx}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 border border-indigo-100 text-xs font-medium text-indigo-800"
+                              >
+                                <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
+                                <span>{scName}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Modal Footer */}
+              <div className="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+                <span className="text-xs text-slate-500">
+                  Targeted learning pathway for {selectedRole?.name || 'Target Role'}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleCloseSyllabus}
+                  className="px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </PortalLayout>
   );

@@ -242,6 +242,13 @@ class StudentService:
                 target_skill = db.skills[alt_prefix]
 
             if not target_skill:
+                try:
+                    from app.services.skill_service import SkillService
+                    target_skill = SkillService.get_or_create_skill(db, raw_inp)
+                except Exception:
+                    target_skill = None
+
+            if not target_skill:
                 raise ValueError(f"Skill '{evidence_in.skill_id}' not found in canonical taxonomy.")
 
             canonical_skill_id = getattr(target_skill, "skill_id", getattr(target_skill, "id", raw_inp))
@@ -298,6 +305,13 @@ class StudentService:
             db_skill = db.query(DBSkill).filter(func.lower(DBSkill.name) == raw_inp.lower()).first()
         if not db_skill:
             db_skill = db.query(DBSkill).filter(DBSkill.name.ilike(f"%{raw_inp}%")).first()
+
+        if not db_skill:
+            try:
+                from app.services.skill_service import SkillService
+                db_skill = SkillService.get_or_create_skill(db, raw_inp)
+            except Exception:
+                db_skill = None
 
         if not db_skill:
             raise ValueError(f"Skill '{evidence_in.skill_id}' not found in canonical taxonomy.")
