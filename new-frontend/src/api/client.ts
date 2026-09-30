@@ -15,12 +15,15 @@ export const getApiBaseUrl = (): string => {
   if (envUrl && typeof envUrl === 'string' && envUrl.trim().length > 0) {
     return envUrl.replace(/\/+$/, '');
   }
-  if (
-    typeof window !== 'undefined' &&
-    window.location.hostname !== 'localhost' &&
-    window.location.hostname !== '127.0.0.1'
-  ) {
-    return window.location.origin;
+  if (typeof window !== 'undefined') {
+    // If frontend is accessed on port 3000, target backend on port 8000 using current hostname
+    if (window.location.port === '3000') {
+      return `${window.location.protocol}//${window.location.hostname}:8000`;
+    }
+    // If backend is on same origin (reverse proxy / production ingress)
+    if (window.location.port === '8000' || window.location.port === '80' || window.location.port === '443') {
+      return window.location.origin;
+    }
   }
   return 'http://localhost:8000';
 };
@@ -149,13 +152,18 @@ export async function request<T>(endpoint: string, options: RequestOptions = {})
     }
   }
 
+  const hasAuthHeader = headers.has('Authorization');
+  console.log(`[ApiClient] ${options.method || 'GET'} ${url} | Auth Header: ${hasAuthHeader ? 'Present' : 'None'}`);
+
   let response: Response;
   try {
     response = await fetch(url, {
       ...options,
       headers,
     });
+    console.log(`[ApiClient] ${options.method || 'GET'} ${url} -> Status ${response.status}`);
   } catch (netErr) {
+    console.error(`[ApiClient] Network failure for ${url}:`, netErr);
     // If fetch failed, determine if backend is truly unreachable or if it rejected with a 500/CORS error
     try {
       await fetch(`${baseUrl}/docs`, { method: 'HEAD', mode: 'no-cors' });
@@ -186,6 +194,7 @@ export async function request<T>(endpoint: string, options: RequestOptions = {})
     normalizedEndpoint.includes('/auth/register');
 
   if (response.status === 401 && !options.isRetry && !isAuthEndpoint) {
+    console.warn(`[ApiClient] 401 on ${url}. Attempting token refresh...`);
     if (!activeRefreshPromise) {
       activeRefreshPromise = performTokenRefresh();
     }
@@ -193,6 +202,7 @@ export async function request<T>(endpoint: string, options: RequestOptions = {})
     const newAccessToken = await activeRefreshPromise;
 
     if (newAccessToken) {
+      console.log(`[ApiClient] Token refresh succeeded. Retrying ${url}...`);
       // Retry original request once with new token
       const retryHeaders = new Headers(options.headers || {});
       if (options.body && !(options.body instanceof FormData) && !retryHeaders.has('Content-Type')) {
@@ -206,6 +216,7 @@ export async function request<T>(endpoint: string, options: RequestOptions = {})
         isRetry: true,
       });
     } else {
+      console.warn(`[ApiClient] Token refresh failed. Clearing auth storage.`);
       // Refresh failed: clear storage and redirect
       clearAuthStorage();
       if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
@@ -230,6 +241,16 @@ export async function request<T>(endpoint: string, options: RequestOptions = {})
     throw new ApiError(errorMessage, response.status, errorData);
   }
 
+  // Reject HTML content when JSON was expected (detects SPA fallback misconfiguration)
+  const contentType = response.headers.get('content-type') || '';
+  if (contentType.includes('text/html')) {
+    console.error(`[ApiClient] Expected JSON but received HTML from ${url}. (SPA index.html fallback)`);
+    throw new ApiError(
+      `API endpoint returned HTML instead of JSON from ${url}. Check your VITE_API_URL or proxy configuration.`,
+      response.status
+    );
+  }
+
   // 204 No Content
   if (response.status === 204) {
     return {} as T;
@@ -237,9 +258,14 @@ export async function request<T>(endpoint: string, options: RequestOptions = {})
 
   // Parse success response
   try {
-    return (await response.json()) as T;
-  } catch {
-    return {} as T;
+    const data = await response.json();
+    return data as T;
+  } catch (parseErr) {
+    console.error(`[ApiClient] JSON parse failure from ${url}:`, parseErr);
+    throw new ApiError(
+      `Failed to parse JSON response from ${url}: ${parseErr instanceof Error ? parseErr.message : 'Invalid JSON'}`,
+      response.status
+    );
   }
 }
 

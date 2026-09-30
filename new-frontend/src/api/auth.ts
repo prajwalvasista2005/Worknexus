@@ -7,27 +7,38 @@ export const authApi = {
    * POST /api/v1/auth/login
    */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
+    console.log('[Auth] Submitting login request to /api/v1/auth/login for:', credentials.email);
     const data = await apiClient.post<AuthResponse>('/api/v1/auth/login', credentials, {
       skipAuth: true,
     });
+    console.log('[Auth] Login response payload received:', data);
+    console.log('[Auth] access_token present:', Boolean(data?.access_token));
 
-    if (data.access_token) {
-      localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token);
-      if (data.refresh_token) {
-        localStorage.setItem(REFRESH_TOKEN_KEY, data.refresh_token);
-      }
+    if (!data || !data.access_token) {
+      console.error('[Auth] Server returned response without access_token:', data);
+      throw new Error('Authentication succeeded but server returned no access token.');
     }
 
-    // Call GET /api/v1/auth/me to fetch authenticated profile details
-    try {
-      const user = await authApi.getMe();
+    localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token);
+    console.log(`[Auth] Stored ${ACCESS_TOKEN_KEY}:`, localStorage.getItem(ACCESS_TOKEN_KEY) ? 'SUCCESS' : 'FAILED');
+
+    if (data.refresh_token) {
+      localStorage.setItem(REFRESH_TOKEN_KEY, data.refresh_token);
+      console.log(`[Auth] Stored ${REFRESH_TOKEN_KEY}: SUCCESS`);
+    }
+
+    // Call GET /api/v1/auth/me to fetch authenticated profile details with explicit token
+    console.log('[Auth] Fetching user profile via getMe()...');
+    const user = await authApi.getMe(data.access_token);
+    console.log('[Auth] getMe() returned user:', user);
+
+    if (user && user.email) {
       localStorage.setItem(USER_KEY, JSON.stringify(user));
       data.user = user;
-    } catch (meError) {
-      // If /me has issues or data.user was already included, ensure fallback
-      if (data.user) {
-        localStorage.setItem(USER_KEY, JSON.stringify(data.user));
-      }
+      console.log(`[Auth] Stored ${USER_KEY} in localStorage:`, user.email);
+    } else {
+      console.error('[Auth] User profile retrieved is invalid or missing email:', user);
+      throw new Error('Failed to retrieve valid user profile from server.');
     }
 
     return data;
@@ -37,9 +48,17 @@ export const authApi = {
    * Retrieve current authenticated user profile
    * GET /api/v1/auth/me
    */
-  async getMe(): Promise<User> {
-    const user = await apiClient.get<User>('/api/v1/auth/me');
-    if (user) {
+  async getMe(overrideToken?: string): Promise<User> {
+    console.log('[Auth] getMe() called. Override token provided:', Boolean(overrideToken));
+    const token = overrideToken || localStorage.getItem(ACCESS_TOKEN_KEY);
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const user = await apiClient.get<User>('/api/v1/auth/me', { headers });
+    console.log('[Auth] /api/v1/auth/me response:', user);
+    if (user && user.email) {
       localStorage.setItem(USER_KEY, JSON.stringify(user));
     }
     return user;

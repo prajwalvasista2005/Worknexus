@@ -12,6 +12,15 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowe
   const { user, isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
 
+  console.log('[ProtectedRoute] Guard evaluation for:', location.pathname, {
+    isLoading,
+    isAuthenticated,
+    hasUser: Boolean(user),
+    userEmail: user?.email,
+    userRole: user?.role,
+    allowedRole,
+  });
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -24,6 +33,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowe
   }
 
   if (!isAuthenticated || !user) {
+    console.warn('[ProtectedRoute] Blocking unauthenticated access to:', location.pathname, '- Redirecting to /login');
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

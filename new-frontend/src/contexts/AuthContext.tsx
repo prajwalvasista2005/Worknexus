@@ -21,7 +21,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(() => {
     try {
       const stored = localStorage.getItem(USER_KEY);
-      return stored ? JSON.parse(stored) : null;
+      if (!stored || stored === '{}') return null;
+      const parsed = JSON.parse(stored);
+      return parsed && parsed.email ? parsed : null;
     } catch {
       return null;
     }
@@ -32,6 +34,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const initializeAuth = async () => {
       const token = localStorage.getItem(ACCESS_TOKEN_KEY);
+      console.log('[AuthContext] Initializing auth. Token exists:', Boolean(token));
       if (!token) {
         setUser(null);
         setIsLoading(false);
@@ -39,12 +42,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       try {
-        const verifiedUser = await authApi.getMe();
-        setUser(verifiedUser);
-        localStorage.setItem(USER_KEY, JSON.stringify(verifiedUser));
+        const verifiedUser = await authApi.getMe(token);
+        if (verifiedUser && verifiedUser.email) {
+          console.log('[AuthContext] Session verified for:', verifiedUser.email);
+          setUser(verifiedUser);
+          localStorage.setItem(USER_KEY, JSON.stringify(verifiedUser));
+        } else {
+          throw new Error('Profile response is empty or invalid.');
+        }
       } catch (err) {
-        console.warn('Initial session verification failed:', err);
-        // If 401 or token was invalid, clear state
+        console.warn('[AuthContext] Initial session verification failed:', err);
         clearAuthStorage();
         setUser(null);
       } finally {
@@ -56,13 +63,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = useCallback(async (credentials: LoginCredentials): Promise<User> => {
+    console.log('[AuthContext] login() triggered for:', credentials.email);
     const response = await authApi.login(credentials);
-    let resolvedUser = response.user;
+    console.log('[AuthContext] authApi.login() returned:', response);
 
-    if (!resolvedUser) {
-      resolvedUser = await authApi.getMe();
+    let resolvedUser = response.user;
+    if (!resolvedUser || !resolvedUser.email) {
+      console.log('[AuthContext] Fetching user profile via authApi.getMe()...');
+      resolvedUser = await authApi.getMe(response.access_token);
     }
 
+    if (!resolvedUser || !resolvedUser.email) {
+      console.error('[AuthContext] Failed to resolve valid user:', resolvedUser);
+      throw new Error('Authentication succeeded but user profile could not be loaded.');
+    }
+
+    console.log('[AuthContext] Setting user state:', resolvedUser.email, resolvedUser.role);
     setUser(resolvedUser);
     localStorage.setItem(USER_KEY, JSON.stringify(resolvedUser));
     return resolvedUser;

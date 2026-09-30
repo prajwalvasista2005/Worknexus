@@ -23,36 +23,43 @@ export const LoginPage: React.FC = () => {
       return;
     }
 
+    console.log('[LoginPage] handleSubmit() triggered for email:', email);
     setIsSubmitting(true);
     setErrorMessage(null);
 
     try {
+      console.log('[LoginPage] Calling login() from AuthContext...');
       const user = await login({ email, password });
-      showToast(`Welcome back, ${user.full_name || user.email}!`, 'success');
+      console.log('[LoginPage] login() returned user:', user);
+
+      const displayName = user?.full_name || user?.name || user?.email || 'User';
+      showToast(`Welcome back, ${displayName}!`, 'success');
 
       // Check if there was a previous redirect destination
       const from = (location.state as { from?: { pathname?: string } })?.from?.pathname;
       if (from && from !== '/login') {
+        console.log('[LoginPage] Navigating to saved route:', from);
         navigate(from, { replace: true });
         return;
       }
 
       // Route by role
-      const userRoleNorm = normalizeRole(user.role);
-      if (userRoleNorm === 'student') {
-        navigate('/student', { replace: true });
-      } else if (userRoleNorm === 'employer') {
-        navigate('/employer', { replace: true });
+      const userRoleNorm = normalizeRole(user?.role);
+      let targetPortal = '/student';
+      if (userRoleNorm === 'employer') {
+        targetPortal = '/employer';
       } else if (userRoleNorm === 'institute') {
-        navigate('/institute', { replace: true });
+        targetPortal = '/institute';
       } else if (userRoleNorm === 'trainer') {
-        navigate('/trainer', { replace: true });
+        targetPortal = '/trainer';
       } else if (userRoleNorm === 'admin') {
-        navigate('/admin', { replace: true });
-      } else {
-        navigate('/student', { replace: true });
+        targetPortal = '/admin';
       }
+
+      console.log('[LoginPage] Navigating to role portal:', targetPortal, `(user role: "${user?.role}")`);
+      navigate(targetPortal, { replace: true });
     } catch (err: unknown) {
+      console.error('[LoginPage] Login process failed:', err);
       const msg = err instanceof Error ? err.message : 'Login failed. Please check credentials.';
       setErrorMessage(msg);
       showToast(msg, 'error');
