@@ -609,12 +609,56 @@ export const StudentPortal: React.FC = () => {
 
   // Helper to extract human-readable skill name from string or object
   const getSkillLabel = (skill: unknown): string => {
-    if (typeof skill === 'string') return skill;
-    if (typeof skill === 'object' && skill !== null) {
-      const s = skill as { name?: string; skill_name?: string; skill_id?: string; id?: string | number };
-      return s.skill_name || s.name || (s.skill_id && !s.skill_id.startsWith('SK_') ? s.skill_id : undefined) || s.skill_id || (typeof s.id === 'string' ? s.id : undefined) || 'Skill';
+    let rawStr = '';
+    if (typeof skill === 'string') {
+      rawStr = skill.trim();
+    } else if (typeof skill === 'object' && skill !== null) {
+      const s = skill as {
+        name?: string;
+        skill_name?: string;
+        skill_id?: string;
+        canonical_id?: string;
+        id?: string | number;
+      };
+      if (s.skill_name && !s.skill_name.startsWith('SK_') && isNaN(Number(s.skill_name))) {
+        return s.skill_name;
+      }
+      if (s.name && !s.name.startsWith('SK_') && isNaN(Number(s.name))) {
+        return s.name;
+      }
+      rawStr = (s.canonical_id || s.skill_id || (typeof s.id === 'string' ? s.id : String(s.id || '')) || '').trim();
+    } else {
+      rawStr = String(skill || '').trim();
     }
-    return String(skill);
+
+    if (!rawStr) return 'Skill';
+
+    // 1. Look up in loaded taxonomy catalog
+    const matched = catalogSkills.find(
+      (c) =>
+        c.skill_id?.toLowerCase() === rawStr.toLowerCase() ||
+        String(c.id) === rawStr ||
+        c.name.toLowerCase() === rawStr.toLowerCase()
+    );
+    if (matched?.name) return matched.name;
+
+    // 2. Clean SK_ or SKILL_ prefix into human-readable name
+    if (rawStr.toUpperCase().startsWith('SK_')) {
+      const cleaned = rawStr.slice(3).replace(/_/g, ' ').trim();
+      return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+    }
+    if (rawStr.toUpperCase().startsWith('SKILL_')) {
+      const cleaned = rawStr.slice(6).replace(/_/g, ' ').trim();
+      return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+    }
+
+    // 3. Fallback: if digits like "31", check catalog by numeric id
+    if (!isNaN(Number(rawStr))) {
+      const numMatch = catalogSkills.find((c) => Number(c.id) === Number(rawStr));
+      if (numMatch?.name) return numMatch.name;
+    }
+
+    return rawStr;
   };
 
   // Resilient fallback extraction for acquired/verified skills list
@@ -1066,31 +1110,39 @@ export const StudentPortal: React.FC = () => {
                 />
               ) : (
                 <div className="divide-y divide-slate-100 max-h-[300px] overflow-y-auto">
-                  {mySkills.map((us) => (
-                    <div key={us.id} className="py-2.5 flex items-center justify-between gap-3">
-                      <div>
-                        <span className="text-xs font-bold text-slate-900">
-                          {us.skill_name || `Skill #${us.skill_id}`}
-                        </span>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-[10px] font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded capitalize">
-                            {us.proficiency_level}
+                  {mySkills.map((us) => {
+                    const skillTitle =
+                      (us.skill_name && !us.skill_name.startsWith('Skill #') && !us.skill_name.startsWith('SK_') ? us.skill_name : null) ||
+                      (us.name && !us.name.startsWith('Skill #') && !us.name.startsWith('SK_') ? us.name : null) ||
+                      catalogSkills.find((c) => String(c.id) === String(us.skill_id) || c.skill_id === us.canonical_id || c.skill_id === String(us.skill_id))?.name ||
+                      getSkillLabel(us.canonical_id || us.skill_id);
+
+                    return (
+                      <div key={us.id} className="py-2.5 flex items-center justify-between gap-3">
+                        <div>
+                          <span className="text-xs font-bold text-slate-900">
+                            {skillTitle}
                           </span>
-                          <span className="text-[10px] text-slate-400 capitalize">
-                            Source: {us.source?.replace('_', ' ') || 'self-reported'}
-                          </span>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[10px] font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded capitalize">
+                              {us.proficiency_level}
+                            </span>
+                            <span className="text-[10px] text-slate-400 capitalize">
+                              Source: {us.source?.replace('_', ' ') || 'self-reported'}
+                            </span>
+                          </div>
                         </div>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteUserSkill(us.id)}
+                          className="p-1.5 text-slate-400 hover:text-red-600 rounded-md hover:bg-red-50 transition-colors cursor-pointer"
+                          title="Delete skill"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteUserSkill(us.id)}
-                        className="p-1.5 text-slate-400 hover:text-red-600 rounded-md hover:bg-red-50 transition-colors cursor-pointer"
-                        title="Delete skill"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

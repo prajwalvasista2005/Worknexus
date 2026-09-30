@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -20,5 +21,9 @@ class UserSkillResponse(BaseModel):
     proficiency_level: str
     source: str
     created_at: datetime
+    canonical_id: Optional[str] = None
+    skill_name: Optional[str] = None
+    name: Optional[str] = None
+    category: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)

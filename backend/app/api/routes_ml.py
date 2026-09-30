@@ -505,21 +505,39 @@ def get_student_gap_endpoint(
             or bool(sg.get("student_has_skill"))
         )
         sk_id = sg.get("skill_id", "")
-        sk_name = sg.get("skill_name", sk_id)
+        sk_name = sg.get("skill_name") or sk_id
+        category = sg.get("category") or "General"
+
+        # Ensure clean human-readable name
+        if not sk_name or sk_name.startswith("SK_") or sk_name.isdigit():
+            from app.services.skill_service import SkillService
+            tax = SkillService._lookup_taxonomy(str(sk_id)) or SkillService._lookup_taxonomy(str(sk_name))
+            if tax:
+                sk_name = tax[1]
+                category = tax[2]
+            elif str(sk_name).startswith("SK_"):
+                sk_name = str(sk_name)[3:].replace("_", " ").title()
+
         if is_acquired:
             acquired.append({
                 "id": sk_id,
                 "skill_id": sk_id,
+                "canonical_id": sk_id,
                 "name": sk_name,
+                "skill_name": sk_name,
+                "category": category,
                 "score": 1.0,
-                "strength": "intermediate",
-                "level": "intermediate"
+                "strength": sg.get("strength") or sg.get("evidence_strength") or "intermediate",
+                "level": sg.get("level") or "intermediate"
             })
         else:
             missing_list.append({
                 "id": sk_id,
                 "skill_id": sk_id,
+                "canonical_id": sk_id,
                 "name": sk_name,
+                "skill_name": sk_name,
+                "category": category,
                 "importance": 1.0,
                 "priority": "High"
             })

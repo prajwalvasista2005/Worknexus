@@ -254,13 +254,19 @@ class StudentService:
             canonical_skill_id = getattr(target_skill, "skill_id", getattr(target_skill, "id", raw_inp))
 
             new_id = len(db.student_skill_evidence) + 1
+            meta_dict = dict(evidence_in.metadata or {})
+            meta_dict["status"] = "verified"
+            meta_dict["is_verified"] = True
+
             evidence = EntityStudentSkillEvidence(
                 id=new_id,
                 student_profile_id=profile.id,
                 skill_id=canonical_skill_id,
                 evidence_type=evidence_in.evidence_type,
                 strength=evidence_in.strength,
-                metadata=evidence_in.metadata
+                status="verified",
+                is_verified=True,
+                metadata=meta_dict
             )
             db.add(evidence)
             db.commit()
@@ -315,6 +321,13 @@ class StudentService:
                 id=evidence.id,
                 student_profile_id=evidence.student_profile_id,
                 skill_id=canonical_skill_id,
+                canonical_id=canonical_skill_id,
+                skill_name=getattr(target_skill, "name", canonical_skill_id),
+                name=getattr(target_skill, "name", canonical_skill_id),
+                category=getattr(target_skill, "category", "General"),
+                status="verified",
+                is_verified=True,
+                verified=True,
                 evidence_type=evidence.evidence_type,
                 strength=evidence.strength,
                 metadata=meta,
@@ -373,12 +386,18 @@ class StudentService:
         if not db_skill:
             raise ValueError(f"Skill '{evidence_in.skill_id}' not found in canonical taxonomy.")
 
+        meta_dict = dict(evidence_in.metadata or {})
+        meta_dict["status"] = "verified"
+        meta_dict["is_verified"] = True
+
         evidence = DBStudentSkillEvidence(
             student_profile_id=profile.id,
             skill_id=db_skill.id,
             evidence_type=evidence_in.evidence_type,
             strength=evidence_in.strength,
-            metadata_=evidence_in.metadata
+            status="verified",
+            is_verified=True,
+            metadata_=meta_dict
         )
         db.add(evidence)
         db.commit()
@@ -424,9 +443,16 @@ class StudentService:
             id=evidence.id,
             student_profile_id=evidence.student_profile_id,
             skill_id=db_skill.skill_id,
+            canonical_id=db_skill.skill_id,
+            skill_name=db_skill.name,
+            name=db_skill.name,
+            category=db_skill.category or "General",
+            status="verified",
+            is_verified=True,
+            verified=True,
             evidence_type=evidence.evidence_type,
             strength=evidence.strength,
-            metadata=evidence.metadata_ or {},
+            metadata=evidence.metadata_ or meta_dict,
             created_at=evidence.created_at,
             match_score=gap_data.get("match_score"),
             overall_match_score=gap_data.get("overall_match_score"),
@@ -477,6 +503,7 @@ class StudentService:
 
             summary = raw.get("summary", {})
             skill_gaps = raw.get("skill_gaps", [])
+            from app.services.skill_service import SkillService
             acquired = []
             missing_list = []
             for sg in skill_gaps:
@@ -486,12 +513,27 @@ class StudentService:
                     or bool(sg.get("student_has_skill"))
                 )
                 sk_id = sg.get("skill_id", "")
-                sk_name = sg.get("skill_name", sk_id)
+                sk_name = sg.get("skill_name") or sk_id
+                category = sg.get("category") or "General"
+
+                # If sk_name is generic or an ID, hydrate from taxonomy
+                if not sk_name or sk_name.startswith("SK_") or sk_name.isdigit():
+                    tax = SkillService._lookup_taxonomy(str(sk_id)) or SkillService._lookup_taxonomy(str(sk_name))
+                    if tax:
+                        sk_id = tax[0]
+                        sk_name = tax[1]
+                        category = tax[2]
+                    elif str(sk_name).startswith("SK_"):
+                        sk_name = str(sk_name)[3:].replace("_", " ").title()
+
                 if is_acquired:
                     acquired.append({
                         "id": sk_id,
                         "skill_id": sk_id,
+                        "canonical_id": sk_id,
                         "name": sk_name,
+                        "skill_name": sk_name,
+                        "category": category,
                         "score": 1.0,
                         "strength": sg.get("strength") or sg.get("evidence_strength") or "intermediate",
                         "level": sg.get("level") or "intermediate"
@@ -500,7 +542,10 @@ class StudentService:
                     missing_list.append({
                         "id": sk_id,
                         "skill_id": sk_id,
+                        "canonical_id": sk_id,
                         "name": sk_name,
+                        "skill_name": sk_name,
+                        "category": category,
                         "importance": 1.0,
                         "priority": "High"
                     })
@@ -543,24 +588,33 @@ class StudentService:
 
     @staticmethod
     def get_student_evidence(db: Any, user_id: int) -> List[StudentSkillEvidenceResponseSchema]:
-        # Build lookup table id -> canonical skill_id
-        skill_id_to_code = {}
+        from app.services.skill_service import SkillService
+        # Build lookup table id -> (canonical_id, name, category)
+        skill_info_lookup = {}
         if StudentService._is_mock(db):
             for s in getattr(db, "skills", {}).values():
                 sid = getattr(s, "id", None)
                 scode = getattr(s, "skill_id", getattr(s, "id", None))
+                sname = getattr(s, "name", scode)
+                scat = getattr(s, "category", "General")
+                info = (scode, sname, scat)
                 if scode:
-                    skill_id_to_code[str(scode)] = str(scode)
-                    if sid is not None:
-                        skill_id_to_code[sid] = str(scode)
-                        skill_id_to_code[str(sid)] = str(scode)
+                    skill_info_lookup[str(scode)] = info
+                    skill_info_lookup[str(scode).lower()] = info
+                if sid is not None:
+                    skill_info_lookup[sid] = info
+                    skill_info_lookup[str(sid)] = info
         elif hasattr(db, "query"):
             try:
                 from app.models.skills import Skill as DBSkill
                 for s in db.query(DBSkill).all():
-                    skill_id_to_code[s.id] = s.skill_id
-                    skill_id_to_code[str(s.id)] = s.skill_id
-                    skill_id_to_code[s.skill_id] = s.skill_id
+                    info = (s.skill_id, s.name, s.category or "General")
+                    skill_info_lookup[s.id] = info
+                    skill_info_lookup[str(s.id)] = info
+                    skill_info_lookup[s.skill_id] = info
+                    skill_info_lookup[s.skill_id.lower()] = info
+                    if s.name:
+                        skill_info_lookup[s.name.lower()] = info
             except Exception:
                 pass
 
@@ -573,18 +627,31 @@ class StudentService:
                 return []
 
             evidence_list = [e for e in getattr(db, "student_skill_evidence", []) if e.student_profile_id == profile.id]
-            return [
-                StudentSkillEvidenceResponseSchema(
+            results = []
+            for e in evidence_list:
+                info = skill_info_lookup.get(e.skill_id) or skill_info_lookup.get(str(e.skill_id))
+                if not info:
+                    tax = SkillService._lookup_taxonomy(str(e.skill_id))
+                    info = tax if tax else (str(e.skill_id), str(e.skill_id), "General")
+                cid, cname, ccat = info
+                meta = e.metadata if isinstance(getattr(e, "metadata", None), dict) else (getattr(e, "metadata_", {}) or {})
+                results.append(StudentSkillEvidenceResponseSchema(
                     id=e.id,
                     student_profile_id=e.student_profile_id,
-                    skill_id=skill_id_to_code.get(e.skill_id, skill_id_to_code.get(str(e.skill_id), str(e.skill_id))),
+                    skill_id=cid,
+                    canonical_id=cid,
+                    skill_name=cname,
+                    name=cname,
+                    category=ccat,
+                    status=getattr(e, "status", "verified") or "verified",
+                    is_verified=getattr(e, "is_verified", True),
+                    verified=getattr(e, "is_verified", True),
                     evidence_type=e.evidence_type,
                     strength=e.strength,
-                    metadata=e.metadata if isinstance(getattr(e, "metadata", None), dict) else (getattr(e, "metadata_", {}) or {}),
+                    metadata=meta,
                     created_at=e.created_at
-                )
-                for e in evidence_list
-            ]
+                ))
+            return results
 
         # -------------------------------------------------------------
         # 2. SQLAlchemy database session branch
@@ -593,24 +660,40 @@ class StudentService:
             StudentProfile as DBStudentProfile,
             StudentSkillEvidence as DBStudentSkillEvidence
         )
+        from sqlalchemy.orm import joinedload
 
         profile = db.query(DBStudentProfile).filter(DBStudentProfile.user_id == user_id).first()
         if not profile:
             return []
 
-        evidence_list = db.query(DBStudentSkillEvidence).filter(
+        evidence_list = db.query(DBStudentSkillEvidence).options(
+            joinedload(DBStudentSkillEvidence.skill)
+        ).filter(
             DBStudentSkillEvidence.student_profile_id == profile.id
         ).all()
 
         results = []
         for e in evidence_list:
-            sk_id = None
+            cid = None
+            cname = None
+            ccat = "General"
             if hasattr(e, "skill") and e.skill and hasattr(e.skill, "skill_id"):
-                sk_id = e.skill.skill_id
-            if not sk_id:
+                cid = e.skill.skill_id
+                cname = e.skill.name
+                ccat = e.skill.category or "General"
+            if not cid:
                 raw_sk = getattr(e, "skill_id", "")
-                sk_id = skill_id_to_code.get(raw_sk, skill_id_to_code.get(str(raw_sk), str(raw_sk) if raw_sk else ""))
-            canonical = skill_id_to_code.get(sk_id, str(sk_id))
+                info = skill_info_lookup.get(raw_sk) or skill_info_lookup.get(str(raw_sk))
+                if info:
+                    cid, cname, ccat = info
+                else:
+                    tax = SkillService._lookup_taxonomy(str(raw_sk))
+                    if tax:
+                        cid, cname, ccat = tax
+                    else:
+                        cid = str(raw_sk)
+                        cname = str(raw_sk)
+
             meta = getattr(e, "metadata_", getattr(e, "metadata", {})) or {}
             if isinstance(meta, str):
                 try:
@@ -621,7 +704,14 @@ class StudentService:
             results.append(StudentSkillEvidenceResponseSchema(
                 id=e.id,
                 student_profile_id=e.student_profile_id,
-                skill_id=canonical,
+                skill_id=cid,
+                canonical_id=cid,
+                skill_name=cname,
+                name=cname,
+                category=ccat,
+                status=getattr(e, "status", "verified") or "verified",
+                is_verified=getattr(e, "is_verified", True),
+                verified=getattr(e, "is_verified", True),
                 evidence_type=e.evidence_type,
                 strength=e.strength,
                 metadata=meta,

@@ -123,6 +123,8 @@ class StudentSkillEvidence(Base):
     )
     evidence_type: Mapped[str] = mapped_column(String(32), nullable=False)
     strength: Mapped[str] = mapped_column(String(16), nullable=False)
+    status: Mapped[Optional[str]] = mapped_column(String(32), default="verified", nullable=True)
+    is_verified: Mapped[Optional[bool]] = mapped_column(Boolean, default=True, nullable=True)
     metadata_: Mapped[Optional[Dict[str, Any]]] = mapped_column("metadata", JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -136,6 +138,16 @@ class StudentSkillEvidence(Base):
     def __init__(self, **kwargs):
         if "metadata" in kwargs and "metadata_" not in kwargs:
             kwargs["metadata_"] = kwargs.pop("metadata")
+        if "status" not in kwargs:
+            kwargs["status"] = "verified"
+        if "is_verified" not in kwargs:
+            kwargs["is_verified"] = True
+        meta = kwargs.get("metadata_")
+        if isinstance(meta, dict):
+            if "status" not in meta:
+                meta["status"] = "verified"
+            if "is_verified" not in meta:
+                meta["is_verified"] = True
         ev_type = kwargs.get("evidence_type")
         if ev_type and ev_type not in self.VALID_EVIDENCE_TYPES:
             raise ValueError(f"Invalid evidence_type '{ev_type}'. Must be one of: {sorted(list(self.VALID_EVIDENCE_TYPES))}")
@@ -143,6 +155,10 @@ class StudentSkillEvidence(Base):
         if st and st not in self.VALID_STRENGTH_CATEGORIES:
             raise ValueError(f"Invalid strength category '{st}'. Must be one of: {sorted(list(self.VALID_STRENGTH_CATEGORIES))}")
         super().__init__(**kwargs)
+
+    @property
+    def verified(self) -> bool:
+        return bool(getattr(self, "is_verified", True))
 
     def __getattribute__(self, name: str) -> Any:
         if name == "metadata":
@@ -158,4 +174,3 @@ class StudentSkillEvidence(Base):
             super().__setattr__("metadata_", value)
         else:
             super().__setattr__(name, value)
-

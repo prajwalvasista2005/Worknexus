@@ -222,6 +222,13 @@ class StudentSkillEvidenceResponseSchema(BaseModel):
     skill_id: str
     evidence_type: str
     strength: str
+    status: Optional[str] = "verified"
+    is_verified: Optional[bool] = True
+    verified: Optional[bool] = True
+    canonical_id: Optional[str] = None
+    skill_name: Optional[str] = None
+    name: Optional[str] = None
+    category: Optional[str] = None
     metadata: Dict[str, Any] = Field(default_factory=dict)
     created_at: Optional[datetime] = Field(default_factory=lambda: datetime.now(timezone.utc))
 

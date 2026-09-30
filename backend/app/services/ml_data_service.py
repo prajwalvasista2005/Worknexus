@@ -350,10 +350,27 @@ class MLDataService:
                     "skill_id": skill_lookup.get(e.skill_id, skill_lookup.get(str(e.skill_id), str(e.skill_id))),
                     "evidence_type": e.evidence_type,
                     "evidence_strength": e.strength,
+                    "status": getattr(e, "status", "verified") or "verified",
+                    "is_verified": getattr(e, "is_verified", True),
                     "metadata": e.metadata if isinstance(getattr(e, "metadata", None), dict) else (getattr(e, "metadata_", {}) or {})
                 }
                 for e in evidence_list
             ]
+
+            # Also include direct profile skills from user_skills
+            user_skills = [us for us in getattr(db, "user_skills", []) if getattr(us, "user_id", None) == profile.user_id]
+            for us in user_skills:
+                raw_sk = getattr(us, "skill_id", "")
+                canonical = skill_lookup.get(raw_sk, skill_lookup.get(str(raw_sk), str(raw_sk)))
+                if not any(ed["skill_id"] == canonical for ed in evidence_dicts):
+                    evidence_dicts.append({
+                        "skill_id": canonical,
+                        "evidence_type": getattr(us, "source", "self_reported") or "self_reported",
+                        "evidence_strength": getattr(us, "proficiency_level", "intermediate") or "intermediate",
+                        "status": "verified",
+                        "is_verified": True,
+                        "metadata": {"source": getattr(us, "source", "profile_skill"), "status": "verified", "is_verified": True}
+                    })
 
             return {
                 "student_id": str(student_id),
@@ -371,6 +388,7 @@ class MLDataService:
                 StudentProfile as DBStudentProfile,
                 StudentSkillEvidence as DBStudentSkillEvidence
             )
+            from app.models.user_skills import UserSkill as DBUserSkill
             from app.models.users import User as DBUser
 
             # STU_00X demo convention
@@ -427,8 +445,25 @@ class MLDataService:
                     "skill_id": canonical,
                     "evidence_type": e.evidence_type,
                     "evidence_strength": e.strength,
+                    "status": getattr(e, "status", "verified") or "verified",
+                    "is_verified": getattr(e, "is_verified", True),
                     "metadata": meta
                 })
+
+            # Also aggregate direct profile skills from user_skills table
+            user_skills = db.query(DBUserSkill).filter(DBUserSkill.user_id == profile.user_id).all()
+            for us in user_skills:
+                raw_sk = getattr(us, "skill_id", "")
+                canonical = skill_lookup.get(raw_sk, skill_lookup.get(str(raw_sk), str(raw_sk)))
+                if not any(ed["skill_id"] == canonical for ed in evidence_dicts):
+                    evidence_dicts.append({
+                        "skill_id": canonical,
+                        "evidence_type": getattr(us, "source", "self_reported") or "self_reported",
+                        "evidence_strength": getattr(us, "proficiency_level", "intermediate") or "intermediate",
+                        "status": "verified",
+                        "is_verified": True,
+                        "metadata": {"source": getattr(us, "source", "profile_skill"), "status": "verified", "is_verified": True}
+                    })
 
             return {
                 "student_id": str(student_id),

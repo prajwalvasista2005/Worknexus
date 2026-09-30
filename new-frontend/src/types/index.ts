@@ -145,6 +145,8 @@ export interface UserSkill {
   user_id: number;
   skill_id: number;
   skill_name?: string;
+  name?: string;
+  canonical_id?: string;
   skill_code?: string;
   category?: string;
   proficiency_level: string; // beginner, intermediate, advanced, expert

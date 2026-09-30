@@ -97,16 +97,30 @@ class MLService:
 
     def resolve_canonical_skill_id(self, skill_ident: Any) -> Optional[str]:
         """
-        Resolve an arbitrary skill string (name, canonical ID, alias, prefix variation)
-        to its canonical skill ID (e.g. 'Apache Airflow' -> 'SK_AIRFLOW').
+        Resolve an arbitrary skill identifier (integer ID like 31, name, canonical ID, alias, prefix variation)
+        to its canonical skill ID (e.g. 31 -> 'SK_PYTHON', 'Apache Airflow' -> 'SK_AIRFLOW').
         """
-        if not skill_ident:
+        if skill_ident is None:
             return None
         s_str = str(skill_ident).strip().lower()
         if not s_str:
             return None
         if s_str in self._alias_map:
             return self._alias_map[s_str]
+
+        # Check if integer ID maps via database or taxonomy cache
+        if s_str.isdigit():
+            try:
+                from app.services.skill_service import SkillService
+                from app.db.database import SessionLocal
+                with SessionLocal() as s:
+                    sk = SkillService.get_skill_by_id(s, int(s_str))
+                    if sk and getattr(sk, "skill_id", None):
+                        canon = sk.skill_id
+                        self._alias_map[s_str] = canon
+                        return canon
+            except Exception:
+                pass
 
         norm = re.sub(r'^(sk_|skill_)', '', s_str).replace('_', ' ').strip()
         if norm in self._alias_map:
@@ -115,6 +129,17 @@ class MLService:
         alpha = re.sub(r'[^a-z0-9]', '', s_str)
         if alpha in self._alias_map:
             return self._alias_map[alpha]
+
+        # Fallback to SkillService taxonomy lookup
+        try:
+            from app.services.skill_service import SkillService
+            tax = SkillService._lookup_taxonomy(s_str)
+            if tax:
+                canon = tax[0]
+                self._alias_map[s_str] = canon
+                return canon
+        except Exception:
+            pass
 
         return None
 
@@ -897,8 +922,9 @@ class MLService:
         grouped_evidence: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
         for ev in evidence_records:
             sk_id = ev.get("skill_id")
-            if sk_id:
-                grouped_evidence[sk_id].append({
+            if sk_id is not None:
+                canon_id = self.resolve_canonical_skill_id(sk_id) or str(sk_id)
+                grouped_evidence[canon_id].append({
                     "evidence_type": ev.get("evidence_type", ev.get("type", "self_reported")),
                     "evidence_strength": ev.get("strength", ev.get("evidence_strength", "intermediate")),
                     **ev.get("metadata", {})
@@ -906,7 +932,19 @@ class MLService:
 
         profile_skills = []
         for sk_id in sorted(grouped_evidence.keys()):
-            sk_info = taxonomy_map.get(sk_id, {"name": sk_id, "category": "General"})
+            sk_info = taxonomy_map.get(sk_id)
+            if not sk_info:
+                try:
+                    from app.services.skill_service import SkillService
+                    tax = SkillService._lookup_taxonomy(str(sk_id))
+                    if tax:
+                        sk_info = {"id": tax[0], "name": tax[1], "category": tax[2]}
+                except Exception:
+                    pass
+            if not sk_info:
+                clean_name = sk_id[3:].replace("_", " ").title() if str(sk_id).startswith("SK_") else str(sk_id)
+                sk_info = {"id": sk_id, "name": clean_name, "category": "General"}
+
             profile_skills.append({
                 "skill_id": sk_id,
                 "skill_name": sk_info["name"],
@@ -960,6 +998,7 @@ class MLService:
                 ev_ctx = item.get("evidence_context", {})
 
             # Match against student profile skills using robust multi-tier skills_match
+            canonical_role_sk = self.resolve_canonical_skill_id(sk_id) or self.resolve_canonical_skill_id(sk_name) or str(sk_id)
             matching_student_skill = None
             for s in profile_skills:
                 if isinstance(s, str):
@@ -971,11 +1010,15 @@ class MLService:
                     s_name = s.get("skill_name", s_id)
                     s_ev = s.get("evidence", [])
 
+                canonical_student_sk = self.resolve_canonical_skill_id(s_id) or self.resolve_canonical_skill_id(s_name) or str(s_id)
+
                 if (
-                    self.skills_match(s_id, sk_id)
+                    (canonical_role_sk and canonical_student_sk and canonical_role_sk.lower() == canonical_student_sk.lower())
+                    or self.skills_match(s_id, sk_id)
                     or self.skills_match(s_id, sk_name)
                     or self.skills_match(s_name, sk_id)
                     or self.skills_match(s_name, sk_name)
+                    or self.skills_match(canonical_student_sk, canonical_role_sk)
                 ):
                     matching_student_skill = {
                         "skill_id": s_id,
@@ -992,9 +1035,23 @@ class MLService:
             else:
                 missing_count += 1
 
+            # Ensure clean readable skill name
+            clean_name = sk_name
+            if not clean_name or clean_name.startswith("SK_") or clean_name.isdigit():
+                try:
+                    from app.services.skill_service import SkillService
+                    tax = SkillService._lookup_taxonomy(str(sk_id)) or SkillService._lookup_taxonomy(str(sk_name))
+                    if tax:
+                        clean_name = tax[1]
+                        category = tax[2]
+                except Exception:
+                    pass
+            if not clean_name or clean_name.startswith("SK_"):
+                clean_name = sk_id[3:].replace("_", " ").title() if str(sk_id).startswith("SK_") else str(clean_name)
+
             skill_gaps.append({
-                "skill_id": sk_id,
-                "skill_name": sk_name,
+                "skill_id": canonical_role_sk or sk_id,
+                "skill_name": clean_name,
                 "category": category,
                 "student_status": stu_status,
                 "student_evidence": matching_student_skill.get("evidence", []) if is_present else [],
