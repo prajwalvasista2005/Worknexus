@@ -1,4 +1,4 @@
-# WorkNexus Frontend Integration Guide
+# SkillMesh Frontend Integration Guide
 
 > **Target Audience:** Frontend Engineering Team  
 > **Document Status:** Complete Source of Truth & Exhaustive API Catalog  
@@ -9,8 +9,8 @@
 
 ## 1. Project Overview
 
-### 1.1 What is WorkNexus?
-**WorkNexus** (also known as **SkillMesh**) is an enterprise labour-market intelligence and workforce curriculum-alignment platform. It bridges the gap between educational curriculum outcomes and dynamic industry hiring requirements using deterministic, multi-signal Machine Learning models.
+### 1.1 What is SkillMesh?
+**SkillMesh** (developed by the **WorkNexus** team) is an enterprise labour-market intelligence and workforce curriculum-alignment platform. It bridges the gap between educational curriculum outcomes and dynamic industry hiring requirements using deterministic, multi-signal Machine Learning models.
 
 ### 1.2 Purpose of the Platform
 Traditional vocational and technical education programs operate on static, multi-year curriculum cycles, while enterprise demand evolves rapidly. WorkNexus ingests job postings, extracts emerging skill requirements, analyzes student evidence portfolios, identifies curriculum gaps, and recommends targeted course interventions in real time.

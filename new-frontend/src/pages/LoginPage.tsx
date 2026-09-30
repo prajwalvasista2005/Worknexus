@@ -75,10 +75,10 @@ export const LoginPage: React.FC = () => {
           </div>
         </div>
         <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-slate-900">
-          WorkNexus
+          SkillMesh
         </h2>
         <p className="mt-1 text-center text-xs text-slate-500 font-medium">
-          Labour-Market Intelligence & Workforce Alignment Platform
+          Labour-Market Intelligence & Workforce Alignment Platform by WorkNexus
         </p>
       </div>
 

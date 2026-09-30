@@ -54,7 +54,7 @@ export const RegisterPage: React.FC = () => {
           </div>
         </div>
         <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-slate-900">
-          Create WorkNexus Account
+          Create SkillMesh Account
         </h2>
         <p className="mt-1 text-center text-xs text-slate-500 font-medium">
           Select your enterprise persona to align skills with labour demand

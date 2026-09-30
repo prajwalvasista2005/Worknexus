@@ -1,6 +1,6 @@
-# WorkNexus / SkillMesh — ML Layer (`ml/`)
+# SkillMesh — ML Layer (`ml/`)
 
-This directory contains the ML/NLP processing engine and data assets for WorkNexus / SkillMesh (SIH26134).
+This directory contains the ML/NLP processing engine and data assets for SkillMesh (developed by the WorkNexus team, SIH26134).
 
 ## Architecture & Responsibilities
 - **ML Layer Boundary**: Owns skill taxonomy, canonical ID resolution, extraction confidence scoring, batch extraction artifact generation, demand aggregation, curriculum skill gap analysis, trust-weighted employer feedback intelligence, multi-signal evidence aggregation, and generic rule-based skill recommendations.

@@ -1,11 +1,11 @@
-# WorkNexus API Reference Documentation
+# SkillMesh API Reference Documentation
 
 > **Base URL:** `http://127.0.0.1:8000`  
 > **API v1 Prefix:** `http://127.0.0.1:8000/api/v1`  
 > **Interactive Documentation (Swagger UI):** `http://127.0.0.1:8000/docs`  
 > **Alternative Documentation (ReDoc):** `http://127.0.0.1:8000/redoc`  
 > **Current Version:** `1.0.0`  
-> **Platform:** WorkNexus / SkillMesh (Labour Market Intelligence & Curriculum Alignment Platform)
+> **Platform:** SkillMesh by WorkNexus (Labour Market Intelligence & Curriculum Alignment Platform)
 
 ---
 

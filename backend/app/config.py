@@ -28,7 +28,7 @@ INSECURE_SECRET_KEYS = {
 
 
 class Settings:
-    PROJECT_NAME: str = "WorkNexus / SkillMesh"
+    PROJECT_NAME: str = "SkillMesh"
     API_V1_STR: str = "/api/v1"
 
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")

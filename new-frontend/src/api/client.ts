@@ -1,5 +1,5 @@
 /**
- * WorkNexus Unified API Client
+ * SkillMesh Unified API Client
  * Enterprise labour-market intelligence and workforce curriculum-alignment platform.
  */
 

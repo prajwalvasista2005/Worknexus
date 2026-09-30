@@ -1,4 +1,4 @@
-# WorkNexus Database Migration & Operational Safety Protocol
+# SkillMesh Database Migration & Operational Safety Protocol
 
 This document defines the strict, mandatory operational runbook required before executing database migrations in any staging, pre-production, or production environment containing real or non-disposable data.
 

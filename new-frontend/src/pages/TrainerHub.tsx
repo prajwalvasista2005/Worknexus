@@ -492,7 +492,7 @@ export const TrainerHub: React.FC = () => {
                 NLP Skill Extractor Sandbox
               </h2>
               <p className="text-xs text-slate-500 mt-0.5">
-                Test the WorkNexus NLP engine by parsing unstructured curricula, job postings, or syllabi into canonical skill codes.
+                Test the SkillMesh NLP engine by parsing unstructured curricula, job postings, or syllabi into canonical skill codes.
               </p>
             </div>
 

@@ -1,5 +1,5 @@
 /**
- * WorkNexus (SkillMesh) Type Definitions
+ * SkillMesh Type Definitions (WorkNexus Team)
  * Enterprise labour-market intelligence and workforce curriculum-alignment platform.
  */
 

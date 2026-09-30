@@ -52,7 +52,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.PROJECT_NAME,
         version="1.0.0",
-        description="WorkNexus / SkillMesh Core Backend API with Integrated ML Engine",
+        description="SkillMesh Core Backend API with Integrated ML Engine (WorkNexus Team)",
         lifespan=lifespan,
     )
 

@@ -1,5 +1,5 @@
 /**
- * Formatting and utility helpers for WorkNexus
+ * Formatting and utility helpers for SkillMesh
  */
 
 /**

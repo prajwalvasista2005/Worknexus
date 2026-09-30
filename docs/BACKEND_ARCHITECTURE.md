@@ -1,6 +1,6 @@
-# WorkNexus Backend Architecture Guide
+# SkillMesh Backend Architecture Guide
 
-> **Target Audience:** Backend Developers, Machine Learning Engineers, and Frontend Engineers working on the WorkNexus platform.  
+> **Target Audience:** Backend Developers, Machine Learning Engineers, and Frontend Engineers working on the SkillMesh platform (by WorkNexus).  
 > **Status:** Production-Ready Core Foundation (Authentication, Token Rotation, Skills Taxonomy, Curriculum Courses, User Skills, Course-Skill Mapping)  
 > **Repository:** `Worknexus` | **Backend Core:** `backend/`
 
@@ -8,8 +8,8 @@
 
 ## 1. Project Overview
 
-### What is WorkNexus?
-WorkNexus is a **Labour Market Intelligence & Curriculum Alignment Platform** designed to solve structural mismatches between vocational training programs, university curricula, and industry hiring requirements. It establishes a closed-loop ecosystem between:
+### What is SkillMesh?
+SkillMesh (developed by WorkNexus) is a **Labour Market Intelligence & Curriculum Alignment Platform** designed to solve structural mismatches between vocational training programs, university curricula, and industry hiring requirements. It establishes a closed-loop ecosystem between:
 - **Industry & Employers:** Capturing job demands, required skill sets, and missing graduate competencies.
 - **Educational Institutes:** Structuring courses, mapping curriculum coverage, and receiving automated alignment recommendations.
 - **Students & Jobseekers:** Cataloging verified and declared skill proficiencies.

@@ -106,10 +106,10 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
             </button>
             <div className="flex items-center gap-2">
               <span className="text-xl font-bold tracking-tight text-slate-900 font-sans">
-                WorkNexus
+                SkillMesh
               </span>
               <span className="hidden sm:inline-block text-xs font-medium text-indigo-600 bg-indigo-50 border border-indigo-100 rounded px-2 py-0.5">
-                SkillMesh
+                by WorkNexus
               </span>
             </div>
           </div>
@@ -220,7 +220,7 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
       {/* Quiet Footer */}
       <footer className="border-t border-slate-200 bg-white py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-          <p>© {new Date().getFullYear()} WorkNexus (SkillMesh) · Labour-Market Intelligence Platform</p>
+          <p>© {new Date().getFullYear()} SkillMesh by WorkNexus · Labour-Market Intelligence Platform</p>
           <div className="flex items-center gap-4">
             <span>Portal: {activeRole}</span>
             <span aria-hidden="true">·</span>

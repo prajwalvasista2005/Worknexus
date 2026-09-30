@@ -1,6 +1,6 @@
-# WorkNexus
+# SkillMesh
 
-WorkNexus is a unified workforce, skills, and curriculum intelligence platform built with **FastAPI**, **SQLAlchemy**, **Alembic**, **PostgreSQL**, and **React** (Vite).
+SkillMesh (developed by the WorkNexus team) is a unified workforce, skills, and curriculum intelligence platform built with **FastAPI**, **SQLAlchemy**, **Alembic**, **PostgreSQL**, and **React** (Vite).
 
 ---
 
