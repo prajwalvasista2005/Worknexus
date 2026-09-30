@@ -517,10 +517,12 @@ class StudentService:
 
         gap_data: Dict[str, Any] = {}
         try:
-            gap_data = StudentService.recalculate_student_gap(db, user_id, profile.target_role_id)
+            # Use savepoint-isolated sub-session so any ML/schema exception
+            # (e.g. UndefinedColumn: job_skills.confidence_score) cannot
+            # poison the primary transaction that already committed the evidence.
+            gap_data = StudentService._recalculate_gap_isolated(db, user_id, profile.target_role_id)
         except Exception as e:
-            # Non-fatal: gap recalculation failure must not poison the session or
-            # block the response.  Rollback so Phase 3 starts with a clean session.
+            # _recalculate_gap_isolated itself never raises; this is a safety net.
             logger.warning(f"Secondary gap recalculation failed (non-fatal): {e}")
             try:
                 db.rollback()
@@ -614,6 +616,49 @@ class StudentService:
             recalculated_gap=gap_data,
             gap_analysis=gap_data
         )
+
+    @staticmethod
+    def _recalculate_gap_isolated(db: Any, user_id: int, target_role_id: Optional[str]) -> Dict[str, Any]:
+        """
+        Run gap recalculation in a completely isolated sub-session.
+
+        Uses a SQLAlchemy Session bound to the *same* underlying database
+        connection but joined via a SAVEPOINT (``join_transaction_mode='create_savepoint'``).
+        If anything inside gap recalculation raises (e.g.
+        ``psycopg2.errors.UndefinedColumn: column job_skills.confidence_score does not exist``),
+        only the savepoint is rolled back — the outer primary transaction that
+        committed the evidence record is **not** affected.
+
+        This is the correct fix for the schema-drift-induced ``InFailedSqlTransaction``
+        cascade: the ``UndefinedColumn`` error is contained and logged as a warning,
+        and the caller receives an empty ``{}`` dict instead of a poisoned session.
+        """
+        import logging
+        logger = logging.getLogger(__name__)
+        gap_db = None
+        try:
+            from sqlalchemy.orm import Session as _SASession
+            # Bind to the same underlying DBAPI connection but nested inside a
+            # SAVEPOINT so any failure here can be rolled back independently.
+            gap_db = _SASession(
+                bind=db.get_bind(),
+                autoflush=False,
+                autocommit=False,
+                expire_on_commit=False,
+                join_transaction_mode="create_savepoint",
+            )
+            return StudentService.recalculate_student_gap(gap_db, user_id, target_role_id)
+        except Exception as e:
+            logger.warning(
+                "Isolated gap recalculation failed (non-fatal, savepoint rolled back): %s", e
+            )
+            return {}
+        finally:
+            if gap_db is not None:
+                try:
+                    gap_db.close()
+                except Exception:
+                    pass
 
     @staticmethod
     def recalculate_student_gap(

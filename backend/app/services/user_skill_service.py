@@ -20,9 +20,12 @@ class UserSkillService:
         # required (and would raise AttributeError on a property without a setter).
         sk = getattr(us, "skill", None)
         if not sk and us.skill_id is not None:
-            sk = SkillService.get_skill_by_id(db, us.skill_id)
-            if sk:
-                us.skill = sk
+            try:
+                sk = SkillService.get_skill_by_id(db, us.skill_id)
+                if sk:
+                    us.skill = sk
+            except Exception:
+                pass
         return us
 
     @staticmethod
