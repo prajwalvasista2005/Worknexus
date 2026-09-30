@@ -72,6 +72,8 @@ class MockDatabaseSession:
         self.role_skills: List[Any] = []
         self.student_profiles: Dict[int, Any] = {}
         self.student_skill_evidence: List[Any] = []
+        self.user_skills: List[Any] = []
+        self.student_skills: List[Any] = self.user_skills
 
         self._user_id_counter = 1
         self._employer_id_counter = 1
@@ -82,6 +84,7 @@ class MockDatabaseSession:
         self._role_skill_id_counter = 1
         self._student_profile_id_counter = 1
         self._evidence_id_counter = 1
+        self._user_skill_id_counter = 1
 
     def add(self, entity: Any):
         name = type(entity).__name__
@@ -139,6 +142,11 @@ class MockDatabaseSession:
                 entity.id = self._evidence_id_counter
                 self._evidence_id_counter += 1
             self.student_skill_evidence.append(entity)
+        elif name in ("UserSkill", "StudentSkill"):
+            if not getattr(entity, "id", None):
+                entity.id = self._user_skill_id_counter
+                self._user_skill_id_counter += 1
+            self.user_skills.append(entity)
 
     def flush(self):
         pass
@@ -165,6 +173,11 @@ class QueryBuilder:
     def filter(self, *expressions):
         for expr in expressions:
             self._filters.append(expr)
+        return self
+
+    def filter_by(self, **kwargs):
+        for k, v in kwargs.items():
+            self._filters.append(lambda item, k=k, v=v: getattr(item, k, None) == v)
         return self
 
     def first(self) -> Optional[Any]:
@@ -199,6 +212,8 @@ class QueryBuilder:
             items = list(self.session.student_profiles.values())
         elif name == "StudentSkillEvidence":
             items = list(self.session.student_skill_evidence)
+        elif name in ("UserSkill", "StudentSkill"):
+            items = list(getattr(self.session, "user_skills", []))
         else:
             items = []
 

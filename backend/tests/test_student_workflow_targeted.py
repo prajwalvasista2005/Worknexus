@@ -398,3 +398,120 @@ def test_06_airflow_evidence_clears_apache_airflow_role_gap(client):
         print(f"\n[PASS] Step 6B 'Python Programming' Evidence Cleared Role Gap: Match score rose from {updated_score} to {py_score}")
     finally:
         db.close()
+
+
+def test_07_automatic_profile_skill_upsert_and_cascading_gap_response(client):
+    """
+    Workflow Step 7: Automatic Profile Skill Upsert on Evidence Submission & Cascading Gap Recalculation
+    1. Verifies that when evidence is submitted, the skill is automatically upserted into
+       the user_skills / StudentSkill table with proficiency_level and source='Verified Evidence'.
+    2. Verifies that the evidence submission response immediately returns the updated
+       acquired_skills list, missing_skills list, and recalculated match_score.
+    """
+    from app.db.session import SessionLocal
+    from app.models.users import User
+    from app.models.skills import Skill
+    from app.models.user_skills import UserSkill
+    from app.models.student_roles import TargetRole, RoleSkill, StudentProfile, StudentSkillEvidence
+    from app.auth.security import hash_password
+    from app.auth.jwt import create_access_token
+
+    db = SessionLocal()
+    try:
+        email = "cascading_test_student@worknexus.org"
+        user = db.query(User).filter(User.email == email).first()
+        if not user:
+            user = User(
+                email=email,
+                hashed_password=hash_password("Password123!"),
+                full_name="Cascading Test Student",
+                role="student",
+                is_active=True,
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
+        # Ensure ROLE_DATA_ENGINEER and SK_AIRFLOW exist
+        role = db.query(TargetRole).filter(TargetRole.id == "ROLE_DATA_ENGINEER").first()
+        if not role:
+            role = TargetRole(id="ROLE_DATA_ENGINEER", name="Data Engineer", is_active=True)
+            db.add(role)
+            db.commit()
+
+        skill = db.query(Skill).filter(Skill.skill_id == "SK_AIRFLOW").first()
+        if not skill:
+            skill = Skill(skill_id="SK_AIRFLOW", name="Apache Airflow", category="IT / Data", is_active=True)
+            db.add(skill)
+            db.commit()
+            db.refresh(skill)
+
+        # Ensure RoleSkill links ROLE_DATA_ENGINEER to SK_AIRFLOW
+        rs = db.query(RoleSkill).filter(
+            RoleSkill.role_id == "ROLE_DATA_ENGINEER",
+            RoleSkill.skill_id == skill.id
+        ).first()
+        if not rs:
+            rs = RoleSkill(role_id="ROLE_DATA_ENGINEER", skill_id=skill.id)
+            db.add(rs)
+            db.commit()
+
+        # Clear any existing user_skills or evidence for this user to ensure pristine state
+        db.query(UserSkill).filter(UserSkill.user_id == user.id).delete()
+        profile = db.query(StudentProfile).filter(StudentProfile.user_id == user.id).first()
+        if not profile:
+            profile = StudentProfile(user_id=user.id, target_role_id="ROLE_DATA_ENGINEER")
+            db.add(profile)
+            db.commit()
+            db.refresh(profile)
+        else:
+            profile.target_role_id = "ROLE_DATA_ENGINEER"
+            db.query(StudentSkillEvidence).filter(
+                StudentSkillEvidence.student_profile_id == profile.id
+            ).delete()
+            db.commit()
+
+        # Verify initial inventory has 0 user_skills
+        initial_user_skills = db.query(UserSkill).filter(UserSkill.user_id == user.id).all()
+        assert len(initial_user_skills) == 0
+
+        token = create_access_token(data={"sub": user.email, "user_id": user.id, "role": "Student"})
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "X-User-Id": str(user.id),
+            "X-User-Role": "Student",
+            "X-User-Email": user.email,
+        }
+
+        # Submit evidence
+        payload = {
+            "skill_id": "SK_AIRFLOW",
+            "evidence_type": "project",
+            "strength": "advanced",
+            "metadata": {"repo": "https://github.com/worknexus/cascading-test"}
+        }
+        res = client.post(f"/api/v1/students/{user.id}/evidence", json=payload, headers=headers)
+        assert res.status_code in [200, 201], f"Submission failed: {res.text}"
+        data = res.json()
+
+        # 1. Verify response contains cascading gap recalculation fields
+        assert "match_score" in data or "overall_match_score" in data
+        score = data.get("match_score") if data.get("match_score") is not None else data.get("overall_match_score")
+        assert score > 0.0, f"Expected recalculated match_score > 0.0, got {score}"
+
+        assert "acquired_skills" in data or "skills_acquired" in data
+        acquired = data.get("acquired_skills") or data.get("skills_acquired")
+        assert any("airflow" in str(s.get("name") or s.get("skill_id")).lower() for s in acquired)
+
+        # 2. Verify automatic profile skill upsert in database
+        db_user_skill = db.query(UserSkill).filter(
+            UserSkill.user_id == user.id,
+            UserSkill.skill_id == skill.id
+        ).first()
+        assert db_user_skill is not None, "Expected UserSkill to be automatically upserted"
+        assert db_user_skill.source == "Verified Evidence"
+        assert db_user_skill.proficiency_level == "Advanced"
+
+        print(f"\n[PASS] Step 7 Automatic Profile Skill Upsert & Cascading Gap: match_score={score}, source={db_user_skill.source}")
+    finally:
+        db.close()

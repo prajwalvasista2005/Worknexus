@@ -1,4 +1,4 @@
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Dict
 from app.models.student_roles import (
     StudentProfile as EntityStudentProfile,
     StudentSkillEvidence as EntityStudentSkillEvidence,
@@ -265,6 +265,51 @@ class StudentService:
             db.add(evidence)
             db.commit()
 
+            # 1. Automatic Profile Skill Upsert
+            strength_val = str(evidence_in.strength or "advanced").strip().lower()
+            if "basic" in strength_val or "beginner" in strength_val or "low" in strength_val:
+                prof_level = "Basic"
+            elif "intermediate" in strength_val or "medium" in strength_val:
+                prof_level = "Intermediate"
+            else:
+                prof_level = "Advanced"
+
+            if not hasattr(db, "user_skills"):
+                db.user_skills = []
+            if not hasattr(db, "student_skills"):
+                db.student_skills = db.user_skills
+
+            target_id = getattr(target_skill, "id", None)
+            existing_us = None
+            for us in getattr(db, "user_skills", []):
+                if getattr(us, "user_id", None) == user_id:
+                    us_sk = getattr(us, "skill_id", None)
+                    if us_sk in (target_id, canonical_skill_id, str(target_id), str(canonical_skill_id)):
+                        existing_us = us
+                        break
+
+            if not existing_us:
+                from app.models.user_skills import UserSkill
+                new_us = UserSkill(
+                    user_id=user_id,
+                    skill_id=target_id or canonical_skill_id,
+                    proficiency_level=prof_level,
+                    source="Verified Evidence"
+                )
+                db.add(new_us)
+                db.commit()
+            else:
+                level_order = {"basic": 1, "intermediate": 2, "advanced": 3}
+                cur_rank = level_order.get(str(getattr(existing_us, "proficiency_level", "")).lower(), 1)
+                new_rank = level_order.get(prof_level.lower(), 3)
+                if new_rank > cur_rank:
+                    existing_us.proficiency_level = prof_level
+                existing_us.source = "Verified Evidence"
+                db.commit()
+
+            # 2. Cascading Gap Recalculation
+            gap_data = StudentService.recalculate_student_gap(db, user_id, profile.target_role_id)
+
             meta = evidence.metadata if isinstance(getattr(evidence, "metadata", None), dict) else (getattr(evidence, "metadata_", {}) or {})
             return StudentSkillEvidenceResponseSchema(
                 id=evidence.id,
@@ -273,7 +318,17 @@ class StudentService:
                 evidence_type=evidence.evidence_type,
                 strength=evidence.strength,
                 metadata=meta,
-                created_at=evidence.created_at
+                created_at=evidence.created_at,
+                match_score=gap_data.get("match_score"),
+                overall_match_score=gap_data.get("overall_match_score"),
+                gap_percentage=gap_data.get("gap_percentage"),
+                gap_score=gap_data.get("gap_score"),
+                acquired_skills=gap_data.get("acquired_skills", []),
+                skills_acquired=gap_data.get("skills_acquired", []),
+                missing_skills=gap_data.get("missing_skills", []),
+                skills_missing=gap_data.get("skills_missing", []),
+                recalculated_gap=gap_data,
+                gap_analysis=gap_data
             )
 
         # -------------------------------------------------------------
@@ -285,6 +340,7 @@ class StudentService:
             StudentProfile as DBStudentProfile,
             StudentSkillEvidence as DBStudentSkillEvidence
         )
+        from app.models.user_skills import UserSkill as DBUserSkill
 
         profile = db.query(DBStudentProfile).filter(DBStudentProfile.user_id == user_id).first()
         if not profile:
@@ -328,6 +384,42 @@ class StudentService:
         db.commit()
         db.refresh(evidence)
 
+        # 1. Automatic Profile Skill Upsert
+        strength_val = str(evidence_in.strength or "advanced").strip().lower()
+        if "basic" in strength_val or "beginner" in strength_val or "low" in strength_val:
+            prof_level = "Basic"
+        elif "intermediate" in strength_val or "medium" in strength_val:
+            prof_level = "Intermediate"
+        else:
+            prof_level = "Advanced"
+
+        existing_user_skill = db.query(DBUserSkill).filter(
+            DBUserSkill.user_id == user_id,
+            DBUserSkill.skill_id == db_skill.id
+        ).first()
+
+        if not existing_user_skill:
+            new_user_skill = DBUserSkill(
+                user_id=user_id,
+                skill_id=db_skill.id,
+                proficiency_level=prof_level,
+                source="Verified Evidence"
+            )
+            db.add(new_user_skill)
+            db.commit()
+            db.refresh(new_user_skill)
+        else:
+            level_order = {"basic": 1, "intermediate": 2, "advanced": 3}
+            cur_rank = level_order.get(str(existing_user_skill.proficiency_level).lower(), 1)
+            new_rank = level_order.get(prof_level.lower(), 3)
+            if new_rank > cur_rank:
+                existing_user_skill.proficiency_level = prof_level
+            existing_user_skill.source = "Verified Evidence"
+            db.commit()
+
+        # 2. Cascading Gap Recalculation
+        gap_data = StudentService.recalculate_student_gap(db, user_id, profile.target_role_id)
+
         return StudentSkillEvidenceResponseSchema(
             id=evidence.id,
             student_profile_id=evidence.student_profile_id,
@@ -335,8 +427,119 @@ class StudentService:
             evidence_type=evidence.evidence_type,
             strength=evidence.strength,
             metadata=evidence.metadata_ or {},
-            created_at=evidence.created_at
+            created_at=evidence.created_at,
+            match_score=gap_data.get("match_score"),
+            overall_match_score=gap_data.get("overall_match_score"),
+            gap_percentage=gap_data.get("gap_percentage"),
+            gap_score=gap_data.get("gap_score"),
+            acquired_skills=gap_data.get("acquired_skills", []),
+            skills_acquired=gap_data.get("skills_acquired", []),
+            missing_skills=gap_data.get("missing_skills", []),
+            skills_missing=gap_data.get("skills_missing", []),
+            recalculated_gap=gap_data,
+            gap_analysis=gap_data
         )
+
+    @staticmethod
+    def recalculate_student_gap(
+        db: Any,
+        user_id: int,
+        target_role_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Recalculates the student's role gap and match metrics after skill evidence is submitted.
+        Returns a dictionary containing:
+            - overall_match_score / match_score
+            - gap_percentage / gap_score
+            - acquired_skills / skills_acquired
+            - missing_skills / skills_missing
+            - total_role_skills
+            - present_skills_count
+            - missing_skills_count
+        """
+        if not target_role_id:
+            profile = StudentService.get_profile_by_user_id(db, user_id)
+            if profile and profile.target_role_id:
+                target_role_id = profile.target_role_id
+            else:
+                target_role_id = "ROLE_FULL_STACK_DEV"
+
+        try:
+            from app.services.ml_adapter import MLAdapter
+            adapter = MLAdapter()
+            res = adapter.get_student_skill_gap(
+                student_id=str(user_id),
+                role_id=target_role_id,
+                db=db,
+                mode="live"
+            )
+            raw = res.to_dict() if hasattr(res, "to_dict") else dict(res)
+
+            summary = raw.get("summary", {})
+            skill_gaps = raw.get("skill_gaps", [])
+            acquired = []
+            missing_list = []
+            for sg in skill_gaps:
+                is_acquired = (
+                    sg.get("student_status") == "present"
+                    or sg.get("status") == "present"
+                    or bool(sg.get("student_has_skill"))
+                )
+                sk_id = sg.get("skill_id", "")
+                sk_name = sg.get("skill_name", sk_id)
+                if is_acquired:
+                    acquired.append({
+                        "id": sk_id,
+                        "skill_id": sk_id,
+                        "name": sk_name,
+                        "score": 1.0,
+                        "strength": sg.get("strength") or sg.get("evidence_strength") or "intermediate",
+                        "level": sg.get("level") or "intermediate"
+                    })
+                else:
+                    missing_list.append({
+                        "id": sk_id,
+                        "skill_id": sk_id,
+                        "name": sk_name,
+                        "importance": 1.0,
+                        "priority": "High"
+                    })
+
+            total = len(skill_gaps) if skill_gaps else (summary.get("total_role_skills", 1) or 1)
+            present = len(acquired)
+            missing = len(missing_list)
+            match_score = round(present / total, 2) if total > 0 else 0.0
+            gap_pct = round((missing / total) * 100.0, 1) if total > 0 else 0.0
+
+            return {
+                "role_id": target_role_id,
+                "overall_match_score": match_score,
+                "match_score": match_score,
+                "gap_percentage": gap_pct,
+                "gap_score": gap_pct,
+                "acquired_skills": acquired,
+                "skills_acquired": acquired,
+                "missing_skills": missing_list,
+                "skills_missing": missing_list,
+                "total_role_skills": total,
+                "present_skills_count": present,
+                "missing_skills_count": missing,
+            }
+        except Exception:
+            return {
+                "role_id": target_role_id,
+                "overall_match_score": 0.0,
+                "match_score": 0.0,
+                "gap_percentage": 100.0,
+                "gap_score": 100.0,
+                "acquired_skills": [],
+                "skills_acquired": [],
+                "missing_skills": [],
+                "skills_missing": [],
+                "total_role_skills": 0,
+                "present_skills_count": 0,
+                "missing_skills_count": 0,
+            }
 
     @staticmethod
     def get_student_evidence(db: Any, user_id: int) -> List[StudentSkillEvidenceResponseSchema]:

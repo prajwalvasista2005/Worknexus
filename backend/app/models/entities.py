@@ -10,6 +10,7 @@ from app.models.employers import Employer, EmployerFeedback, EmployerFeedbackSig
 from app.models.job_postings import JobPosting
 from app.models.jobSkill import JobSkill
 from app.models.student_roles import TargetRole, RoleSkill, StudentProfile, StudentSkillEvidence
+from app.models.user_skills import UserSkill, StudentSkill
 
 __all__ = [
     "User",
@@ -25,4 +26,6 @@ __all__ = [
     "RoleSkill",
     "StudentProfile",
     "StudentSkillEvidence",
+    "UserSkill",
+    "StudentSkill",
 ]

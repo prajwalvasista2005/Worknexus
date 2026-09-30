@@ -47,3 +47,7 @@ class UserSkill(Base):
 
     user = relationship("User", back_populates="skills")
     skill = relationship("Skill", back_populates="user_skills")
+
+
+# Alias StudentSkill to UserSkill for student profile inventory semantics
+StudentSkill = UserSkill

@@ -225,6 +225,18 @@ class StudentSkillEvidenceResponseSchema(BaseModel):
     metadata: Dict[str, Any] = Field(default_factory=dict)
     created_at: Optional[datetime] = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+    # Cascading gap recalculation fields
+    overall_match_score: Optional[float] = None
+    match_score: Optional[float] = None
+    gap_percentage: Optional[float] = None
+    gap_score: Optional[float] = None
+    acquired_skills: List[Dict[str, Any]] = Field(default_factory=list)
+    skills_acquired: List[Dict[str, Any]] = Field(default_factory=list)
+    missing_skills: List[Dict[str, Any]] = Field(default_factory=list)
+    skills_missing: List[Dict[str, Any]] = Field(default_factory=list)
+    recalculated_gap: Optional[Dict[str, Any]] = None
+    gap_analysis: Optional[Dict[str, Any]] = None
+
 class StudentProfileCreateSchema(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, from_attributes=True)
     user_id: int

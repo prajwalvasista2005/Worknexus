@@ -6,7 +6,7 @@ from .skills import Skill
 from .courses import Course
 from .course_skills import CourseSkill
 from .refresh_tokens import RefreshToken
-from .user_skills import UserSkill
+from .user_skills import UserSkill, StudentSkill
 from .job_postings import JobPosting
 from .jobSkill import JobSkill
 from .student_roles import TargetRole, RoleSkill, StudentProfile, StudentSkillEvidence
@@ -19,6 +19,7 @@ __all__ = [
     "CourseSkill",
     "RefreshToken",
     "UserSkill",
+    "StudentSkill",
     "JobPosting",
     "JobSkill",
     "TargetRole",
