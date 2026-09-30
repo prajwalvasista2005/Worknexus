@@ -337,11 +337,18 @@ export interface Recommendation {
 
 export interface CourseGap {
   course_id: string | number;
+  course_name?: string;
   course_title?: string;
+  gap_score: number;
   curriculum_gap_score: number;
+  coverage_pct: number;
   market_coverage_percentage: number;
+  taught_skills_count?: number;
+  covered_demand_skills_count?: number;
+  missing_demand_skills_count?: number;
   missing_skills: string[] | Array<{ name: string; market_demand?: number; skill_id?: string }>;
   weak_skills: string[] | Array<{ name: string; current_coverage?: number; skill_id?: string }>;
+  covered_skills?: string[];
   recommendations: Recommendation[] | string[];
 }
 

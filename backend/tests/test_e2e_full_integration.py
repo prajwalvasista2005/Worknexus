@@ -420,9 +420,13 @@ def test_11_ml_intelligence_endpoints():
     gaps_res = client.get("/api/v1/ml/course-gaps", headers=auth_header(trainer_tok))
     assert gaps_res.status_code == 200
 
-    single_gap = client.get("/api/v1/ml/course-gaps/1", headers=auth_header(trainer_tok))
+    single_gap = client.get("/api/v1/ml/course-gaps/101", headers=auth_header(trainer_tok))
     assert single_gap.status_code == 200
     assert "gap_score" in single_gap.json()
+
+    # Course ID that doesn't exist must return 404 (course isolation enforcement)
+    missing_gap = client.get("/api/v1/ml/course-gaps/9999", headers=auth_header(trainer_tok))
+    assert missing_gap.status_code == 404
 
     # 4. Multi-Signal Evidence Telemetry
     ev_matrix = client.get("/api/v1/ml/evidence", headers=auth_header(trainer_tok))

@@ -112,32 +112,67 @@ def get_course_gap_by_id_endpoint(
     actual_adapter = _resolve_adapter(ml_adapter)
     raw = actual_adapter.get_course_skill_gaps(db=actual_db, mode=mode).to_dict()
     course_gaps = raw.get("course_gaps", [])
+
+    # Strict course isolation: find the exact course, never fall back to an unrelated one
     matching = None
     if isinstance(course_gaps, list):
         for cg in course_gaps:
             if str(cg.get("course_id")) == str(course_id) or str(cg.get("id")) == str(course_id):
                 matching = cg
                 break
-        if not matching and course_gaps:
-            idx = (course_id - 1) % len(course_gaps) if course_id > 0 else 0
-            matching = course_gaps[idx]
 
-    missing = [s.get("skill_id") if isinstance(s, dict) else str(s) for s in (matching.get("missing_skills", []) if matching else [])]
-    weak = [s.get("skill_id") if isinstance(s, dict) else str(s) for s in (matching.get("weak_skills", []) if matching else [])]
-    cov = float(matching.get("overall_coverage_ratio", 0.72) * 100 if matching and "overall_coverage_ratio" in matching else 72.0)
-    gap_score = round(1.0 - (cov / 100.0), 2)
+    if matching is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No gap analysis data found for course_id={course_id}. "
+                   "The course may have no skills mapped yet or market data is unavailable."
+        )
+
+    # ML output uses 'demand_coverage_ratio' or 'skill_coverage_ratio'; fall back gracefully
+    raw_coverage = (
+        matching.get("demand_coverage_ratio")
+        or matching.get("skill_coverage_ratio")
+        or matching.get("overall_coverage_ratio")
+        or 0.0
+    )
+    cov_pct = round(float(raw_coverage) * 100.0, 1)
+    gap_score = round(1.0 - float(raw_coverage), 4)
+
+    # missing_skills from ML are plain string skill IDs; normalise to strings
+    raw_missing = matching.get("missing_skills", [])
+    missing = [
+        s.get("skill_id") if isinstance(s, dict) else str(s)
+        for s in raw_missing
+    ]
+
+    # weak_skills is an optional field some ML artifacts supply
+    raw_weak = matching.get("weak_skills", [])
+    weak = [
+        s.get("skill_id") if isinstance(s, dict) else str(s)
+        for s in raw_weak
+    ]
+
+    # Build contextual recommendations from actual gap data
+    top_missing_label = ", ".join(missing[:2]) if missing else "emerging technical competencies"
+    recommendations = [
+        f"Introduce hands-on modules for {top_missing_label}.",
+        "Align laboratory assessments directly with observed employer market demand.",
+    ]
+
     return {
         "course_id": course_id,
+        "course_name": matching.get("course_name"),
         "gap_score": gap_score,
         "curriculum_gap_score": gap_score,
-        "coverage_pct": cov,
-        "market_coverage_percentage": cov,
-        "missing_skills": missing[:5] if missing else ["SKILL_DOCKER", "SKILL_KUBERNETES", "SKILL_AWS"],
-        "weak_skills": weak[:3] if weak else ["SKILL_PYTHON"],
-        "recommendations": [
-            f"Introduce hands-on modules for {', '.join(missing[:2]) if missing else 'emerging technical competencies'}.",
-            "Align laboratory assessments directly with observed employer market demand."
-        ]
+        "coverage_pct": cov_pct,
+        "market_coverage_percentage": cov_pct,
+        "taught_skills_count": matching.get("taught_skills_count", 0),
+        "covered_demand_skills_count": matching.get("covered_demand_skills_count", 0),
+        "missing_demand_skills_count": len(missing),
+        "missing_skills": missing,
+        "weak_skills": weak,
+        "covered_skills": matching.get("covered_skills", []),
+        "recommendations": recommendations,
     }
 
 @router.get(

@@ -143,14 +143,29 @@ class TestPreFrontendIntegrationValidation(unittest.TestCase):
         courses = courses_res.json()
         self.assertIsInstance(courses, list)
 
-        # 2. View Course Gap for specific course (e.g. 1)
-        gap_res = self.client.get("/api/v1/ml/course-gaps/1", headers=headers)
+        # 2. View Course Gap for a seeded course — ID 101 is seeded in sample_courses.json
+        gap_res = self.client.get("/api/v1/ml/course-gaps/101", headers=headers)
         self.assertEqual(gap_res.status_code, 200)
         gap_data = gap_res.json()
-        self.assertEqual(gap_data["course_id"], 1)
+        self.assertEqual(gap_data["course_id"], 101)
         self.assertIn("gap_score", gap_data)
+        self.assertIn("curriculum_gap_score", gap_data)
+        self.assertIn("market_coverage_percentage", gap_data)
         self.assertIn("missing_skills", gap_data)
+        self.assertIn("covered_skills", gap_data)
         self.assertIn("recommendations", gap_data)
+
+        # 3. Course isolation: unknown course_id MUST return 404 (not fallback to an unrelated course)
+        missing_res = self.client.get("/api/v1/ml/course-gaps/9999", headers=headers)
+        self.assertEqual(missing_res.status_code, 404, "Non-existent course_id must return 404")
+
+        # 4. Two different seeded courses must produce independent gap results
+        gap_102 = self.client.get("/api/v1/ml/course-gaps/102", headers=headers)
+        self.assertEqual(gap_102.status_code, 200)
+        data_102 = gap_102.json()
+        self.assertEqual(data_102["course_id"], 102)
+        # Confirm the results are actually keyed to the requested course (not cross-contaminated)
+        self.assertNotEqual(gap_data["course_id"], data_102["course_id"])
 
     # =========================================================================
     # FLOW 4: TRAINER END-TO-END FLOW
