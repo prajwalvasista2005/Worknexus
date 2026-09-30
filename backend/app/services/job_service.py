@@ -61,23 +61,64 @@ class JobService:
 
             # 3. Persist extracted skills mapped to canonical taxonomy
             from .skill_service import SkillService
-            extracted_items: List[SkillExtractionItem] = []
-            for s in ml_result.extracted_skills:
-                sk_code = s["skill_id"]
-                conf = float(s["confidence_score"])
 
-                sk_obj = None
-                if isinstance(sk_code, int) or (isinstance(sk_code, str) and sk_code.isdigit()):
-                    sk_obj = SkillService.get_skill_by_id(db, int(sk_code))
-                resolved_id = sk_obj.id if sk_obj else (int(sk_code) if str(sk_code).isdigit() else sk_code)
+            skills_to_process = []
+            seen_raw_keys = set()
+
+            for s in ml_result.extracted_skills:
+                sk_code = s.get("skill_id") if isinstance(s, dict) else getattr(s, "skill_id", None)
+                conf = float(s.get("confidence_score", 1.0)) if isinstance(s, dict) else float(getattr(s, "confidence_score", 1.0))
+                if sk_code is not None:
+                    k = str(sk_code).strip().lower()
+                    if k and k not in seen_raw_keys:
+                        seen_raw_keys.add(k)
+                        skills_to_process.append((sk_code, conf))
+
+            # Also incorporate any skills explicitly provided in job_in
+            raw_input_skills = getattr(job_in, "skills", None) or getattr(job_in, "required_skills", None)
+            if raw_input_skills:
+                items = []
+                if isinstance(raw_input_skills, str):
+                    items = [x.strip() for x in raw_input_skills.split(",") if x.strip()]
+                elif isinstance(raw_input_skills, list):
+                    for elem in raw_input_skills:
+                        if isinstance(elem, str):
+                            items.extend([x.strip() for x in elem.split(",") if x.strip()])
+                        elif isinstance(elem, dict) and "skill_id" in elem:
+                            sk = elem["skill_id"]
+                            c = float(elem.get("confidence_score", 1.0))
+                            k = str(sk).strip().lower()
+                            if k and k not in seen_raw_keys:
+                                seen_raw_keys.add(k)
+                                skills_to_process.append((sk, c))
+                        elif isinstance(elem, int):
+                            items.append(elem)
+                for item in items:
+                    k = str(item).strip().lower()
+                    if k and k not in seen_raw_keys:
+                        seen_raw_keys.add(k)
+                        skills_to_process.append((item, 1.0))
+
+            extracted_items: List[SkillExtractionItem] = []
+            seen_db_skill_ids = set()
+
+            for sk_raw, conf in skills_to_process:
+                if not sk_raw:
+                    continue
+                # Resolve or upsert into skills table to get integer primary key
+                resolved_id = SkillService.get_or_create_skill_id(db, sk_raw)
                 if resolved_id is not None:
-                    job_skill = JobSkill(
-                        job_id=job.id,
-                        skill_id=resolved_id,
-                        confidence_score=conf
-                    )
-                    db.add(job_skill)
-                extracted_items.append(SkillExtractionItem(skill_id=sk_code, confidence_score=conf))
+                    resolved_id = int(resolved_id)
+                    if resolved_id not in seen_db_skill_ids:
+                        seen_db_skill_ids.add(resolved_id)
+                        job_skill = JobSkill(
+                            job_id=job.id,
+                            skill_id=resolved_id,
+                            confidence_score=conf
+                        )
+                        db.add(job_skill)
+
+                extracted_items.append(SkillExtractionItem(skill_id=sk_raw, confidence_score=conf))
 
             db.commit()
             try:

@@ -20,11 +20,14 @@ class JobSkillService:
             else:
                 from app.services.skill_service import SkillService
                 sk = SkillService.get_skill_by_code(db, resolved_skill_id) or SkillService.get_skill_by_name(db, resolved_skill_id)
+                if not sk:
+                    sk = SkillService.get_or_create_skill(db, resolved_skill_id)
                 if sk:
                     resolved_skill_id = sk.id
+
         job_skill = JobSkill(
             job_id=job_skill_data.job_id,
-            skill_id=resolved_skill_id,
+            skill_id=int(resolved_skill_id),
         )
         db.add(job_skill)
         db.commit()
@@ -45,26 +48,34 @@ class JobSkillService:
         job_id: int,
         skill_id: int | str,
     ) -> JobSkill | None:
-        stmt = select(JobSkill).where(
-            JobSkill.job_id == job_id,
-            JobSkill.skill_id == skill_id,
-        )
-        try:
-            res = db.execute(stmt).scalar_one_or_none()
-        except Exception:
-            res = None
+        from app.models.skills import Skill
 
-        if not res and isinstance(skill_id, str):
-            from app.models.skills import Skill
+        # If skill_id is integer or digit string:
+        if isinstance(skill_id, int) or (isinstance(skill_id, str) and skill_id.isdigit()):
+            int_id = int(skill_id)
+            stmt = select(JobSkill).where(
+                JobSkill.job_id == job_id,
+                JobSkill.skill_id == int_id,
+            )
+            try:
+                res = db.execute(stmt).scalar_one_or_none()
+                if res:
+                    return res
+            except Exception:
+                pass
+
+        if isinstance(skill_id, str):
             try:
                 stmt2 = select(JobSkill).join(Skill, JobSkill.skill_id == Skill.id).where(
                     JobSkill.job_id == job_id,
-                    Skill.skill_id == skill_id,
+                    (Skill.skill_id == skill_id) | (Skill.name.ilike(skill_id)),
                 )
                 res = db.execute(stmt2).scalar_one_or_none()
+                if res:
+                    return res
             except Exception:
                 pass
-        return res
+        return None
 
     @staticmethod
     def get_all_job_skills(
@@ -82,7 +93,9 @@ class JobSkillService:
                 stmt = stmt.where(JobSkill.skill_id == int(skill_id))
             else:
                 from app.models.skills import Skill
-                stmt = stmt.join(Skill, JobSkill.skill_id == Skill.id).where(Skill.skill_id == skill_id)
+                stmt = stmt.join(Skill, JobSkill.skill_id == Skill.id).where(
+                    (Skill.skill_id == skill_id) | (Skill.name.ilike(skill_id))
+                )
         stmt = stmt.order_by(JobSkill.id.desc()).offset(skip).limit(limit)
         return list(db.execute(stmt).scalars().all())
 

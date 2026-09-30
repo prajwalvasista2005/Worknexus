@@ -37,11 +37,19 @@ class TestJobIntegration(unittest.TestCase):
         self.assertIsNotNone(db_job)
         self.assertEqual(db_job.title, "Data Platform Engineer")
 
-        # 3. Verify JobSkill rows
+        # 3. Verify JobSkill rows reference integer primary keys of skills table
         db_skills = self.db.query(JobSkill).filter(lambda s: s.job_id == res.id).all()
         self.assertEqual(len(db_skills), len(extracted_ids))
         db_skill_ids = {s.skill_id for s in db_skills}
-        self.assertEqual(db_skill_ids, extracted_ids)
+        self.assertTrue(all(isinstance(sid, int) for sid in db_skill_ids))
+
+        # Verify that integer skill_ids map back to the extracted canonical skill codes
+        resolved_skill_codes = {
+            sk.skill_id
+            for sk in self.db.skills.values()
+            if sk.id in db_skill_ids
+        }
+        self.assertEqual(resolved_skill_codes, extracted_ids)
 
         for s in db_skills:
             self.assertGreaterEqual(s.confidence_score, 0.9)

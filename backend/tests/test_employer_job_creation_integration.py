@@ -5,7 +5,7 @@ from sqlalchemy import select
 
 from app.main import app
 from app.db.session import SessionLocal
-from app.models.entities import User, Employer, JobPosting
+from app.models.entities import User, Employer, JobPosting, JobSkill, Skill
 from app.schemas.schemas import JobCreateSchema
 from app.services.job_service import JobService
 from app.services.employer_service import EmployerService
@@ -250,3 +250,85 @@ def test_create_job_service_direct_rejects_invalid_employer_id():
 
         assert exc_info.value.status_code in [400, 404]
         assert "does not exist in employers table" in exc_info.value.detail or "Employer" in exc_info.value.detail
+
+
+def test_job_submission_resolves_string_skill_codes_to_integer_foreign_keys():
+    """
+    Verify that when job demand data is submitted from employer workspace:
+    1. String skill codes (e.g. 'SK_PYTHON') or names (e.g. 'python') are queried or upserted into skills table.
+    2. Resolved integer primary keys (id) are stored in job_skills.skill_id foreign key column.
+    3. No InvalidTextRepresentation errors occur and foreign key integrity is preserved.
+    """
+    unique_id = uuid4().hex[:8]
+    email = f"skill_employer_{unique_id}@worknexus.io"
+    company_name = f"Skill Testing Corp {unique_id}"
+
+    # 1. Provision employer user and Employer profile row
+    with SessionLocal() as db:
+        from app.auth.security import hash_password
+        user = User(
+            email=email,
+            hashed_password=hash_password(PASSWORD),
+            full_name=company_name,
+            role="employer",
+            is_active=True
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+        employer = Employer(
+            user_id=user.id,
+            company_name=company_name,
+            trust_weight=1.0
+        )
+        db.add(employer)
+        db.commit()
+        db.refresh(employer)
+        employer_id = employer.id
+
+    # 2. Login employer account
+    login_res = client.post("/api/v1/auth/login", json={"email": email, "password": PASSWORD})
+    assert login_res.status_code == 200, f"Login failed: {login_res.text}"
+    token = login_res.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # 3. Submit job requisition with string skill codes, names, and custom skills
+    custom_skill_name = f"Quantum Computing {unique_id}"
+    job_payload = {
+        "title": "Quantum AI Lead",
+        "company": company_name,
+        "location": "Bengaluru",
+        "description": "Looking for specialist with skills in Python, Docker, and Kubernetes microservices.",
+        "required_skills": ["SK_PYTHON", "python", custom_skill_name]
+    }
+    create_res = client.post("/api/v1/jobs/", headers=headers, json=job_payload)
+    assert create_res.status_code == 201, f"Job submission failed: {create_res.text}"
+    job_data = create_res.json()
+    created_job_id = job_data["id"]
+
+    # 4. Verify in DB that job_skills records have integer skill_id foreign keys referencing skills(id)
+    with SessionLocal() as db:
+        job_skills_stmt = select(JobSkill).where(JobSkill.job_id == created_job_id)
+        job_skills = list(db.execute(job_skills_stmt).scalars().all())
+
+        assert len(job_skills) > 0, "Expected job_skills rows to be inserted"
+
+        for js in job_skills:
+            # Must strictly be an integer primary key, never a string code
+            assert isinstance(js.skill_id, int), f"job_skills.skill_id was not an integer: {js.skill_id} ({type(js.skill_id)})"
+
+            # Must exist in the skills table by primary key
+            skill_stmt = select(Skill).where(Skill.id == js.skill_id)
+            linked_skill = db.execute(skill_stmt).scalar_one_or_none()
+            assert linked_skill is not None, f"Referenced skill id {js.skill_id} not found in skills table"
+            assert isinstance(linked_skill.id, int)
+            assert linked_skill.skill_id is not None
+            assert len(linked_skill.skill_id) > 0
+
+        # Verify the custom skill was upserted into skills table
+        custom_skill_stmt = select(Skill).where(Skill.name == custom_skill_name)
+        custom_skill = db.execute(custom_skill_stmt).scalar_one_or_none()
+        assert custom_skill is not None, f"Custom skill '{custom_skill_name}' was not upserted into skills table"
+        assert isinstance(custom_skill.id, int)
+        assert any(js.skill_id == custom_skill.id for js in job_skills)

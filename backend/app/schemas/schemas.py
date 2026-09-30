@@ -29,6 +29,8 @@ class JobCreateSchema(BaseModel):
     location: str = "Remote"
     description: str = ""
     employer_id: Optional[int] = None
+    required_skills: Optional[Any] = None
+    skills: Optional[Any] = None
 
     @model_validator(mode="before")
     @classmethod
