@@ -13,36 +13,16 @@ class UserSkillService:
     def _hydrate_user_skill(us: UserSkill, db: Any) -> UserSkill:
         if not us:
             return us
-        # Resolve skill relation if not already populated
+        # Resolve skill relation if not already populated.
+        # The UserSkill model exposes canonical_id, skill_name, name, and category
+        # as read-only @property methods that derive their values from us.skill, so
+        # we only need to ensure the relationship is set — direct assignment is not
+        # required (and would raise AttributeError on a property without a setter).
         sk = getattr(us, "skill", None)
         if not sk and us.skill_id is not None:
             sk = SkillService.get_skill_by_id(db, us.skill_id)
             if sk:
                 us.skill = sk
-
-        if sk:
-            us.canonical_id = getattr(sk, "skill_id", None)
-            us.skill_name = getattr(sk, "name", None)
-            us.name = getattr(sk, "name", None)
-            us.category = getattr(sk, "category", "General")
-        else:
-            tax = SkillService._lookup_taxonomy(str(us.skill_id))
-            if tax:
-                us.canonical_id = tax[0]
-                us.skill_name = tax[1]
-                us.name = tax[1]
-                us.category = tax[2]
-            elif isinstance(us.skill_id, str) and us.skill_id.startswith("SK_"):
-                us.canonical_id = us.skill_id
-                clean = us.skill_id[3:].replace("_", " ").title()
-                us.skill_name = clean
-                us.name = clean
-                us.category = "Technical"
-            else:
-                us.canonical_id = str(us.skill_id)
-                us.skill_name = f"Skill #{us.skill_id}"
-                us.name = f"Skill #{us.skill_id}"
-                us.category = "General"
         return us
 
     @staticmethod

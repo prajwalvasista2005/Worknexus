@@ -26,7 +26,7 @@ def create_or_update_student_profile(
     db: Session = Depends(get_db),
     _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = next(db) if hasattr(db, "__next__") else db
+    # FastAPI's Depends(get_db) injects the Session directly — db IS the session.
     user_role = getattr(_user, "role", "").lower() if _user else ""
     if user_role != "admin" and getattr(_user, "user_id", None) != profile_in.user_id:
         raise HTTPException(
@@ -34,18 +34,18 @@ def create_or_update_student_profile(
             detail="You are not authorized to modify another user's student profile."
         )
     try:
-        return StudentService.create_or_get_profile(actual_db, profile_in)
+        return StudentService.create_or_get_profile(db, profile_in)
     except HTTPException:
-        if hasattr(actual_db, "rollback"):
-            actual_db.rollback()
+        if hasattr(db, "rollback"):
+            db.rollback()
         raise
     except ValueError as e:
-        if hasattr(actual_db, "rollback"):
-            actual_db.rollback()
+        if hasattr(db, "rollback"):
+            db.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     except Exception as e:
-        if hasattr(actual_db, "rollback"):
-            actual_db.rollback()
+        if hasattr(db, "rollback"):
+            db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Database transaction error: {str(e)}"
@@ -63,7 +63,6 @@ def get_student_profile(
     db: Session = Depends(get_db),
     _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = next(db) if hasattr(db, "__next__") else db
     user_role = getattr(_user, "role", "").lower() if _user else ""
     if user_role == "student" and getattr(_user, "user_id", None) != user_id:
         raise HTTPException(
@@ -72,17 +71,17 @@ def get_student_profile(
         )
 
     try:
-        profile = StudentService.get_profile_by_user_id(actual_db, user_id)
+        profile = StudentService.get_profile_by_user_id(db, user_id)
         if not profile:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"StudentProfile for User {user_id} not found.")
         return profile
     except HTTPException:
-        if hasattr(actual_db, "rollback"):
-            actual_db.rollback()
+        if hasattr(db, "rollback"):
+            db.rollback()
         raise
     except Exception as e:
-        if hasattr(actual_db, "rollback"):
-            actual_db.rollback()
+        if hasattr(db, "rollback"):
+            db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Database transaction error: {str(e)}"
@@ -101,7 +100,6 @@ def add_student_skill_evidence(
     db: Session = Depends(get_db),
     _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = next(db) if hasattr(db, "__next__") else db
     user_role = getattr(_user, "role", "").lower() if _user else ""
     if user_role != "admin" and getattr(_user, "user_id", None) != user_id:
         raise HTTPException(
@@ -110,18 +108,18 @@ def add_student_skill_evidence(
         )
 
     try:
-        return StudentService.add_skill_evidence(actual_db, user_id, evidence_in)
+        return StudentService.add_skill_evidence(db, user_id, evidence_in)
     except HTTPException:
-        if hasattr(actual_db, "rollback"):
-            actual_db.rollback()
+        if hasattr(db, "rollback"):
+            db.rollback()
         raise
     except ValueError as e:
-        if hasattr(actual_db, "rollback"):
-            actual_db.rollback()
+        if hasattr(db, "rollback"):
+            db.rollback()
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
     except Exception as e:
-        if hasattr(actual_db, "rollback"):
-            actual_db.rollback()
+        if hasattr(db, "rollback"):
+            db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Database transaction error: {str(e)}"
@@ -139,19 +137,18 @@ def list_student_skill_evidence(
     db: Session = Depends(get_db),
     _user: CurrentUser = Depends(get_current_user)
 ):
-    actual_db = next(db) if hasattr(db, "__next__") else db
     if _user and getattr(_user, "role", "").lower() == "student" and _user.user_id != user_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Students are not authorized to view other students' evidence.")
 
     try:
-        return StudentService.get_student_evidence(actual_db, user_id)
+        return StudentService.get_student_evidence(db, user_id)
     except HTTPException:
-        if hasattr(actual_db, "rollback"):
-            actual_db.rollback()
+        if hasattr(db, "rollback"):
+            db.rollback()
         raise
     except Exception as e:
-        if hasattr(actual_db, "rollback"):
-            actual_db.rollback()
+        if hasattr(db, "rollback"):
+            db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Database transaction error: {str(e)}"

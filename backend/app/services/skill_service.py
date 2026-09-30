@@ -238,7 +238,15 @@ class SkillService:
 
         try:
             db.add(new_skill)
-            if hasattr(db, "flush"):
+            # Commit (not just flush) so PostgreSQL assigns the auto-increment integer PK
+            # immediately.  A bare flush() stages the INSERT but the generated id is not
+            # guaranteed to be visible until a real COMMIT, leaving new_skill.id as None
+            # and causing a type-mismatch / NOT-NULL IntegrityError when that None value is
+            # used as a FK in student_skill_evidence.skill_id or user_skills.skill_id.
+            if hasattr(db, "commit"):
+                db.commit()
+                db.refresh(new_skill)
+            elif hasattr(db, "flush"):
                 db.flush()
             if getattr(new_skill, "id", None) is None:
                 new_skill.id = 1

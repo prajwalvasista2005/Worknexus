@@ -38,17 +38,32 @@ SessionLocal = sessionmaker(
 
 def get_db() -> Generator[Session, None, None]:
     """
-    Standard FastAPI dependency yielding a managed SQLAlchemy database session.
-    Ensures transactions are explicitly rolled back on error before closing.
+    FastAPI dependency yielding a managed SQLAlchemy database session.
+
+    Guarantees that:
+    - Any unhandled exception causes an immediate rollback before the
+      connection is returned to the pool (prevents InFailedSqlTransaction
+      contamination across requests sharing the same pooled connection).
+    - The session is always closed in the finally block so the underlying
+      connection is returned to the pool in a clean state.
     """
     db = SessionLocal()
     try:
         yield db
     except Exception:
-        db.rollback()
+        # Rollback on ANY exception — including those already caught and
+        # re-raised by route handlers — to ensure the connection is clean
+        # before it is returned to the pool.
+        try:
+            db.rollback()
+        except Exception:
+            pass  # If rollback itself fails, still proceed to close
         raise
     finally:
-        db.close()
+        try:
+            db.close()
+        except Exception:
+            pass
 
 
 # =============================================================================

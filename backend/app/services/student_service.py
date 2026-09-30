@@ -386,7 +386,21 @@ class StudentService:
         try:
             from app.services.skill_service import SkillService
             db_skill = SkillService.get_or_create_skill(db, raw_inp)
-        except Exception:
+        except Exception as _skill_err:
+            # get_or_create_skill may have issued a db.commit() that raised (e.g. a
+            # race-condition unique-constraint violation).  Swallowing that exception
+            # without a rollback leaves the session in InFailedSqlTransaction — every
+            # subsequent db.query() in the fallback chain below would then also fail.
+            # Rolling back here resets the connection to a clean state.
+            import logging as _log
+            _log.getLogger(__name__).debug(
+                "get_or_create_skill failed for '%s' (%s); falling back to direct DB queries.",
+                raw_inp, _skill_err,
+            )
+            try:
+                db.rollback()
+            except Exception:
+                pass
             db_skill = None
 
         if not db_skill:
@@ -406,6 +420,28 @@ class StudentService:
         if not db_skill:
             raise ValueError(f"Skill '{evidence_in.skill_id}' not found in canonical taxonomy.")
 
+        # Ensure the skill's integer PK is committed and resolved before using it as a FK.
+        # get_or_create_skill only flushes when creating a new row, so db_skill.id may be None
+        # until PostgreSQL assigns the auto-increment value on a real COMMIT.
+        # Inserting None into the NOT NULL INTEGER column student_skill_evidence.skill_id
+        # causes an IntegrityError which cascades into InFailedSqlTransaction for all
+        # subsequent statements on the same connection.
+        if getattr(db_skill, "id", None) is None:
+            try:
+                db.commit()
+                db.refresh(db_skill)
+            except Exception:
+                # If commit fails, rollback and surface the error clearly
+                if hasattr(db, "rollback"):
+                    db.rollback()
+                raise ValueError(
+                    f"Failed to persist skill '{raw_inp}' before recording evidence. "
+                    "Cannot insert a NULL skill_id foreign key."
+                )
+
+        # Final type-safety check: skill_id must be a resolved integer
+        skill_pk: int = int(db_skill.id)
+
         meta_dict = dict(evidence_in.metadata or {})
         meta_dict["status"] = "verified"
         meta_dict["is_verified"] = True
@@ -416,7 +452,7 @@ class StudentService:
         try:
             evidence = DBStudentSkillEvidence(
                 student_profile_id=profile.id,
-                skill_id=db_skill.id,
+                skill_id=skill_pk,          # validated integer FK; never None
                 evidence_type=evidence_in.evidence_type,
                 strength=evidence_in.strength,
                 status="verified",
@@ -450,13 +486,13 @@ class StudentService:
 
             existing_user_skill = db.query(DBUserSkill).filter(
                 DBUserSkill.user_id == user_id,
-                DBUserSkill.skill_id == db_skill.id
+                DBUserSkill.skill_id == skill_pk      # validated integer FK; never None
             ).first()
 
             if not existing_user_skill:
                 new_user_skill = DBUserSkill(
                     user_id=user_id,
-                    skill_id=db_skill.id,
+                    skill_id=skill_pk,                # validated integer FK; never None
                     proficiency_level=prof_level,
                     source="Verified Evidence"
                 )
@@ -483,23 +519,66 @@ class StudentService:
         try:
             gap_data = StudentService.recalculate_student_gap(db, user_id, profile.target_role_id)
         except Exception as e:
+            # Non-fatal: gap recalculation failure must not poison the session or
+            # block the response.  Rollback so Phase 3 starts with a clean session.
             logger.warning(f"Secondary gap recalculation failed (non-fatal): {e}")
+            try:
+                db.rollback()
+            except Exception:
+                pass
             gap_data = {}
 
         # -------------------------------------------------------------
         # Phase 3: Hydrate fresh evidence item with expire_all & fresh query
+        # The joinedload SELECT (LEFT OUTER JOIN skills AS skills_1 ON
+        # student_skill_evidence.skill_id = skills_1.id) is the exact query
+        # that fires after a commit and is most sensitive to session contamination.
+        # We guarantee a clean session state before issuing it, and fall back
+        # gracefully to the already-resolved in-memory db_skill data if it fails.
         # -------------------------------------------------------------
-        if hasattr(db, "expire_all"):
-            db.expire_all()
+        fresh_evidence = None
+        try:
+            # Ensure any stale ORM identity-map state is expired so the next
+            # query fetches a fresh snapshot from the database.
+            if hasattr(db, "expire_all"):
+                db.expire_all()
 
-        from sqlalchemy.orm import joinedload
-        fresh_evidence = db.query(DBStudentSkillEvidence).options(
-            joinedload(DBStudentSkillEvidence.skill)
-        ).filter(DBStudentSkillEvidence.id == evidence_id).first() or evidence
+            from sqlalchemy.orm import joinedload
+            fresh_evidence = db.query(DBStudentSkillEvidence).options(
+                joinedload(DBStudentSkillEvidence.skill)
+            ).filter(DBStudentSkillEvidence.id == evidence_id).first()
+        except Exception as e:
+            # If the session is still contaminated (InFailedSqlTransaction),
+            # attempt one explicit rollback and retry the bare fetch without
+            # the relationship join before giving up and falling back to the
+            # original in-memory evidence object.
+            logger.warning(
+                "Phase 3 joinedload query failed (session may have been contaminated "
+                "by a secondary operation): %s — attempting rollback + plain retry.", e
+            )
+            try:
+                db.rollback()
+            except Exception:
+                pass
+            try:
+                fresh_evidence = db.query(DBStudentSkillEvidence).filter(
+                    DBStudentSkillEvidence.id == evidence_id
+                ).first()
+            except Exception as retry_err:
+                logger.warning(
+                    "Phase 3 plain retry also failed (%s); using in-memory evidence object.", retry_err
+                )
+                fresh_evidence = None
 
-        canonical_id = getattr(getattr(fresh_evidence, "skill", None), "skill_id", db_skill.skill_id)
-        skill_name = getattr(getattr(fresh_evidence, "skill", None), "name", db_skill.name)
-        category = getattr(getattr(fresh_evidence, "skill", None), "category", db_skill.category or "General")
+        # Fall back to the just-committed in-memory object when DB re-fetch fails
+        if fresh_evidence is None:
+            fresh_evidence = evidence
+
+        # Resolve canonical display fields — prefer the freshly-loaded relationship,
+        # fall back to the db_skill object captured before the insert.
+        canonical_id = getattr(getattr(fresh_evidence, "skill", None), "skill_id", None) or db_skill.skill_id
+        skill_name = getattr(getattr(fresh_evidence, "skill", None), "name", None) or db_skill.name
+        category = getattr(getattr(fresh_evidence, "skill", None), "category", None) or db_skill.category or "General"
 
         meta = getattr(fresh_evidence, "metadata_", getattr(fresh_evidence, "metadata", None)) or meta_dict
         if isinstance(meta, str):
