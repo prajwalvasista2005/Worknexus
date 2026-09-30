@@ -84,38 +84,43 @@ class StudentService:
             TargetRole as DBTargetRole
         )
 
-        user = db.query(DBUser).filter(DBUser.id == profile_in.user_id).first()
-        if not user:
-            raise ValueError(f"User with ID {profile_in.user_id} does not exist.")
+        try:
+            user = db.query(DBUser).filter(DBUser.id == profile_in.user_id).first()
+            if not user:
+                raise ValueError(f"User with ID {profile_in.user_id} does not exist.")
 
-        if profile_in.target_role_id:
-            role = db.query(DBTargetRole).filter(DBTargetRole.id == profile_in.target_role_id).first()
-            if not role:
-                raise ValueError(f"TargetRole '{profile_in.target_role_id}' does not exist.")
-
-        profile = db.query(DBStudentProfile).filter(DBStudentProfile.user_id == profile_in.user_id).first()
-        if not profile:
-            profile = DBStudentProfile(
-                user_id=profile_in.user_id,
-                target_role_id=profile_in.target_role_id or "ROLE_FULL_STACK_DEV"
-            )
-            db.add(profile)
-            db.commit()
-            db.refresh(profile)
-        else:
             if profile_in.target_role_id:
-                profile.target_role_id = profile_in.target_role_id
+                role = db.query(DBTargetRole).filter(DBTargetRole.id == profile_in.target_role_id).first()
+                if not role:
+                    raise ValueError(f"TargetRole '{profile_in.target_role_id}' does not exist.")
+
+            profile = db.query(DBStudentProfile).filter(DBStudentProfile.user_id == profile_in.user_id).first()
+            if not profile:
+                profile = DBStudentProfile(
+                    user_id=profile_in.user_id,
+                    target_role_id=profile_in.target_role_id or "ROLE_FULL_STACK_DEV"
+                )
+                db.add(profile)
                 db.commit()
                 db.refresh(profile)
+            else:
+                if profile_in.target_role_id:
+                    profile.target_role_id = profile_in.target_role_id
+                    db.commit()
+                    db.refresh(profile)
 
-        evidence_records = StudentService.get_student_evidence(db, profile.user_id)
-        return StudentProfileResponseSchema(
-            id=profile.id,
-            user_id=profile.user_id,
-            target_role_id=profile.target_role_id,
-            evidence_records=evidence_records,
-            created_at=profile.created_at
-        )
+            evidence_records = StudentService.get_student_evidence(db, profile.user_id)
+            return StudentProfileResponseSchema(
+                id=profile.id,
+                user_id=profile.user_id,
+                target_role_id=profile.target_role_id,
+                evidence_records=evidence_records,
+                created_at=profile.created_at
+            )
+        except Exception:
+            if hasattr(db, "rollback"):
+                db.rollback()
+            raise
 
     @staticmethod
     def get_profile_by_user_id(db: Any, user_id: int) -> Optional[StudentProfileResponseSchema]:
@@ -167,30 +172,35 @@ class StudentService:
         from app.models.users import User as DBUser
         from app.models.student_roles import StudentProfile as DBStudentProfile
 
-        profile = db.query(DBStudentProfile).filter(DBStudentProfile.user_id == user_id).first()
-        if not profile:
-            user = db.query(DBUser).filter(DBUser.id == user_id).first()
-            if user:
-                # Auto-create profile for registered user so student endpoints work immediately
-                profile = DBStudentProfile(
-                    user_id=user.id,
-                    target_role_id="ROLE_FULL_STACK_DEV"
-                )
-                db.add(profile)
-                db.commit()
-                db.refresh(profile)
+        try:
+            profile = db.query(DBStudentProfile).filter(DBStudentProfile.user_id == user_id).first()
+            if not profile:
+                user = db.query(DBUser).filter(DBUser.id == user_id).first()
+                if user:
+                    # Auto-create profile for registered user so student endpoints work immediately
+                    profile = DBStudentProfile(
+                        user_id=user.id,
+                        target_role_id="ROLE_FULL_STACK_DEV"
+                    )
+                    db.add(profile)
+                    db.commit()
+                    db.refresh(profile)
 
-        if not profile:
-            return None
+            if not profile:
+                return None
 
-        evidence_records = StudentService.get_student_evidence(db, user_id)
-        return StudentProfileResponseSchema(
-            id=profile.id,
-            user_id=profile.user_id,
-            target_role_id=profile.target_role_id,
-            evidence_records=evidence_records,
-            created_at=profile.created_at
-        )
+            evidence_records = StudentService.get_student_evidence(db, user_id)
+            return StudentProfileResponseSchema(
+                id=profile.id,
+                user_id=profile.user_id,
+                target_role_id=profile.target_role_id,
+                evidence_records=evidence_records,
+                created_at=profile.created_at
+            )
+        except Exception:
+            if hasattr(db, "rollback"):
+                db.rollback()
+            raise
 
     @staticmethod
     def add_skill_evidence(
@@ -355,116 +365,121 @@ class StudentService:
         )
         from app.models.user_skills import UserSkill as DBUserSkill
 
-        profile = db.query(DBStudentProfile).filter(DBStudentProfile.user_id == user_id).first()
-        if not profile:
-            StudentService.create_or_get_profile(db, StudentProfileCreateSchema(user_id=user_id))
-            profile = db.query(DBStudentProfile).filter(DBStudentProfile.user_id == user_id).first()
-
-        # Lookup skill in database (resolving canonical taxonomy, code, or name via SkillService)
-        raw_inp = str(evidence_in.skill_id).strip()
-        db_skill = None
         try:
-            from app.services.skill_service import SkillService
-            db_skill = SkillService.get_or_create_skill(db, raw_inp)
-        except Exception:
+            profile = db.query(DBStudentProfile).filter(DBStudentProfile.user_id == user_id).first()
+            if not profile:
+                StudentService.create_or_get_profile(db, StudentProfileCreateSchema(user_id=user_id))
+                profile = db.query(DBStudentProfile).filter(DBStudentProfile.user_id == user_id).first()
+
+            # Lookup skill in database (resolving canonical taxonomy, code, or name via SkillService)
+            raw_inp = str(evidence_in.skill_id).strip()
             db_skill = None
+            try:
+                from app.services.skill_service import SkillService
+                db_skill = SkillService.get_or_create_skill(db, raw_inp)
+            except Exception:
+                db_skill = None
 
-        if not db_skill:
-            alt_prefix = "SK_" + raw_inp[6:] if raw_inp.upper().startswith("SKILL_") else None
-            db_skill = db.query(DBSkill).filter(DBSkill.skill_id == raw_inp).first()
             if not db_skill:
-                db_skill = db.query(DBSkill).filter(func.lower(DBSkill.skill_id) == raw_inp.lower()).first()
-            if not db_skill and alt_prefix:
-                db_skill = db.query(DBSkill).filter(func.lower(DBSkill.skill_id) == alt_prefix.lower()).first()
-            if not db_skill and raw_inp.isdigit():
-                db_skill = db.query(DBSkill).filter(DBSkill.id == int(raw_inp)).first()
+                alt_prefix = "SK_" + raw_inp[6:] if raw_inp.upper().startswith("SKILL_") else None
+                db_skill = db.query(DBSkill).filter(DBSkill.skill_id == raw_inp).first()
+                if not db_skill:
+                    db_skill = db.query(DBSkill).filter(func.lower(DBSkill.skill_id) == raw_inp.lower()).first()
+                if not db_skill and alt_prefix:
+                    db_skill = db.query(DBSkill).filter(func.lower(DBSkill.skill_id) == alt_prefix.lower()).first()
+                if not db_skill and raw_inp.isdigit():
+                    db_skill = db.query(DBSkill).filter(DBSkill.id == int(raw_inp)).first()
+                if not db_skill:
+                    db_skill = db.query(DBSkill).filter(func.lower(DBSkill.name) == raw_inp.lower()).first()
+                if not db_skill:
+                    db_skill = db.query(DBSkill).filter(DBSkill.name.ilike(f"%{raw_inp}%")).first()
+
             if not db_skill:
-                db_skill = db.query(DBSkill).filter(func.lower(DBSkill.name) == raw_inp.lower()).first()
-            if not db_skill:
-                db_skill = db.query(DBSkill).filter(DBSkill.name.ilike(f"%{raw_inp}%")).first()
+                raise ValueError(f"Skill '{evidence_in.skill_id}' not found in canonical taxonomy.")
 
-        if not db_skill:
-            raise ValueError(f"Skill '{evidence_in.skill_id}' not found in canonical taxonomy.")
+            meta_dict = dict(evidence_in.metadata or {})
+            meta_dict["status"] = "verified"
+            meta_dict["is_verified"] = True
 
-        meta_dict = dict(evidence_in.metadata or {})
-        meta_dict["status"] = "verified"
-        meta_dict["is_verified"] = True
-
-        evidence = DBStudentSkillEvidence(
-            student_profile_id=profile.id,
-            skill_id=db_skill.id,
-            evidence_type=evidence_in.evidence_type,
-            strength=evidence_in.strength,
-            status="verified",
-            is_verified=True,
-            metadata_=meta_dict
-        )
-        db.add(evidence)
-        db.commit()
-        db.refresh(evidence)
-
-        # 1. Automatic Profile Skill Upsert
-        strength_val = str(evidence_in.strength or "advanced").strip().lower()
-        if "basic" in strength_val or "beginner" in strength_val or "low" in strength_val:
-            prof_level = "Basic"
-        elif "intermediate" in strength_val or "medium" in strength_val:
-            prof_level = "Intermediate"
-        else:
-            prof_level = "Advanced"
-
-        existing_user_skill = db.query(DBUserSkill).filter(
-            DBUserSkill.user_id == user_id,
-            DBUserSkill.skill_id == db_skill.id
-        ).first()
-
-        if not existing_user_skill:
-            new_user_skill = DBUserSkill(
-                user_id=user_id,
+            evidence = DBStudentSkillEvidence(
+                student_profile_id=profile.id,
                 skill_id=db_skill.id,
-                proficiency_level=prof_level,
-                source="Verified Evidence"
+                evidence_type=evidence_in.evidence_type,
+                strength=evidence_in.strength,
+                status="verified",
+                is_verified=True,
+                metadata_=meta_dict
             )
-            db.add(new_user_skill)
+            db.add(evidence)
             db.commit()
-            db.refresh(new_user_skill)
-        else:
-            level_order = {"basic": 1, "intermediate": 2, "advanced": 3}
-            cur_rank = level_order.get(str(existing_user_skill.proficiency_level).lower(), 1)
-            new_rank = level_order.get(prof_level.lower(), 3)
-            if new_rank > cur_rank:
-                existing_user_skill.proficiency_level = prof_level
-            existing_user_skill.source = "Verified Evidence"
-            db.commit()
+            db.refresh(evidence)
 
-        # 2. Cascading Gap Recalculation
-        gap_data = StudentService.recalculate_student_gap(db, user_id, profile.target_role_id)
+            # 1. Automatic Profile Skill Upsert
+            strength_val = str(evidence_in.strength or "advanced").strip().lower()
+            if "basic" in strength_val or "beginner" in strength_val or "low" in strength_val:
+                prof_level = "Basic"
+            elif "intermediate" in strength_val or "medium" in strength_val:
+                prof_level = "Intermediate"
+            else:
+                prof_level = "Advanced"
 
-        return StudentSkillEvidenceResponseSchema(
-            id=evidence.id,
-            student_profile_id=evidence.student_profile_id,
-            skill_id=db_skill.skill_id,
-            canonical_id=db_skill.skill_id,
-            skill_name=db_skill.name,
-            name=db_skill.name,
-            category=db_skill.category or "General",
-            status="verified",
-            is_verified=True,
-            verified=True,
-            evidence_type=evidence.evidence_type,
-            strength=evidence.strength,
-            metadata=evidence.metadata_ or meta_dict,
-            created_at=evidence.created_at,
-            match_score=gap_data.get("match_score"),
-            overall_match_score=gap_data.get("overall_match_score"),
-            gap_percentage=gap_data.get("gap_percentage"),
-            gap_score=gap_data.get("gap_score"),
-            acquired_skills=gap_data.get("acquired_skills", []),
-            skills_acquired=gap_data.get("skills_acquired", []),
-            missing_skills=gap_data.get("missing_skills", []),
-            skills_missing=gap_data.get("skills_missing", []),
-            recalculated_gap=gap_data,
-            gap_analysis=gap_data
-        )
+            existing_user_skill = db.query(DBUserSkill).filter(
+                DBUserSkill.user_id == user_id,
+                DBUserSkill.skill_id == db_skill.id
+            ).first()
+
+            if not existing_user_skill:
+                new_user_skill = DBUserSkill(
+                    user_id=user_id,
+                    skill_id=db_skill.id,
+                    proficiency_level=prof_level,
+                    source="Verified Evidence"
+                )
+                db.add(new_user_skill)
+                db.commit()
+                db.refresh(new_user_skill)
+            else:
+                level_order = {"basic": 1, "intermediate": 2, "advanced": 3}
+                cur_rank = level_order.get(str(existing_user_skill.proficiency_level).lower(), 1)
+                new_rank = level_order.get(prof_level.lower(), 3)
+                if new_rank > cur_rank:
+                    existing_user_skill.proficiency_level = prof_level
+                existing_user_skill.source = "Verified Evidence"
+                db.commit()
+
+            # 2. Cascading Gap Recalculation
+            gap_data = StudentService.recalculate_student_gap(db, user_id, profile.target_role_id)
+
+            return StudentSkillEvidenceResponseSchema(
+                id=evidence.id,
+                student_profile_id=evidence.student_profile_id,
+                skill_id=db_skill.skill_id,
+                canonical_id=db_skill.skill_id,
+                skill_name=db_skill.name,
+                name=db_skill.name,
+                category=db_skill.category or "General",
+                status="verified",
+                is_verified=True,
+                verified=True,
+                evidence_type=evidence.evidence_type,
+                strength=evidence.strength,
+                metadata=evidence.metadata_ or meta_dict,
+                created_at=evidence.created_at,
+                match_score=gap_data.get("match_score"),
+                overall_match_score=gap_data.get("overall_match_score"),
+                gap_percentage=gap_data.get("gap_percentage"),
+                gap_score=gap_data.get("gap_score"),
+                acquired_skills=gap_data.get("acquired_skills", []),
+                skills_acquired=gap_data.get("skills_acquired", []),
+                missing_skills=gap_data.get("missing_skills", []),
+                skills_missing=gap_data.get("skills_missing", []),
+                recalculated_gap=gap_data,
+                gap_analysis=gap_data
+            )
+        except Exception:
+            if hasattr(db, "rollback"):
+                db.rollback()
+            raise
 
     @staticmethod
     def recalculate_student_gap(
@@ -662,60 +677,65 @@ class StudentService:
         )
         from sqlalchemy.orm import joinedload
 
-        profile = db.query(DBStudentProfile).filter(DBStudentProfile.user_id == user_id).first()
-        if not profile:
-            return []
+        try:
+            profile = db.query(DBStudentProfile).filter(DBStudentProfile.user_id == user_id).first()
+            if not profile:
+                return []
 
-        evidence_list = db.query(DBStudentSkillEvidence).options(
-            joinedload(DBStudentSkillEvidence.skill)
-        ).filter(
-            DBStudentSkillEvidence.student_profile_id == profile.id
-        ).all()
+            evidence_list = db.query(DBStudentSkillEvidence).options(
+                joinedload(DBStudentSkillEvidence.skill)
+            ).filter(
+                DBStudentSkillEvidence.student_profile_id == profile.id
+            ).all()
 
-        results = []
-        for e in evidence_list:
-            cid = None
-            cname = None
-            ccat = "General"
-            if hasattr(e, "skill") and e.skill and hasattr(e.skill, "skill_id"):
-                cid = e.skill.skill_id
-                cname = e.skill.name
-                ccat = e.skill.category or "General"
-            if not cid:
-                raw_sk = getattr(e, "skill_id", "")
-                info = skill_info_lookup.get(raw_sk) or skill_info_lookup.get(str(raw_sk))
-                if info:
-                    cid, cname, ccat = info
-                else:
-                    tax = SkillService._lookup_taxonomy(str(raw_sk))
-                    if tax:
-                        cid, cname, ccat = tax
+            results = []
+            for e in evidence_list:
+                cid = None
+                cname = None
+                ccat = "General"
+                if hasattr(e, "skill") and e.skill and hasattr(e.skill, "skill_id"):
+                    cid = e.skill.skill_id
+                    cname = e.skill.name
+                    ccat = e.skill.category or "General"
+                if not cid:
+                    raw_sk = getattr(e, "skill_id", "")
+                    info = skill_info_lookup.get(raw_sk) or skill_info_lookup.get(str(raw_sk))
+                    if info:
+                        cid, cname, ccat = info
                     else:
-                        cid = str(raw_sk)
-                        cname = str(raw_sk)
+                        tax = SkillService._lookup_taxonomy(str(raw_sk))
+                        if tax:
+                            cid, cname, ccat = tax
+                        else:
+                            cid = str(raw_sk)
+                            cname = str(raw_sk)
 
-            meta = getattr(e, "metadata_", getattr(e, "metadata", {})) or {}
-            if isinstance(meta, str):
-                try:
-                    import json
-                    meta = json.loads(meta)
-                except Exception:
-                    meta = {}
-            results.append(StudentSkillEvidenceResponseSchema(
-                id=e.id,
-                student_profile_id=e.student_profile_id,
-                skill_id=cid,
-                canonical_id=cid,
-                skill_name=cname,
-                name=cname,
-                category=ccat,
-                status=getattr(e, "status", "verified") or "verified",
-                is_verified=getattr(e, "is_verified", True),
-                verified=getattr(e, "is_verified", True),
-                evidence_type=e.evidence_type,
-                strength=e.strength,
-                metadata=meta,
-                created_at=e.created_at
-            ))
+                meta = getattr(e, "metadata_", getattr(e, "metadata", {})) or {}
+                if isinstance(meta, str):
+                    try:
+                        import json
+                        meta = json.loads(meta)
+                    except Exception:
+                        meta = {}
+                results.append(StudentSkillEvidenceResponseSchema(
+                    id=e.id,
+                    student_profile_id=e.student_profile_id,
+                    skill_id=cid,
+                    canonical_id=cid,
+                    skill_name=cname,
+                    name=cname,
+                    category=ccat,
+                    status=getattr(e, "status", "verified") or "verified",
+                    is_verified=getattr(e, "is_verified", True),
+                    verified=getattr(e, "is_verified", True),
+                    evidence_type=e.evidence_type,
+                    strength=e.strength,
+                    metadata=meta,
+                    created_at=e.created_at
+                ))
 
-        return results
+            return results
+        except Exception:
+            if hasattr(db, "rollback"):
+                db.rollback()
+            raise

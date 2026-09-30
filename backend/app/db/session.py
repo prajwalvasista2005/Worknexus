@@ -39,10 +39,14 @@ SessionLocal = sessionmaker(
 def get_db() -> Generator[Session, None, None]:
     """
     Standard FastAPI dependency yielding a managed SQLAlchemy database session.
+    Ensures transactions are explicitly rolled back on error before closing.
     """
     db = SessionLocal()
     try:
         yield db
+    except Exception:
+        db.rollback()
+        raise
     finally:
         db.close()
 

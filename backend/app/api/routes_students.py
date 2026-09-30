@@ -35,8 +35,21 @@ def create_or_update_student_profile(
         )
     try:
         return StudentService.create_or_get_profile(actual_db, profile_in)
+    except HTTPException:
+        if hasattr(actual_db, "rollback"):
+            actual_db.rollback()
+        raise
     except ValueError as e:
+        if hasattr(actual_db, "rollback"):
+            actual_db.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        if hasattr(actual_db, "rollback"):
+            actual_db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database transaction error: {str(e)}"
+        )
 
 
 @router.get(
@@ -58,10 +71,22 @@ def get_student_profile(
             detail="Students are not authorized to view other students' profiles."
         )
 
-    profile = StudentService.get_profile_by_user_id(actual_db, user_id)
-    if not profile:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"StudentProfile for User {user_id} not found.")
-    return profile
+    try:
+        profile = StudentService.get_profile_by_user_id(actual_db, user_id)
+        if not profile:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"StudentProfile for User {user_id} not found.")
+        return profile
+    except HTTPException:
+        if hasattr(actual_db, "rollback"):
+            actual_db.rollback()
+        raise
+    except Exception as e:
+        if hasattr(actual_db, "rollback"):
+            actual_db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database transaction error: {str(e)}"
+        )
 
 
 @router.post(
@@ -86,8 +111,21 @@ def add_student_skill_evidence(
 
     try:
         return StudentService.add_skill_evidence(actual_db, user_id, evidence_in)
+    except HTTPException:
+        if hasattr(actual_db, "rollback"):
+            actual_db.rollback()
+        raise
     except ValueError as e:
+        if hasattr(actual_db, "rollback"):
+            actual_db.rollback()
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
+    except Exception as e:
+        if hasattr(actual_db, "rollback"):
+            actual_db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database transaction error: {str(e)}"
+        )
 
 
 @router.get(
@@ -105,4 +143,16 @@ def list_student_skill_evidence(
     if _user and getattr(_user, "role", "").lower() == "student" and _user.user_id != user_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Students are not authorized to view other students' evidence.")
 
-    return StudentService.get_student_evidence(actual_db, user_id)
+    try:
+        return StudentService.get_student_evidence(actual_db, user_id)
+    except HTTPException:
+        if hasattr(actual_db, "rollback"):
+            actual_db.rollback()
+        raise
+    except Exception as e:
+        if hasattr(actual_db, "rollback"):
+            actual_db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database transaction error: {str(e)}"
+        )

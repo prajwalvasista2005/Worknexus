@@ -473,8 +473,20 @@ def get_student_profile_endpoint(
 ):
     actual_db = _resolve_db(db)
     actual_adapter = _resolve_adapter(ml_adapter)
-    res = actual_adapter.get_student_skill_profile(student_id=student_id, db=actual_db, mode=mode)
-    return res.to_dict()
+    try:
+        res = actual_adapter.get_student_skill_profile(student_id=student_id, db=actual_db, mode=mode)
+        return res.to_dict()
+    except HTTPException:
+        if hasattr(actual_db, "rollback"):
+            actual_db.rollback()
+        raise
+    except Exception as e:
+        if hasattr(actual_db, "rollback"):
+            actual_db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database transaction error: {str(e)}"
+        )
 
 @router.get(
     "/students/{student_id}/gap/{role_id}",
@@ -491,79 +503,91 @@ def get_student_gap_endpoint(
 ):
     actual_db = _resolve_db(db)
     actual_adapter = _resolve_adapter(ml_adapter)
-    res = actual_adapter.get_student_skill_gap(student_id=student_id, role_id=role_id, db=actual_db, mode=mode)
-    raw = res.to_dict()
+    try:
+        res = actual_adapter.get_student_skill_gap(student_id=student_id, role_id=role_id, db=actual_db, mode=mode)
+        raw = res.to_dict()
 
-    summary = raw.get("summary", {})
-    skill_gaps = raw.get("skill_gaps", [])
-    acquired = []
-    missing_list = []
-    for sg in skill_gaps:
-        is_acquired = (
-            sg.get("student_status") == "present"
-            or sg.get("status") == "present"
-            or bool(sg.get("student_has_skill"))
+        summary = raw.get("summary", {})
+        skill_gaps = raw.get("skill_gaps", [])
+        acquired = []
+        missing_list = []
+        for sg in skill_gaps:
+            is_acquired = (
+                sg.get("student_status") == "present"
+                or sg.get("status") == "present"
+                or bool(sg.get("student_has_skill"))
+            )
+            sk_id = sg.get("skill_id", "")
+            sk_name = sg.get("skill_name") or sk_id
+            category = sg.get("category") or "General"
+
+            # Ensure clean human-readable name
+            if not sk_name or sk_name.startswith("SK_") or sk_name.isdigit():
+                from app.services.skill_service import SkillService
+                tax = SkillService._lookup_taxonomy(str(sk_id)) or SkillService._lookup_taxonomy(str(sk_name))
+                if tax:
+                    sk_name = tax[1]
+                    category = tax[2]
+                elif str(sk_name).startswith("SK_"):
+                    sk_name = str(sk_name)[3:].replace("_", " ").title()
+
+            if is_acquired:
+                acquired.append({
+                    "id": sk_id,
+                    "skill_id": sk_id,
+                    "canonical_id": sk_id,
+                    "name": sk_name,
+                    "skill_name": sk_name,
+                    "category": category,
+                    "score": 1.0,
+                    "strength": sg.get("strength") or sg.get("evidence_strength") or "intermediate",
+                    "level": sg.get("level") or "intermediate"
+                })
+            else:
+                missing_list.append({
+                    "id": sk_id,
+                    "skill_id": sk_id,
+                    "canonical_id": sk_id,
+                    "name": sk_name,
+                    "skill_name": sk_name,
+                    "category": category,
+                    "importance": 1.0,
+                    "priority": "High"
+                })
+
+        total = len(skill_gaps) if skill_gaps else (summary.get("total_role_skills", 1) or 1)
+        present = len(acquired)
+        missing = len(missing_list)
+        match_score = round(present / total, 2) if total > 0 else 0.0
+        gap_pct = round((missing / total) * 100.0, 1) if total > 0 else 0.0
+
+        summary["total_role_skills"] = total
+        summary["present_skills_count"] = present
+        summary["missing_skills_count"] = missing
+        raw["summary"] = summary
+
+        raw["role_id"] = role_id
+        raw["mode"] = mode
+        raw["overall_match_score"] = match_score
+        raw["match_score"] = match_score
+        raw["gap_percentage"] = gap_pct
+        raw["gap_score"] = gap_pct
+        raw["skills_acquired"] = acquired
+        raw["acquired_skills"] = acquired
+        raw["skills_missing"] = missing_list
+        raw["missing_skills"] = missing_list
+        return raw
+    except HTTPException:
+        if hasattr(actual_db, "rollback"):
+            actual_db.rollback()
+        raise
+    except Exception as e:
+        if hasattr(actual_db, "rollback"):
+            actual_db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database transaction error: {str(e)}"
         )
-        sk_id = sg.get("skill_id", "")
-        sk_name = sg.get("skill_name") or sk_id
-        category = sg.get("category") or "General"
-
-        # Ensure clean human-readable name
-        if not sk_name or sk_name.startswith("SK_") or sk_name.isdigit():
-            from app.services.skill_service import SkillService
-            tax = SkillService._lookup_taxonomy(str(sk_id)) or SkillService._lookup_taxonomy(str(sk_name))
-            if tax:
-                sk_name = tax[1]
-                category = tax[2]
-            elif str(sk_name).startswith("SK_"):
-                sk_name = str(sk_name)[3:].replace("_", " ").title()
-
-        if is_acquired:
-            acquired.append({
-                "id": sk_id,
-                "skill_id": sk_id,
-                "canonical_id": sk_id,
-                "name": sk_name,
-                "skill_name": sk_name,
-                "category": category,
-                "score": 1.0,
-                "strength": sg.get("strength") or sg.get("evidence_strength") or "intermediate",
-                "level": sg.get("level") or "intermediate"
-            })
-        else:
-            missing_list.append({
-                "id": sk_id,
-                "skill_id": sk_id,
-                "canonical_id": sk_id,
-                "name": sk_name,
-                "skill_name": sk_name,
-                "category": category,
-                "importance": 1.0,
-                "priority": "High"
-            })
-
-    total = len(skill_gaps) if skill_gaps else (summary.get("total_role_skills", 1) or 1)
-    present = len(acquired)
-    missing = len(missing_list)
-    match_score = round(present / total, 2) if total > 0 else 0.0
-    gap_pct = round((missing / total) * 100.0, 1) if total > 0 else 0.0
-
-    summary["total_role_skills"] = total
-    summary["present_skills_count"] = present
-    summary["missing_skills_count"] = missing
-    raw["summary"] = summary
-
-    raw["role_id"] = role_id
-    raw["mode"] = mode
-    raw["overall_match_score"] = match_score
-    raw["match_score"] = match_score
-    raw["gap_percentage"] = gap_pct
-    raw["gap_score"] = gap_pct
-    raw["skills_acquired"] = acquired
-    raw["acquired_skills"] = acquired
-    raw["skills_missing"] = missing_list
-    raw["missing_skills"] = missing_list
-    return raw
 
 @router.get(
     "/students/{student_id}/recommendations/{role_id}",
@@ -580,8 +604,20 @@ def get_personalized_recommendations_endpoint(
 ):
     actual_db = _resolve_db(db)
     actual_adapter = _resolve_adapter(ml_adapter)
-    res = actual_adapter.get_personalized_recommendations(student_id=student_id, role_id=role_id, db=actual_db, mode=mode)
-    return res.to_dict()
+    try:
+        res = actual_adapter.get_personalized_recommendations(student_id=student_id, role_id=role_id, db=actual_db, mode=mode)
+        return res.to_dict()
+    except HTTPException:
+        if hasattr(actual_db, "rollback"):
+            actual_db.rollback()
+        raise
+    except Exception as e:
+        if hasattr(actual_db, "rollback"):
+            actual_db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database transaction error: {str(e)}"
+        )
 
 @router.get(
     "/students/{student_id}/course-candidates/{role_id}",
