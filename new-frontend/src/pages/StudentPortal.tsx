@@ -46,6 +46,154 @@ import {
   FileText,
 } from 'lucide-react';
 
+/**
+ * Normalizes raw student gap API responses and evidence submission responses into
+ * a standardized StudentGap structure, providing full fallback for acquired_skills / skills_acquired
+ * and match_score / overall_match_score.
+ */
+export function normalizeStudentGap(raw: unknown): StudentGap | null {
+  if (!raw || typeof raw !== 'object') {
+    return null;
+  }
+
+  const obj = raw as Record<string, unknown>;
+
+  // Handle nested recalculated_gap or gap_analysis objects if present
+  const source =
+    (obj.recalculated_gap && typeof obj.recalculated_gap === 'object'
+      ? (obj.recalculated_gap as Record<string, unknown>)
+      : null) ||
+    (obj.gap_analysis && typeof obj.gap_analysis === 'object'
+      ? (obj.gap_analysis as Record<string, unknown>)
+      : null) ||
+    obj;
+
+  // 1. Acquired / Verified Competencies
+  let acquired: unknown[] = [];
+  if (Array.isArray(source.acquired_skills) && source.acquired_skills.length > 0) {
+    acquired = source.acquired_skills;
+  } else if (Array.isArray(source.skills_acquired) && source.skills_acquired.length > 0) {
+    acquired = source.skills_acquired;
+  } else if (Array.isArray(source.acquired) && source.acquired.length > 0) {
+    acquired = source.acquired;
+  } else if (Array.isArray(source.present_skills) && source.present_skills.length > 0) {
+    acquired = source.present_skills;
+  } else if (Array.isArray(obj.acquired_skills) && obj.acquired_skills.length > 0) {
+    acquired = obj.acquired_skills;
+  } else if (Array.isArray(obj.skills_acquired) && obj.skills_acquired.length > 0) {
+    acquired = obj.skills_acquired;
+  } else if (Array.isArray(source.skill_gaps) && source.skill_gaps.length > 0) {
+    acquired = (source.skill_gaps as Array<Record<string, unknown>>)
+      .filter((sg) => sg.student_status === 'present' || sg.status === 'present' || Boolean(sg.student_has_skill))
+      .map((sg) => ({
+        id: (sg.skill_id || sg.id) as string,
+        skill_id: (sg.skill_id || sg.id) as string,
+        name: (sg.skill_name || sg.name || sg.skill_id || 'Skill') as string,
+        skill_name: (sg.skill_name || sg.name || sg.skill_id || 'Skill') as string,
+        level: (sg.level || sg.strength || 'intermediate') as string,
+        strength: (sg.strength || 'intermediate') as string,
+        score: 1.0,
+      }));
+  }
+
+  // 2. Missing Skills / Gaps
+  let missing: unknown[] = [];
+  if (Array.isArray(source.missing_skills) && source.missing_skills.length > 0) {
+    missing = source.missing_skills;
+  } else if (Array.isArray(source.skills_missing) && source.skills_missing.length > 0) {
+    missing = source.skills_missing;
+  } else if (Array.isArray(source.missing) && source.missing.length > 0) {
+    missing = source.missing;
+  } else if (Array.isArray(obj.missing_skills) && obj.missing_skills.length > 0) {
+    missing = obj.missing_skills;
+  } else if (Array.isArray(obj.skills_missing) && obj.skills_missing.length > 0) {
+    missing = obj.skills_missing;
+  } else if (Array.isArray(source.skill_gaps) && source.skill_gaps.length > 0) {
+    missing = (source.skill_gaps as Array<Record<string, unknown>>)
+      .filter((sg) => sg.student_status === 'missing' || sg.status === 'missing' || (!sg.student_has_skill && sg.student_has_skill !== undefined))
+      .map((sg) => ({
+        id: (sg.skill_id || sg.id) as string,
+        skill_id: (sg.skill_id || sg.id) as string,
+        name: (sg.skill_name || sg.name || sg.skill_id || 'Skill') as string,
+        skill_name: (sg.skill_name || sg.name || sg.skill_id || 'Skill') as string,
+        priority: (sg.priority || 'High') as string,
+        importance: (sg.importance || 1.0) as number,
+      }));
+  }
+
+  // 3. Match Score / Overall Match Score
+  const summaryObj = (source.summary || obj.summary) as Record<string, unknown> | undefined;
+  const rawScore =
+    source.overall_match_score !== undefined && source.overall_match_score !== null
+      ? source.overall_match_score
+      : source.match_score !== undefined && source.match_score !== null
+      ? source.match_score
+      : obj.overall_match_score !== undefined && obj.overall_match_score !== null
+      ? obj.overall_match_score
+      : obj.match_score !== undefined && obj.match_score !== null
+      ? obj.match_score
+      : source.score !== undefined && source.score !== null
+      ? source.score
+      : summaryObj?.overall_match_score !== undefined && summaryObj.overall_match_score !== null
+      ? summaryObj.overall_match_score
+      : summaryObj?.match_score !== undefined && summaryObj.match_score !== null
+      ? summaryObj.match_score
+      : null;
+
+  let matchScore: number;
+  if (rawScore !== null) {
+    const parsed = typeof rawScore === 'string' ? parseFloat(rawScore) : Number(rawScore);
+    matchScore = Number.isFinite(parsed) ? parsed : 0;
+  } else {
+    const total = acquired.length + missing.length;
+    matchScore = total > 0 ? Number((acquired.length / total).toFixed(2)) : 0;
+  }
+
+  // 4. Gap Percentage / Gap Score
+  const rawGap =
+    source.gap_percentage !== undefined && source.gap_percentage !== null
+      ? source.gap_percentage
+      : source.gap_score !== undefined && source.gap_score !== null
+      ? source.gap_score
+      : obj.gap_percentage !== undefined && obj.gap_percentage !== null
+      ? obj.gap_percentage
+      : obj.gap_score !== undefined && obj.gap_score !== null
+      ? obj.gap_score
+      : source.gap_pct !== undefined && source.gap_pct !== null
+      ? source.gap_pct
+      : summaryObj?.gap_percentage !== undefined && summaryObj.gap_percentage !== null
+      ? summaryObj.gap_percentage
+      : null;
+
+  let gapPercentage: number;
+  if (rawGap !== null) {
+    const parsed = typeof rawGap === 'string' ? parseFloat(rawGap) : Number(rawGap);
+    gapPercentage = Number.isFinite(parsed) ? parsed : 0;
+  } else {
+    const normalizedMatch = matchScore <= 1 && matchScore > 0 ? matchScore * 100 : matchScore;
+    gapPercentage = Math.max(0, Math.min(100, Number((100 - normalizedMatch).toFixed(1))));
+  }
+
+  return {
+    ...obj,
+    ...source,
+    student_id: (source.student_id || obj.student_id) as string | number | undefined,
+    role_id: (source.role_id || obj.role_id) as string | number | undefined,
+    role_name: (source.role_name || obj.role_name) as string | undefined,
+    overall_match_score: matchScore,
+    match_score: matchScore,
+    score: matchScore,
+    gap_percentage: gapPercentage,
+    gap_score: gapPercentage,
+    gap_pct: gapPercentage,
+    acquired_skills: acquired as StudentGap['acquired_skills'],
+    skills_acquired: acquired as StudentGap['skills_acquired'],
+    missing_skills: missing as StudentGap['missing_skills'],
+    skills_missing: missing as StudentGap['skills_missing'],
+    skill_importance: (source.skill_importance || obj.skill_importance) as StudentGap['skill_importance'],
+  };
+}
+
 export const StudentPortal: React.FC = () => {
   const { user } = useAuth();
   const { showToast } = useToast();
@@ -165,7 +313,7 @@ export const StudentPortal: React.FC = () => {
       setGapError(null);
       try {
         const gap = await mlApi.getStudentGap(studentId, roleId);
-        setGapData(gap);
+        setGapData(normalizeStudentGap(gap));
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : 'ML gap analysis unavailable for this role.';
         setGapError(msg);
@@ -213,10 +361,16 @@ export const StudentPortal: React.FC = () => {
     );
     if (matchedCatalog?.skill_id) {
       canonicalSkillId = matchedCatalog.skill_id;
-    } else if (gapData?.missing_skills) {
-      const matchedGap = gapData.missing_skills.find((s: unknown) => {
+    } else if (gapData) {
+      const allGapSkills = [
+        ...(Array.isArray(gapData.missing_skills) ? gapData.missing_skills : []),
+        ...(Array.isArray((gapData as any).skills_missing) ? (gapData as any).skills_missing : []),
+        ...(Array.isArray(gapData.acquired_skills) ? gapData.acquired_skills : []),
+        ...(Array.isArray((gapData as any).skills_acquired) ? (gapData as any).skills_acquired : []),
+      ];
+      const matchedGap = allGapSkills.find((s: unknown) => {
         const sid = (typeof s === 'object' && s !== null ? (s as any).skill_id || (s as any).id : String(s))?.toLowerCase();
-        const sname = (typeof s === 'object' && s !== null ? (s as any).name : String(s))?.toLowerCase();
+        const sname = (typeof s === 'object' && s !== null ? (s as any).skill_name || (s as any).name : String(s))?.toLowerCase();
         return sid === canonicalSkillId.toLowerCase() || sname === canonicalSkillId.toLowerCase();
       });
       if (matchedGap) {
@@ -228,7 +382,7 @@ export const StudentPortal: React.FC = () => {
 
     setIsSubmittingEvidence(true);
     try {
-      await studentsApi.submitEvidence(studentId, {
+      const submissionResult = await studentsApi.submitEvidence(studentId, {
         skill_id: canonicalSkillId,
         evidence_type: evidenceType,
         strength: Number(evidenceStrength),
@@ -237,6 +391,22 @@ export const StudentPortal: React.FC = () => {
           timestamp: new Date().toISOString(),
         },
       });
+
+      // Immediate state mapping from evidence submission response:
+      // If the submission endpoint returned cascading gap recalculation fields,
+      // update gapData immediately so user sees instant match score & acquired competencies update
+      const subRecalc =
+        (submissionResult as any)?.recalculated_gap ||
+        (submissionResult as any)?.gap_analysis ||
+        ((submissionResult as any)?.acquired_skills ||
+        (submissionResult as any)?.skills_acquired ||
+        (submissionResult as any)?.match_score !== undefined ||
+        (submissionResult as any)?.overall_match_score !== undefined
+          ? submissionResult
+          : null);
+      if (subRecalc) {
+        setGapData((prev) => normalizeStudentGap({ ...(prev || {}), ...subRecalc }));
+      }
 
       showToast('Skill evidence successfully submitted!', 'success');
       setEvidenceRepo('');
@@ -258,7 +428,7 @@ export const StudentPortal: React.FC = () => {
             mlApi.getCourseCandidates(studentId, selectedRole.id),
             mlApi.getStudentRecommendations(studentId, selectedRole.id).catch(() => null),
           ]);
-          setGapData(updatedGap);
+          setGapData(normalizeStudentGap(updatedGap));
           setCourseCandidates(updatedCandidates || []);
           if (updatedRecs?.recommendations && Array.isArray(updatedRecs.recommendations)) {
             setStudentRecs(updatedRecs.recommendations.map((r: any) => typeof r === 'string' ? r : r.action || r.recommendation || JSON.stringify(r)));
@@ -361,7 +531,7 @@ export const StudentPortal: React.FC = () => {
       await fetchMySkills();
       if (selectedRole && studentId) {
         const updatedGap = await mlApi.getStudentGap(studentId, selectedRole.id);
-        setGapData(updatedGap);
+        setGapData(normalizeStudentGap(updatedGap));
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to add skill to profile.';
@@ -379,7 +549,7 @@ export const StudentPortal: React.FC = () => {
       await fetchMySkills();
       if (selectedRole && studentId) {
         const updatedGap = await mlApi.getStudentGap(studentId, selectedRole.id);
-        setGapData(updatedGap);
+        setGapData(normalizeStudentGap(updatedGap));
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to remove skill.';
@@ -431,36 +601,78 @@ export const StudentPortal: React.FC = () => {
   const getSkillKey = (skill: unknown): string => {
     if (typeof skill === 'string') return skill;
     if (typeof skill === 'object' && skill !== null) {
-      const s = skill as { skill_id?: string; id?: string | number; name?: string };
-      return s.skill_id || (typeof s.id === 'string' ? s.id : undefined) || s.name || 'Skill';
+      const s = skill as { skill_id?: string; id?: string | number; name?: string; skill_name?: string };
+      return s.skill_id || (typeof s.id === 'string' ? s.id : undefined) || s.skill_name || s.name || 'Skill';
     }
     return String(skill);
   };
 
-  // Helper to extract skill name from string or object
+  // Helper to extract human-readable skill name from string or object
   const getSkillLabel = (skill: unknown): string => {
     if (typeof skill === 'string') return skill;
     if (typeof skill === 'object' && skill !== null) {
-      const s = skill as { name?: string; id?: string };
-      return s.name || s.id || 'Skill';
+      const s = skill as { name?: string; skill_name?: string; skill_id?: string; id?: string | number };
+      return s.skill_name || s.name || (s.skill_id && !s.skill_id.startsWith('SK_') ? s.skill_id : undefined) || s.skill_id || (typeof s.id === 'string' ? s.id : undefined) || 'Skill';
     }
     return String(skill);
   };
 
-  // Normalize match score for circular indicator
-  const overallScore =
-    gapData?.overall_match_score !== undefined
+  // Resilient fallback extraction for acquired/verified skills list
+  const acquiredList = (
+    Array.isArray(gapData?.acquired_skills) && gapData.acquired_skills.length > 0
+      ? gapData.acquired_skills
+      : Array.isArray((gapData as any)?.skills_acquired) && (gapData as any).skills_acquired.length > 0
+      ? (gapData as any).skills_acquired
+      : Array.isArray((gapData as any)?.acquired) && (gapData as any).acquired.length > 0
+      ? (gapData as any).acquired
+      : Array.isArray((gapData as any)?.present_skills) && (gapData as any).present_skills.length > 0
+      ? (gapData as any).present_skills
+      : []
+  );
+
+  // Resilient fallback extraction for missing skills list
+  const missingList = (
+    Array.isArray(gapData?.missing_skills) && gapData.missing_skills.length > 0
+      ? gapData.missing_skills
+      : Array.isArray((gapData as any)?.skills_missing) && (gapData as any).skills_missing.length > 0
+      ? (gapData as any).skills_missing
+      : Array.isArray((gapData as any)?.missing) && (gapData as any).missing.length > 0
+      ? (gapData as any).missing
+      : []
+  );
+
+  // Normalize match score for circular indicator (supporting 0-1 and 0-100 values)
+  const rawScore =
+    gapData?.overall_match_score !== undefined && gapData.overall_match_score !== null
       ? gapData.overall_match_score
-      : gapData?.match_score !== undefined
+      : gapData?.match_score !== undefined && gapData.match_score !== null
       ? gapData.match_score
+      : (gapData as any)?.score !== undefined && (gapData as any)?.score !== null
+      ? (gapData as any).score
+      : (gapData as any)?.summary?.overall_match_score !== undefined && (gapData as any).summary?.overall_match_score !== null
+      ? (gapData as any).summary.overall_match_score
+      : (gapData as any)?.summary?.match_score !== undefined && (gapData as any).summary?.match_score !== null
+      ? (gapData as any).summary.match_score
+      : acquiredList.length + missingList.length > 0
+      ? acquiredList.length / (acquiredList.length + missingList.length)
       : 0;
 
-  const gapPercent =
-    gapData?.gap_percentage !== undefined
+  const overallScore = typeof rawScore === 'string' ? parseFloat(rawScore) || 0 : Number(rawScore) || 0;
+
+  const rawGapPercent =
+    gapData?.gap_percentage !== undefined && gapData.gap_percentage !== null
       ? gapData.gap_percentage
-      : gapData?.gap_score !== undefined
+      : gapData?.gap_score !== undefined && gapData.gap_score !== null
       ? gapData.gap_score
+      : (gapData as any)?.gap_pct !== undefined && (gapData as any)?.gap_pct !== null
+      ? (gapData as any).gap_pct
+      : (gapData as any)?.summary?.gap_percentage !== undefined && (gapData as any).summary?.gap_percentage !== null
+      ? (gapData as any).summary.gap_percentage
+      : acquiredList.length + missingList.length > 0
+      ? (missingList.length / (acquiredList.length + missingList.length)) * 100
       : null;
+
+  const gapPercent = typeof rawGapPercent === 'string' ? parseFloat(rawGapPercent) : rawGapPercent;
 
   return (
     <PortalLayout activeRole="Student" targetCareer={selectedRole?.name || selectedRole?.title}>
@@ -559,7 +771,7 @@ export const StudentPortal: React.FC = () => {
                     setIsLoadingGap(true);
                     mlApi
                       .getStudentGap(studentId, selectedRole.id)
-                      .then(setGapData)
+                      .then((res) => setGapData(normalizeStudentGap(res)))
                       .catch((err) => setGapError(err.message))
                       .finally(() => setIsLoadingGap(false));
                   }
@@ -586,7 +798,7 @@ export const StudentPortal: React.FC = () => {
                   setGapError(null);
                   mlApi
                     .getStudentGap(studentId, selectedRole.id)
-                    .then(setGapData)
+                    .then((res) => setGapData(normalizeStudentGap(res)))
                     .catch((e) => setGapError(e.message))
                     .finally(() => setIsLoadingGap(false));
                 }
@@ -640,22 +852,23 @@ export const StudentPortal: React.FC = () => {
                       </h3>
                     </div>
                     <span className="text-xs font-medium text-slate-500 tabular-nums">
-                      {gapData.acquired_skills?.length || 0} skills verified
+                      {acquiredList.length} skills verified
                     </span>
                   </div>
 
                   <div className="mt-4">
-                    {!gapData.acquired_skills || gapData.acquired_skills.length === 0 ? (
+                    {acquiredList.length === 0 ? (
                       <p className="text-xs text-slate-400 italic py-2">
                         No acquired skills recorded yet. Submit evidence artifacts below to build your verified profile.
                       </p>
                     ) : (
                       <div className="flex flex-wrap gap-2">
-                        {gapData.acquired_skills.map((skill, index) => {
+                        {acquiredList.map((skill, index) => {
                           const label = getSkillLabel(skill);
+                          const key = getSkillKey(skill) || index;
                           return (
                             <div
-                              key={index}
+                              key={key}
                               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg text-xs font-medium"
                             >
                               <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
@@ -678,35 +891,36 @@ export const StudentPortal: React.FC = () => {
                       </h3>
                     </div>
                     <span className="text-xs font-medium text-slate-500 tabular-nums">
-                      {gapData.missing_skills?.length || 0} gaps detected
+                      {missingList.length} gaps detected
                     </span>
                   </div>
 
                   <div className="mt-4">
-                    {!gapData.missing_skills || gapData.missing_skills.length === 0 ? (
+                    {missingList.length === 0 ? (
                       <div className="p-3 rounded-lg bg-emerald-50 text-emerald-800 text-xs">
                         Excellent! No significant skill gaps detected for this role.
                       </div>
                     ) : (
                       <div className="space-y-3">
-                        {gapData.missing_skills.map((skill, index) => {
+                        {missingList.map((skill, index) => {
                           const label = getSkillLabel(skill);
+                          const key = getSkillKey(skill) || index;
                           // Check if importance weight exists
                           let importance: number | null = null;
                           if (gapData.skill_importance) {
                             if (Array.isArray(gapData.skill_importance)) {
                               const match = gapData.skill_importance.find(
-                                (item) => item.skill === label || item.skill === String(skill)
+                                (item) => item.skill === label || item.skill === String(skill) || item.skill === key
                               );
                               if (match) importance = match.importance;
                             } else if (typeof gapData.skill_importance === 'object') {
-                              importance = gapData.skill_importance[label] ?? gapData.skill_importance[String(skill)] ?? null;
+                              importance = gapData.skill_importance[label] ?? gapData.skill_importance[key] ?? gapData.skill_importance[String(skill)] ?? null;
                             }
                           }
 
                           return (
                             <div
-                              key={index}
+                              key={key}
                               className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors"
                             >
                               <div className="flex items-center gap-2.5">
@@ -915,7 +1129,7 @@ export const StudentPortal: React.FC = () => {
                     >
                       <option value="">-- Choose from Catalog or Missing Skills --</option>
                       {/* Combine missing skills and catalog */}
-                      {gapData?.missing_skills?.map((s, idx) => {
+                      {missingList.map((s, idx) => {
                         const skKey = getSkillKey(s);
                         const label = getSkillLabel(s);
                         return (

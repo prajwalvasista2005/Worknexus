@@ -92,6 +92,16 @@ export interface SkillEvidence {
   metadata: SkillEvidenceMetadata;
   created_at?: string;
   verified?: boolean;
+  match_score?: number;
+  overall_match_score?: number;
+  gap_percentage?: number;
+  gap_score?: number;
+  acquired_skills?: Array<{ id?: string; skill_id?: string; name?: string; skill_name?: string; level?: number | string; strength?: string }>;
+  skills_acquired?: Array<{ id?: string; skill_id?: string; name?: string; skill_name?: string; level?: number | string; strength?: string }>;
+  missing_skills?: Array<{ id?: string; skill_id?: string; name?: string; skill_name?: string; priority?: string; weight?: number; importance?: number }>;
+  skills_missing?: Array<{ id?: string; skill_id?: string; name?: string; skill_name?: string; priority?: string; weight?: number; importance?: number }>;
+  recalculated_gap?: StudentGap;
+  gap_analysis?: StudentGap;
 }
 
 export interface SkillEvidenceSubmission {
@@ -243,11 +253,40 @@ export interface StudentGap {
   role_name?: string;
   overall_match_score?: number;
   match_score?: number;
+  score?: number;
   gap_percentage?: number;
   gap_score?: number;
-  acquired_skills: string[] | Array<{ id?: string; name: string; level?: number | string; strength?: string }>;
-  missing_skills: string[] | Array<{ id?: string; name: string; priority?: string; weight?: number; importance?: number }>;
+  gap_pct?: number;
+  acquired_skills: string[] | Array<{ id?: string; skill_id?: string; name?: string; skill_name?: string; level?: number | string; strength?: string; score?: number }>;
+  skills_acquired?: string[] | Array<{ id?: string; skill_id?: string; name?: string; skill_name?: string; level?: number | string; strength?: string; score?: number }>;
+  acquired?: string[] | Array<{ id?: string; skill_id?: string; name?: string; skill_name?: string; level?: number | string; strength?: string; score?: number }>;
+  present_skills?: string[] | Array<{ id?: string; skill_id?: string; name?: string; skill_name?: string; level?: number | string; strength?: string; score?: number }>;
+  missing_skills: string[] | Array<{ id?: string; skill_id?: string; name?: string; skill_name?: string; priority?: string; weight?: number; importance?: number }>;
+  skills_missing?: string[] | Array<{ id?: string; skill_id?: string; name?: string; skill_name?: string; priority?: string; weight?: number; importance?: number }>;
+  missing?: string[] | Array<{ id?: string; skill_id?: string; name?: string; skill_name?: string; priority?: string; weight?: number; importance?: number }>;
   skill_importance?: Record<string, number> | Array<{ skill: string; importance: number }>;
+  skill_gaps?: Array<{
+    skill_id?: string;
+    id?: string;
+    skill_name?: string;
+    name?: string;
+    student_status?: string;
+    status?: string;
+    student_has_skill?: boolean;
+    level?: string | number;
+    strength?: string;
+    priority?: string;
+    importance?: number;
+  }>;
+  summary?: {
+    total_role_skills?: number;
+    present_skills_count?: number;
+    missing_skills_count?: number;
+    overall_match_score?: number;
+    match_score?: number;
+    gap_percentage?: number;
+    gap_score?: number;
+  };
 }
 
 export interface CourseCandidate {
