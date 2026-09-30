@@ -209,6 +209,9 @@ export interface CourseSkill {
   skill_id: number;
   skill_name?: string;
   skill_code?: string;
+  name?: string;
+  title?: string;
+  skill?: { id?: number; skill_id?: string; name?: string } | null;
   coverage_pct?: number;
   created_at: string;
 }

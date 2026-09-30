@@ -12,5 +12,7 @@ class CourseSkillResponse(BaseModel):
     course_id: int
     skill_id: int
     created_at: datetime
+    skill_name: str | None = None
+    skill_code: str | None = None
 
     model_config = ConfigDict(from_attributes=True)

@@ -40,4 +40,14 @@ class CourseSkill(Base):
     )
 
     course = relationship("Course", back_populates="course_skills")
-    skill = relationship("Skill", back_populates="course_skills")
+    skill = relationship("Skill", back_populates="course_skills", lazy="joined")
+
+    @property
+    def skill_name(self) -> str | None:
+        sk = getattr(self, "skill", None)
+        return getattr(sk, "name", None) if sk else None
+
+    @property
+    def skill_code(self) -> str | None:
+        sk = getattr(self, "skill", None)
+        return getattr(sk, "skill_id", None) if sk else None

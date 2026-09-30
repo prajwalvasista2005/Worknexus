@@ -1,5 +1,5 @@
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.models.course_skills import CourseSkill
 from app.schemas.course_skill import CourseSkillCreate
@@ -27,7 +27,7 @@ class CourseSkillService:
         course_id: int | None = None,
         skill_id: int | None = None,
     ) -> list[CourseSkill]:
-        stmt = select(CourseSkill)
+        stmt = select(CourseSkill).options(joinedload(CourseSkill.skill))
         if course_id is not None:
             stmt = stmt.where(CourseSkill.course_id == course_id)
         if skill_id is not None:

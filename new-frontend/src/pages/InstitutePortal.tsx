@@ -651,22 +651,34 @@ export const InstitutePortal: React.FC = () => {
                     </p>
                   ) : (
                     <div className="flex flex-wrap gap-2">
-                      {courseSkills.map((cs) => (
-                        <div
-                          key={cs.id}
-                          className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 text-slate-800 rounded-lg text-xs"
-                        >
-                          <span className="font-semibold">{cs.skill_name || cs.skill_code || `Skill #${cs.skill_id}`}</span>
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteCourseSkill(cs.id)}
-                            className="text-slate-400 hover:text-red-600 transition-colors cursor-pointer"
-                            title="Unmap Skill"
+                      {courseSkills.map((cs) => {
+                        const matchedSkill = catalogSkills.find(
+                          (s) => Number(s.id) === Number(cs.skill_id) || s.skill_id === cs.skill_code
+                        );
+                        const label =
+                          cs.skill_name ||
+                          cs.name ||
+                          cs.skill?.name ||
+                          matchedSkill?.name ||
+                          cs.skill_code ||
+                          `Skill #${cs.skill_id}`;
+                        return (
+                          <div
+                            key={cs.id}
+                            className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 text-slate-800 rounded-lg text-xs"
                           >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      ))}
+                            <span className="font-semibold">{label}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteCourseSkill(cs.id)}
+                              className="text-slate-400 hover:text-red-600 transition-colors cursor-pointer"
+                              title="Unmap Skill"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
