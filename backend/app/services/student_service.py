@@ -281,50 +281,60 @@ class StudentService:
             db.add(evidence)
             db.commit()
 
-            # 1. Automatic Profile Skill Upsert
-            strength_val = str(evidence_in.strength or "advanced").strip().lower()
-            if "basic" in strength_val or "beginner" in strength_val or "low" in strength_val:
-                prof_level = "Basic"
-            elif "intermediate" in strength_val or "medium" in strength_val:
-                prof_level = "Intermediate"
-            else:
-                prof_level = "Advanced"
+            # 1. Automatic Profile Skill Upsert (Non-fatal)
+            try:
+                strength_val = str(evidence_in.strength or "advanced").strip().lower()
+                if "basic" in strength_val or "beginner" in strength_val or "low" in strength_val:
+                    prof_level = "Basic"
+                elif "intermediate" in strength_val or "medium" in strength_val:
+                    prof_level = "Intermediate"
+                else:
+                    prof_level = "Advanced"
 
-            if not hasattr(db, "user_skills"):
-                db.user_skills = []
-            if not hasattr(db, "student_skills"):
-                db.student_skills = db.user_skills
+                if not hasattr(db, "user_skills"):
+                    db.user_skills = []
+                if not hasattr(db, "student_skills"):
+                    db.student_skills = db.user_skills
 
-            target_id = getattr(target_skill, "id", None)
-            existing_us = None
-            for us in getattr(db, "user_skills", []):
-                if getattr(us, "user_id", None) == user_id:
-                    us_sk = getattr(us, "skill_id", None)
-                    if us_sk in (target_id, canonical_skill_id, str(target_id), str(canonical_skill_id)):
-                        existing_us = us
-                        break
+                target_id = getattr(target_skill, "id", None)
+                existing_us = None
+                for us in getattr(db, "user_skills", []):
+                    if getattr(us, "user_id", None) == user_id:
+                        us_sk = getattr(us, "skill_id", None)
+                        if us_sk in (target_id, canonical_skill_id, str(target_id), str(canonical_skill_id)):
+                            existing_us = us
+                            break
 
-            if not existing_us:
-                from app.models.user_skills import UserSkill
-                new_us = UserSkill(
-                    user_id=user_id,
-                    skill_id=target_id or canonical_skill_id,
-                    proficiency_level=prof_level,
-                    source="Verified Evidence"
-                )
-                db.add(new_us)
-                db.commit()
-            else:
-                level_order = {"basic": 1, "intermediate": 2, "advanced": 3}
-                cur_rank = level_order.get(str(getattr(existing_us, "proficiency_level", "")).lower(), 1)
-                new_rank = level_order.get(prof_level.lower(), 3)
-                if new_rank > cur_rank:
-                    existing_us.proficiency_level = prof_level
-                existing_us.source = "Verified Evidence"
-                db.commit()
+                if not existing_us:
+                    from app.models.user_skills import UserSkill
+                    new_us = UserSkill(
+                        user_id=user_id,
+                        skill_id=target_id or canonical_skill_id,
+                        proficiency_level=prof_level,
+                        source="Verified Evidence"
+                    )
+                    db.add(new_us)
+                    db.commit()
+                else:
+                    level_order = {"basic": 1, "intermediate": 2, "advanced": 3}
+                    cur_rank = level_order.get(str(getattr(existing_us, "proficiency_level", "")).lower(), 1)
+                    new_rank = level_order.get(prof_level.lower(), 3)
+                    if new_rank > cur_rank:
+                        existing_us.proficiency_level = prof_level
+                    existing_us.source = "Verified Evidence"
+                    db.commit()
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).warning(f"Mock secondary profile skill upsert failed (non-fatal): {e}")
 
-            # 2. Cascading Gap Recalculation
-            gap_data = StudentService.recalculate_student_gap(db, user_id, profile.target_role_id)
+            # 2. Cascading Gap Recalculation (Non-fatal)
+            gap_data: Dict[str, Any] = {}
+            try:
+                gap_data = StudentService.recalculate_student_gap(db, user_id, profile.target_role_id)
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).warning(f"Mock secondary gap recalculation failed (non-fatal): {e}")
+                gap_data = {}
 
             meta = evidence.metadata if isinstance(getattr(evidence, "metadata", None), dict) else (getattr(evidence, "metadata_", {}) or {})
             return StudentSkillEvidenceResponseSchema(
@@ -365,42 +375,45 @@ class StudentService:
         )
         from app.models.user_skills import UserSkill as DBUserSkill
 
-        try:
+        profile = db.query(DBStudentProfile).filter(DBStudentProfile.user_id == user_id).first()
+        if not profile:
+            StudentService.create_or_get_profile(db, StudentProfileCreateSchema(user_id=user_id))
             profile = db.query(DBStudentProfile).filter(DBStudentProfile.user_id == user_id).first()
-            if not profile:
-                StudentService.create_or_get_profile(db, StudentProfileCreateSchema(user_id=user_id))
-                profile = db.query(DBStudentProfile).filter(DBStudentProfile.user_id == user_id).first()
 
-            # Lookup skill in database (resolving canonical taxonomy, code, or name via SkillService)
-            raw_inp = str(evidence_in.skill_id).strip()
+        # Lookup skill in database (resolving canonical taxonomy, code, or name via SkillService)
+        raw_inp = str(evidence_in.skill_id).strip()
+        db_skill = None
+        try:
+            from app.services.skill_service import SkillService
+            db_skill = SkillService.get_or_create_skill(db, raw_inp)
+        except Exception:
             db_skill = None
-            try:
-                from app.services.skill_service import SkillService
-                db_skill = SkillService.get_or_create_skill(db, raw_inp)
-            except Exception:
-                db_skill = None
 
+        if not db_skill:
+            alt_prefix = "SK_" + raw_inp[6:] if raw_inp.upper().startswith("SKILL_") else None
+            db_skill = db.query(DBSkill).filter(DBSkill.skill_id == raw_inp).first()
             if not db_skill:
-                alt_prefix = "SK_" + raw_inp[6:] if raw_inp.upper().startswith("SKILL_") else None
-                db_skill = db.query(DBSkill).filter(DBSkill.skill_id == raw_inp).first()
-                if not db_skill:
-                    db_skill = db.query(DBSkill).filter(func.lower(DBSkill.skill_id) == raw_inp.lower()).first()
-                if not db_skill and alt_prefix:
-                    db_skill = db.query(DBSkill).filter(func.lower(DBSkill.skill_id) == alt_prefix.lower()).first()
-                if not db_skill and raw_inp.isdigit():
-                    db_skill = db.query(DBSkill).filter(DBSkill.id == int(raw_inp)).first()
-                if not db_skill:
-                    db_skill = db.query(DBSkill).filter(func.lower(DBSkill.name) == raw_inp.lower()).first()
-                if not db_skill:
-                    db_skill = db.query(DBSkill).filter(DBSkill.name.ilike(f"%{raw_inp}%")).first()
-
+                db_skill = db.query(DBSkill).filter(func.lower(DBSkill.skill_id) == raw_inp.lower()).first()
+            if not db_skill and alt_prefix:
+                db_skill = db.query(DBSkill).filter(func.lower(DBSkill.skill_id) == alt_prefix.lower()).first()
+            if not db_skill and raw_inp.isdigit():
+                db_skill = db.query(DBSkill).filter(DBSkill.id == int(raw_inp)).first()
             if not db_skill:
-                raise ValueError(f"Skill '{evidence_in.skill_id}' not found in canonical taxonomy.")
+                db_skill = db.query(DBSkill).filter(func.lower(DBSkill.name) == raw_inp.lower()).first()
+            if not db_skill:
+                db_skill = db.query(DBSkill).filter(DBSkill.name.ilike(f"%{raw_inp}%")).first()
 
-            meta_dict = dict(evidence_in.metadata or {})
-            meta_dict["status"] = "verified"
-            meta_dict["is_verified"] = True
+        if not db_skill:
+            raise ValueError(f"Skill '{evidence_in.skill_id}' not found in canonical taxonomy.")
 
+        meta_dict = dict(evidence_in.metadata or {})
+        meta_dict["status"] = "verified"
+        meta_dict["is_verified"] = True
+
+        # -------------------------------------------------------------
+        # Phase 1: Isolated Primary Insert & Commit for Evidence
+        # -------------------------------------------------------------
+        try:
             evidence = DBStudentSkillEvidence(
                 student_profile_id=profile.id,
                 skill_id=db_skill.id,
@@ -413,8 +426,20 @@ class StudentService:
             db.add(evidence)
             db.commit()
             db.refresh(evidence)
+            evidence_id = evidence.id
+        except Exception as e:
+            if hasattr(db, "rollback"):
+                db.rollback()
+            raise ValueError(f"Failed to record student skill evidence: {str(e)}") from e
 
-            # 1. Automatic Profile Skill Upsert
+        # -------------------------------------------------------------
+        # Phase 2: Secondary operations (Profile Skill Upsert & Gap Recalculation)
+        # Non-fatal: if secondary operations fail, log and do NOT roll back committed evidence.
+        # -------------------------------------------------------------
+        import logging
+        logger = logging.getLogger(__name__)
+
+        try:
             strength_val = str(evidence_in.strength or "advanced").strip().lower()
             if "basic" in strength_val or "beginner" in strength_val or "low" in strength_val:
                 prof_level = "Basic"
@@ -446,40 +471,70 @@ class StudentService:
                     existing_user_skill.proficiency_level = prof_level
                 existing_user_skill.source = "Verified Evidence"
                 db.commit()
-
-            # 2. Cascading Gap Recalculation
-            gap_data = StudentService.recalculate_student_gap(db, user_id, profile.target_role_id)
-
-            return StudentSkillEvidenceResponseSchema(
-                id=evidence.id,
-                student_profile_id=evidence.student_profile_id,
-                skill_id=db_skill.skill_id,
-                canonical_id=db_skill.skill_id,
-                skill_name=db_skill.name,
-                name=db_skill.name,
-                category=db_skill.category or "General",
-                status="verified",
-                is_verified=True,
-                verified=True,
-                evidence_type=evidence.evidence_type,
-                strength=evidence.strength,
-                metadata=evidence.metadata_ or meta_dict,
-                created_at=evidence.created_at,
-                match_score=gap_data.get("match_score"),
-                overall_match_score=gap_data.get("overall_match_score"),
-                gap_percentage=gap_data.get("gap_percentage"),
-                gap_score=gap_data.get("gap_score"),
-                acquired_skills=gap_data.get("acquired_skills", []),
-                skills_acquired=gap_data.get("skills_acquired", []),
-                missing_skills=gap_data.get("missing_skills", []),
-                skills_missing=gap_data.get("skills_missing", []),
-                recalculated_gap=gap_data,
-                gap_analysis=gap_data
-            )
-        except Exception:
+        except Exception as e:
             if hasattr(db, "rollback"):
-                db.rollback()
-            raise
+                try:
+                    db.rollback()
+                except Exception:
+                    pass
+            logger.warning(f"Secondary profile skill upsert failed (non-fatal): {e}")
+
+        gap_data: Dict[str, Any] = {}
+        try:
+            gap_data = StudentService.recalculate_student_gap(db, user_id, profile.target_role_id)
+        except Exception as e:
+            logger.warning(f"Secondary gap recalculation failed (non-fatal): {e}")
+            gap_data = {}
+
+        # -------------------------------------------------------------
+        # Phase 3: Hydrate fresh evidence item with expire_all & fresh query
+        # -------------------------------------------------------------
+        if hasattr(db, "expire_all"):
+            db.expire_all()
+
+        from sqlalchemy.orm import joinedload
+        fresh_evidence = db.query(DBStudentSkillEvidence).options(
+            joinedload(DBStudentSkillEvidence.skill)
+        ).filter(DBStudentSkillEvidence.id == evidence_id).first() or evidence
+
+        canonical_id = getattr(getattr(fresh_evidence, "skill", None), "skill_id", db_skill.skill_id)
+        skill_name = getattr(getattr(fresh_evidence, "skill", None), "name", db_skill.name)
+        category = getattr(getattr(fresh_evidence, "skill", None), "category", db_skill.category or "General")
+
+        meta = getattr(fresh_evidence, "metadata_", getattr(fresh_evidence, "metadata", None)) or meta_dict
+        if isinstance(meta, str):
+            try:
+                import json
+                meta = json.loads(meta)
+            except Exception:
+                meta = meta_dict
+
+        return StudentSkillEvidenceResponseSchema(
+            id=fresh_evidence.id,
+            student_profile_id=fresh_evidence.student_profile_id,
+            skill_id=canonical_id,
+            canonical_id=canonical_id,
+            skill_name=skill_name,
+            name=skill_name,
+            category=category,
+            status=getattr(fresh_evidence, "status", "verified") or "verified",
+            is_verified=getattr(fresh_evidence, "is_verified", True),
+            verified=getattr(fresh_evidence, "is_verified", True),
+            evidence_type=fresh_evidence.evidence_type,
+            strength=fresh_evidence.strength,
+            metadata=meta,
+            created_at=fresh_evidence.created_at,
+            match_score=gap_data.get("match_score"),
+            overall_match_score=gap_data.get("overall_match_score"),
+            gap_percentage=gap_data.get("gap_percentage"),
+            gap_score=gap_data.get("gap_score"),
+            acquired_skills=gap_data.get("acquired_skills", []),
+            skills_acquired=gap_data.get("skills_acquired", []),
+            missing_skills=gap_data.get("missing_skills", []),
+            skills_missing=gap_data.get("skills_missing", []),
+            recalculated_gap=gap_data,
+            gap_analysis=gap_data
+        )
 
     @staticmethod
     def recalculate_student_gap(
