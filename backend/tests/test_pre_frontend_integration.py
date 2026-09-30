@@ -190,6 +190,21 @@ class TestPreFrontendIntegrationValidation(unittest.TestCase):
         self.assertIn("confidence_distribution", ev_data)
         self.assertIn("employer_signal_weight", ev_data)
 
+        # 3. View Labour Market Skill Recommendations (Re-evaluate in Trainer Workspace)
+        recs_res = self.client.get("/api/v1/ml/recommendations?mode=live", headers=headers)
+        self.assertEqual(recs_res.status_code, 200)
+        recs_data = recs_res.json()
+        self.assertIn("recommended_skills", recs_data)
+        self.assertIn("recommendations", recs_data)
+        self.assertGreater(len(recs_data["recommended_skills"]), 0, "Trainer recommendations must not be empty")
+
+        sample_rec = recs_data["recommended_skills"][0]
+        self.assertIn("skill_id", sample_rec)
+        self.assertIn("priority_score", sample_rec)
+        self.assertIn("reason", sample_rec)
+        self.assertIn("recommendation_reason", sample_rec)
+        self.assertGreater(sample_rec["priority_score"], 0)
+
     # =========================================================================
     # FLOW 5: FRONTEND API COMPATIBILITY CHECKS
     # Skill by code, Course Skills by course id, Student Profile alias

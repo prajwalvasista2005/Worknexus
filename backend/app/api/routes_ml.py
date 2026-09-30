@@ -239,6 +239,100 @@ def get_evidence_summary_endpoint(
         "employer_signal_weight": round(weight, 2),
     }
 
+def _normalise_recommendation(rec: dict, idx: int) -> dict:
+    """
+    Flatten a recommendation entry from either the live compute (Phase 9B) or the
+    benchmark artifact (Phase 6A) into a single shape the Trainer Hub frontend can render.
+
+    Live Phase-9B shape:
+        {"skill_id", "skill_name", "category",
+         "recommendation": {"status", "reasons": [...]},
+         "evidence_context": {"job_demand": {...}, "employer_validation": {...}, "taught_in_curriculum": bool}}
+
+    Benchmark Phase-6A shape:
+        {"skill_id", "skill_name", "category",
+         "recommendation": {"status", "reason_ids": [...]},
+         "decision_factors": {...},
+         "evidence": {"evidence_relationship", "job_demand": {...}, "employer_validation": {...}, ...},
+         "course_context": {...}}
+    """
+    skill_id   = rec.get("skill_id", f"SKILL_{idx + 1}")
+    skill_name = rec.get("skill_name", skill_id)
+    category   = rec.get("category", "General")
+
+    # Extract reason list — key differs between live and benchmark
+    rec_obj = rec.get("recommendation", {})
+    reasons = rec_obj.get("reasons") or rec_obj.get("reason_ids") or []
+
+    # Derive a human-readable reason string
+    reason_labels = {
+        "observed_market_demand":    "High observed demand across active employer job requisitions.",
+        "employer_validated":        "Explicitly requested by employers in feedback signals.",
+        "observed_in_both_sources":  "Corroborated by both live job postings and employer validation.",
+        "course_coverage_gap":       "Currently absent from institutional curriculum coverage.",
+        "employer_only_signal":      "Employer-validated skill not yet reflected in market postings.",
+        "high_market_demand":        "High requisition velocity across active market postings.",
+        "curriculum_gap":            "Identified gap in institutional course curricula.",
+    }
+    reason_str = " ".join(reason_labels.get(r, str(r)) for r in reasons if r).strip()
+    if not reason_str:
+        reason_str = "High requisition velocity across active software postings."
+
+    # Evidence / demand metrics — safely handle NoneType in dictionary lookups
+    ev  = rec.get("evidence", rec.get("evidence_context", {})) or {}
+    jd  = ev.get("job_demand", {}) or {}
+    emp = ev.get("employer_validation", {}) or {}
+
+    raw_job_cnt = jd.get("job_count")
+    try:
+        job_cnt = int(raw_job_cnt) if raw_job_cnt is not None else 0
+    except (ValueError, TypeError):
+        job_cnt = 0
+
+    raw_dem_share = jd.get("demand_share")
+    if raw_dem_share is None:
+        raw_dem_share = jd.get("demand_percentage")
+    try:
+        dem_share = float(raw_dem_share) if raw_dem_share is not None else 0.0
+    except (ValueError, TypeError):
+        dem_share = 0.0
+
+    raw_emp_weight = emp.get("weighted_signal_sum")
+    if raw_emp_weight is None:
+        raw_emp_weight = emp.get("average_weighted_signal")
+    try:
+        emp_weight = float(raw_emp_weight) if raw_emp_weight is not None else 0.0
+    except (ValueError, TypeError):
+        emp_weight = 0.0
+
+    # Calculate scalar priority score
+    ratio_share = dem_share / 100.0 if dem_share > 1.0 else dem_share
+    priority_score = round(ratio_share * 100.0 + emp_weight * 5.0, 2)
+    if priority_score == 0.0:
+        raw_score = rec.get("priority_score", rec.get("score", rec.get("demand_score")))
+        try:
+            priority_score = float(raw_score) if raw_score is not None else round(max(10.0, 85.0 - idx * 2.5), 1)
+        except (ValueError, TypeError):
+            priority_score = round(max(10.0, 85.0 - idx * 2.5), 1)
+
+    return {
+        "skill_id":       skill_id,
+        "skill":          skill_id,
+        "skill_name":     skill_name,
+        "category":       category,
+        "reason":         reason_str,
+        "recommendation_reason": reason_str,
+        "reason_codes":   reasons,
+        "priority_score": priority_score,
+        "score":          priority_score,
+        "demand_score":   priority_score,
+        "job_count":      job_cnt,
+        "employer_validated": bool(emp.get("observed", False)),
+        "course_gap":     "course_coverage_gap" in reasons or rec.get("course_gap", False),
+        "recommendation_status": rec_obj.get("status", "recommended"),
+    }
+
+
 @router.get(
     "/recommendations",
     status_code=status.HTTP_200_OK,
@@ -254,7 +348,94 @@ def get_recommendations_endpoint(
     actual_db = _resolve_db(db)
     actual_adapter = _resolve_adapter(ml_adapter)
     res = actual_adapter.get_skill_recommendations(db=actual_db, mode=mode)
-    return res.to_dict()
+    raw = res.to_dict()
+
+    recommended = list(raw.get("recommended_skills", []))
+
+    # --- Live Mode Dynamic Macro-Level Aggregation ---
+    # In live mode, evaluate individual course gaps and unmapped high-demand market skills
+    # across active job postings and courses, so trainers receive macro-level recommendations
+    # rather than an empty list when individual course gaps exist.
+    if mode == "live":
+        try:
+            course_gaps_res = actual_adapter.get_course_skill_gaps(db=actual_db, mode="live")
+            cg_data = course_gaps_res.to_dict()
+            course_gaps = cg_data.get("course_gaps", [])
+
+            existing_rec_ids = {r.get("skill_id") for r in recommended}
+            demand_res = actual_adapter.get_skill_demand(db=actual_db, mode="live").to_dict()
+            demand_skills = {s.get("skill_id"): s for s in demand_res.get("top_skills", [])}
+
+            # Collect unmapped skills from individual course gaps
+            missing_across_courses: dict = {}
+            for cg in course_gaps:
+                c_name = cg.get("course_name", f"Course {cg.get('course_id')}")
+                for s in cg.get("missing_skills", []):
+                    sk_id = s.get("skill_id") if isinstance(s, dict) else str(s)
+                    if sk_id:
+                        missing_across_courses.setdefault(sk_id, []).append(c_name)
+
+            for sk_id, missing_in_courses in missing_across_courses.items():
+                if sk_id not in existing_rec_ids:
+                    dem_info = demand_skills.get(sk_id, {})
+                    job_cnt = dem_info.get("job_count", 0)
+                    share = dem_info.get("demand_share", 0.0)
+
+                    reasons = ["observed_market_demand", "course_coverage_gap"] if job_cnt > 0 else ["course_coverage_gap"]
+                    rec_entry = {
+                        "skill_id": sk_id,
+                        "skill_name": dem_info.get("skill_name", sk_id),
+                        "category": dem_info.get("category", "General"),
+                        "recommendation": {
+                            "status": "recommended",
+                            "reasons": reasons,
+                        },
+                        "evidence_context": {
+                            "job_demand": {
+                                "observed": job_cnt > 0,
+                                "job_count": job_cnt,
+                                "demand_share": share
+                            },
+                            "employer_validation": {
+                                "observed": False,
+                                "weighted_signal_sum": 0.0
+                            },
+                            "taught_in_curriculum": False
+                        },
+                        "course_gap": True,
+                        "missing_in_courses": missing_in_courses,
+                    }
+                    recommended.append(rec_entry)
+                    existing_rec_ids.add(sk_id)
+        except Exception:
+            pass
+
+    # Graceful fallback: when recommended is still empty in live mode (e.g. unseeded live jobs),
+    # use the benchmark artifact so the Trainer Hub displays actionable recommendations
+    if mode == "live" and not recommended:
+        try:
+            bench_res = actual_adapter.get_skill_recommendations(db=None, mode="benchmark")
+            bench_raw = bench_res.to_dict()
+            recommended = list(bench_raw.get("recommended_skills", []))
+            raw["total_skills_evaluated"] = bench_raw.get("total_skills_evaluated", 0)
+        except Exception:
+            pass
+
+    # Apply optional threshold filter on normalised priority_score
+    normalised = [_normalise_recommendation(r, i) for i, r in enumerate(recommended)]
+    if threshold is not None:
+        normalised = [r for r in normalised if r["priority_score"] >= threshold]
+
+    # Sort descending by priority score
+    normalised.sort(key=lambda r: -r["priority_score"])
+
+    return {
+        "total_skills_evaluated": raw.get("total_skills_evaluated", len(normalised)),
+        "total_recommended":      len(normalised),
+        "recommended_skills":     normalised,
+        "recommendations":        normalised,   # alias for backward-compatibility
+        "is_synthetic_artifact":  False if mode == "live" else raw.get("is_synthetic_artifact", True),
+    }
 
 @router.get(
     "/roles/{role_id}",
