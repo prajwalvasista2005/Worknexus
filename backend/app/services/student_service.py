@@ -225,28 +225,28 @@ class StudentService:
                 profile = db.student_profiles[profile_res.id]
 
             raw_inp = str(evidence_in.skill_id).strip()
-            alt_prefix = "SK_" + raw_inp[6:] if raw_inp.upper().startswith("SKILL_") else None
             target_skill = None
-            for s in getattr(db, "skills", {}).values():
-                scode = getattr(s, "skill_id", getattr(s, "id", None))
-                sname = getattr(s, "name", "")
-                sid = getattr(s, "id", None)
-                cand_ids = [str(scode).lower(), str(sname).lower(), str(sid).lower()]
-                if raw_inp.lower() in cand_ids or (alt_prefix and alt_prefix.lower() in cand_ids):
-                    target_skill = s
-                    break
-
-            if not target_skill and raw_inp in getattr(db, "skills", {}):
-                target_skill = db.skills[raw_inp]
-            if not target_skill and alt_prefix and alt_prefix in getattr(db, "skills", {}):
-                target_skill = db.skills[alt_prefix]
+            try:
+                from app.services.skill_service import SkillService
+                target_skill = SkillService.get_or_create_skill(db, raw_inp)
+            except Exception:
+                target_skill = None
 
             if not target_skill:
-                try:
-                    from app.services.skill_service import SkillService
-                    target_skill = SkillService.get_or_create_skill(db, raw_inp)
-                except Exception:
-                    target_skill = None
+                alt_prefix = "SK_" + raw_inp[6:] if raw_inp.upper().startswith("SKILL_") else None
+                for s in getattr(db, "skills", {}).values():
+                    scode = getattr(s, "skill_id", getattr(s, "id", None))
+                    sname = getattr(s, "name", "")
+                    sid = getattr(s, "id", None)
+                    cand_ids = [str(scode).lower(), str(sname).lower(), str(sid).lower()]
+                    if raw_inp.lower() in cand_ids or (alt_prefix and alt_prefix.lower() in cand_ids):
+                        target_skill = s
+                        break
+
+                if not target_skill and raw_inp in getattr(db, "skills", {}):
+                    target_skill = db.skills[raw_inp]
+                if not target_skill and alt_prefix and alt_prefix in getattr(db, "skills", {}):
+                    target_skill = db.skills[alt_prefix]
 
             if not target_skill:
                 raise ValueError(f"Skill '{evidence_in.skill_id}' not found in canonical taxonomy.")
@@ -291,27 +291,28 @@ class StudentService:
             StudentService.create_or_get_profile(db, StudentProfileCreateSchema(user_id=user_id))
             profile = db.query(DBStudentProfile).filter(DBStudentProfile.user_id == user_id).first()
 
-        # Lookup skill in database (by canonical skill_id, integer primary key, or skill name)
+        # Lookup skill in database (resolving canonical taxonomy, code, or name via SkillService)
         raw_inp = str(evidence_in.skill_id).strip()
-        alt_prefix = "SK_" + raw_inp[6:] if raw_inp.upper().startswith("SKILL_") else None
-        db_skill = db.query(DBSkill).filter(DBSkill.skill_id == raw_inp).first()
-        if not db_skill:
-            db_skill = db.query(DBSkill).filter(func.lower(DBSkill.skill_id) == raw_inp.lower()).first()
-        if not db_skill and alt_prefix:
-            db_skill = db.query(DBSkill).filter(func.lower(DBSkill.skill_id) == alt_prefix.lower()).first()
-        if not db_skill and raw_inp.isdigit():
-            db_skill = db.query(DBSkill).filter(DBSkill.id == int(raw_inp)).first()
-        if not db_skill:
-            db_skill = db.query(DBSkill).filter(func.lower(DBSkill.name) == raw_inp.lower()).first()
-        if not db_skill:
-            db_skill = db.query(DBSkill).filter(DBSkill.name.ilike(f"%{raw_inp}%")).first()
+        db_skill = None
+        try:
+            from app.services.skill_service import SkillService
+            db_skill = SkillService.get_or_create_skill(db, raw_inp)
+        except Exception:
+            db_skill = None
 
         if not db_skill:
-            try:
-                from app.services.skill_service import SkillService
-                db_skill = SkillService.get_or_create_skill(db, raw_inp)
-            except Exception:
-                db_skill = None
+            alt_prefix = "SK_" + raw_inp[6:] if raw_inp.upper().startswith("SKILL_") else None
+            db_skill = db.query(DBSkill).filter(DBSkill.skill_id == raw_inp).first()
+            if not db_skill:
+                db_skill = db.query(DBSkill).filter(func.lower(DBSkill.skill_id) == raw_inp.lower()).first()
+            if not db_skill and alt_prefix:
+                db_skill = db.query(DBSkill).filter(func.lower(DBSkill.skill_id) == alt_prefix.lower()).first()
+            if not db_skill and raw_inp.isdigit():
+                db_skill = db.query(DBSkill).filter(DBSkill.id == int(raw_inp)).first()
+            if not db_skill:
+                db_skill = db.query(DBSkill).filter(func.lower(DBSkill.name) == raw_inp.lower()).first()
+            if not db_skill:
+                db_skill = db.query(DBSkill).filter(DBSkill.name.ilike(f"%{raw_inp}%")).first()
 
         if not db_skill:
             raise ValueError(f"Skill '{evidence_in.skill_id}' not found in canonical taxonomy.")

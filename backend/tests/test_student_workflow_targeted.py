@@ -217,3 +217,184 @@ def test_05_evidence_submission_updates_gap_and_match_percentage(client, student
     assert len(updated_missing) == len(init_missing) - 1, "Missing skills count should decrement"
     assert updated_score >= init_score, "Match score should improve after submitting evidence"
     print(f"\n[PASS] Step 5 Dynamic Gap Update: Match score updated from {init_score} to {updated_score}")
+
+
+def test_06_airflow_evidence_clears_apache_airflow_role_gap(client):
+    """
+    Workflow Step 6: Canonical skill ID (SK_AIRFLOW) evidence clears
+    human-readable target role competency ('Apache Airflow') gap,
+    updating match score above 0% and removing it from missing gaps.
+    """
+    from app.db.session import SessionLocal
+    from app.models.users import User
+    from app.models.skills import Skill
+    from app.models.student_roles import TargetRole, RoleSkill, StudentProfile, StudentSkillEvidence
+    from app.auth.security import hash_password
+    from app.auth.jwt import create_access_token
+
+    db = SessionLocal()
+    try:
+        # 1. Setup fresh student user for clean gap baseline
+        student_email = "airflow_test_student@worknexus.org"
+        user = db.query(User).filter(User.email == student_email).first()
+        if not user:
+            user = User(
+                email=student_email,
+                hashed_password=hash_password("Password123!"),
+                full_name="Airflow Test Student",
+                role="student",
+                is_active=True,
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
+        # 2. Ensure ROLE_DATA_ENGINEER exists with Apache Airflow (SK_AIRFLOW)
+        role = db.query(TargetRole).filter(TargetRole.id == "ROLE_DATA_ENGINEER").first()
+        if not role:
+            role = TargetRole(
+                id="ROLE_DATA_ENGINEER",
+                name="Data Engineer",
+                description="Build scalable data pipelines and distributed storage systems.",
+                is_active=True,
+            )
+            db.add(role)
+            db.commit()
+
+        # Ensure SK_AIRFLOW skill exists in database
+        skill = db.query(Skill).filter(Skill.skill_id == "SK_AIRFLOW").first()
+        if not skill:
+            skill = Skill(
+                skill_id="SK_AIRFLOW",
+                name="Apache Airflow",
+                category="IT / Data",
+                description="Workflow orchestration tool",
+                is_active=True,
+            )
+            db.add(skill)
+            db.commit()
+            db.refresh(skill)
+
+        # Ensure RoleSkill links ROLE_DATA_ENGINEER to SK_AIRFLOW
+        rs = db.query(RoleSkill).filter(
+            RoleSkill.role_id == "ROLE_DATA_ENGINEER",
+            RoleSkill.skill_id == skill.id
+        ).first()
+        if not rs:
+            rs = RoleSkill(role_id="ROLE_DATA_ENGINEER", skill_id=skill.id)
+            db.add(rs)
+            db.commit()
+
+        # Clean any previous evidence for this student to start at 0%
+        profile = db.query(StudentProfile).filter(StudentProfile.user_id == user.id).first()
+        if not profile:
+            profile = StudentProfile(user_id=user.id, target_role_id="ROLE_DATA_ENGINEER")
+            db.add(profile)
+            db.commit()
+            db.refresh(profile)
+        else:
+            profile.target_role_id = "ROLE_DATA_ENGINEER"
+            db.query(StudentSkillEvidence).filter(
+                StudentSkillEvidence.student_profile_id == profile.id
+            ).delete()
+            db.commit()
+
+        token = create_access_token(data={"sub": user.email, "user_id": user.id, "role": "Student"})
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "X-User-Id": str(user.id),
+            "X-User-Role": "Student",
+            "X-User-Email": user.email,
+        }
+
+        # 3. Initial Gap check before evidence submission
+        init_res = client.get(f"/api/v1/ml/students/{user.id}/gap/ROLE_DATA_ENGINEER?mode=live", headers=headers)
+        assert init_res.status_code == 200, f"Initial gap request failed: {init_res.text}"
+        init_data = init_res.json()
+
+        init_missing_names = [
+            s.get("name") or s.get("skill_name") or s.get("skill_id")
+            for s in init_data.get("missing_skills", [])
+        ]
+        assert any("airflow" in str(n).lower() for n in init_missing_names), (
+            f"Expected Apache Airflow to be in missing skills initially. Got: {init_missing_names}"
+        )
+        assert init_data.get("overall_match_score", 0.0) == 0.0, "Expected initial match score of 0.0"
+
+        # 4. Submit evidence using canonical skill_id SK_AIRFLOW
+        payload = {
+            "skill_id": "SK_AIRFLOW",
+            "evidence_type": "project",
+            "strength": "advanced",
+            "metadata": {
+                "repo": "https://github.com/worknexus/etl-airflow-dags",
+                "notes": "Engineered DAG orchestrator for big data ingestion"
+            }
+        }
+        sub_res = client.post(f"/api/v1/students/{user.id}/evidence", json=payload, headers=headers)
+        assert sub_res.status_code in [200, 201], f"Evidence submission failed: {sub_res.text}"
+
+        # 5. Verify that Apache Airflow is marked acquired and match score > 0%
+        updated_res = client.get(f"/api/v1/ml/students/{user.id}/gap/ROLE_DATA_ENGINEER?mode=live", headers=headers)
+        assert updated_res.status_code == 200, f"Updated gap request failed: {updated_res.text}"
+        updated_data = updated_res.json()
+
+        updated_missing_names = [
+            s.get("name") or s.get("skill_name") or s.get("skill_id")
+            for s in updated_data.get("missing_skills", [])
+        ]
+        updated_acquired_names = [
+            s.get("name") or s.get("skill_name") or s.get("skill_id")
+            for s in updated_data.get("acquired_skills", [])
+        ]
+
+        # Apache Airflow should no longer be missing
+        assert not any("airflow" in str(n).lower() for n in updated_missing_names), (
+            f"Apache Airflow should NOT be missing after submitting evidence. Missing: {updated_missing_names}"
+        )
+        # Apache Airflow should be in acquired skills
+        assert any("airflow" in str(n).lower() for n in updated_acquired_names), (
+            f"Apache Airflow should be in acquired skills. Acquired: {updated_acquired_names}"
+        )
+        # Match score must be > 0%
+        updated_score = updated_data.get("overall_match_score", updated_data.get("match_score", 0.0))
+        assert updated_score > 0.0, f"Expected match score > 0.0, got {updated_score}"
+        print(f"\n[PASS] Step 6A SK_AIRFLOW Evidence Cleared Role Gap: Match score rose to {updated_score}")
+
+        # 6. Submit human-readable competency string 'Python Programming' to clear SK_PYTHON
+        payload_py = {
+            "skill_id": "Python Programming",
+            "evidence_type": "project",
+            "strength": "advanced",
+            "metadata": {
+                "repo": "https://github.com/worknexus/data-pipeline-py",
+                "notes": "Python pandas and pyarrow pipelines"
+            }
+        }
+        sub_py = client.post(f"/api/v1/students/{user.id}/evidence", json=payload_py, headers=headers)
+        assert sub_py.status_code in [200, 201], f"Python evidence submission failed: {sub_py.text}"
+
+        py_res = client.get(f"/api/v1/ml/students/{user.id}/gap/ROLE_DATA_ENGINEER?mode=live", headers=headers)
+        assert py_res.status_code == 200
+        py_data = py_res.json()
+
+        py_missing_names = [
+            s.get("name") or s.get("skill_name") or s.get("skill_id")
+            for s in py_data.get("missing_skills", [])
+        ]
+        py_acquired_names = [
+            s.get("name") or s.get("skill_name") or s.get("skill_id")
+            for s in py_data.get("acquired_skills", [])
+        ]
+
+        assert not any("python" in str(n).lower() for n in py_missing_names), (
+            f"Python should NOT be in missing skills. Missing: {py_missing_names}"
+        )
+        assert any("python" in str(n).lower() for n in py_acquired_names), (
+            f"Python should be in acquired skills. Acquired: {py_acquired_names}"
+        )
+        py_score = py_data.get("overall_match_score", py_data.get("match_score", 0.0))
+        assert py_score > updated_score, f"Expected py_score > {updated_score}, got {py_score}"
+        print(f"\n[PASS] Step 6B 'Python Programming' Evidence Cleared Role Gap: Match score rose from {updated_score} to {py_score}")
+    finally:
+        db.close()

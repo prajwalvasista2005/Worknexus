@@ -495,12 +495,6 @@ def get_student_gap_endpoint(
     raw = res.to_dict()
 
     summary = raw.get("summary", {})
-    total = summary.get("total_role_skills", 1) or 1
-    present = summary.get("present_skills_count", summary.get("present_skill_count", 0))
-    missing = summary.get("missing_skills_count", summary.get("missing_skill_count", 0))
-    match_score = round(present / total, 2)
-    gap_pct = round((missing / total) * 100.0, 1)
-
     skill_gaps = raw.get("skill_gaps", [])
     acquired = []
     missing_list = []
@@ -529,6 +523,17 @@ def get_student_gap_endpoint(
                 "importance": 1.0,
                 "priority": "High"
             })
+
+    total = len(skill_gaps) if skill_gaps else (summary.get("total_role_skills", 1) or 1)
+    present = len(acquired)
+    missing = len(missing_list)
+    match_score = round(present / total, 2) if total > 0 else 0.0
+    gap_pct = round((missing / total) * 100.0, 1) if total > 0 else 0.0
+
+    summary["total_role_skills"] = total
+    summary["present_skills_count"] = present
+    summary["missing_skills_count"] = missing
+    raw["summary"] = summary
 
     raw["role_id"] = role_id
     raw["mode"] = mode

@@ -70,6 +70,64 @@ class SkillService:
         stmt = select(Skill).where(Skill.name.ilike(name))
         return db.execute(stmt).scalar_one_or_none()
 
+    _taxonomy_cache = None
+
+    @classmethod
+    def _get_taxonomy_cache(cls):
+        if cls._taxonomy_cache is None:
+            try:
+                import json
+                from pathlib import Path
+                candidates = [
+                    Path(__file__).resolve().parents[3] / "ml" / "data" / "skills.json",
+                    Path("ml/data/skills.json"),
+                ]
+                tax_path = next((p for p in candidates if p.exists()), None)
+                if tax_path:
+                    with open(tax_path, "r", encoding="utf-8") as f:
+                        cls._taxonomy_cache = json.load(f)
+                else:
+                    cls._taxonomy_cache = []
+            except Exception:
+                cls._taxonomy_cache = []
+        return cls._taxonomy_cache
+
+    @classmethod
+    def _lookup_taxonomy(cls, skill_ident: str):
+        if not skill_ident:
+            return None
+        import re
+        ident = skill_ident.strip()
+        norm_ident = re.sub(r'^(sk_|skill_)', '', ident.lower()).replace('_', ' ').strip()
+        alpha_ident = re.sub(r'[^a-z0-9]', '', ident.lower())
+
+        taxonomy = cls._get_taxonomy_cache()
+        for s in taxonomy:
+            cid = s.get("id", "")
+            cname = s.get("name", "")
+            category = s.get("category", "Technical")
+            aliases = s.get("aliases", [])
+
+            # Exact match on id or name
+            if ident.lower() in [cid.lower(), cname.lower()]:
+                return cid, cname, category
+
+            # Match aliases
+            for a in aliases:
+                if ident.lower() == str(a).lower():
+                    return cid, cname, category
+
+            # Match normalized or alphanumeric
+            for term in [cid, cname] + list(aliases):
+                term_norm = re.sub(r'^(sk_|skill_)', '', str(term).lower()).replace('_', ' ').strip()
+                term_alpha = re.sub(r'[^a-z0-9]', '', str(term).lower())
+                if norm_ident and norm_ident == term_norm:
+                    return cid, cname, category
+                if alpha_ident and alpha_ident == term_alpha:
+                    return cid, cname, category
+
+        return None
+
     @staticmethod
     def get_or_create_skill(
         db: Session,
@@ -95,38 +153,57 @@ class SkillService:
         if not sk_str:
             raise ValueError("skill_identifier cannot be empty string")
 
-        # 2. Query by code (exact)
-        sk = SkillService.get_skill_by_code(db, sk_str)
-        if sk:
-            return sk
-
-        # 3. Query by name (case-insensitive)
-        sk = SkillService.get_skill_by_name(db, sk_str)
-        if sk:
-            return sk
-
-        # 4. Query variations (SK_ prefix <-> title name)
-        if sk_str.upper().startswith("SK_"):
-            candidate_name = sk_str[3:].replace("_", " ").strip()
-            sk = SkillService.get_skill_by_name(db, candidate_name)
+        # 2. Check canonical taxonomy resolution first
+        tax_entry = SkillService._lookup_taxonomy(sk_str)
+        if tax_entry:
+            canon_code, canon_name, canon_cat = tax_entry
+            sk = SkillService.get_skill_by_code(db, canon_code)
             if sk:
                 return sk
+            sk = SkillService.get_skill_by_name(db, canon_name)
+            if sk:
+                return sk
+            # Also check if it's already in DB by raw input
+            sk = SkillService.get_skill_by_code(db, sk_str) or SkillService.get_skill_by_name(db, sk_str)
+            if sk:
+                return sk
+            # Use canonical taxonomy values for creation
+            code = canon_code
+            name = canon_name
+            default_category = canon_cat
         else:
-            clean_part = "".join(c if c.isalnum() else "_" for c in sk_str.upper()).strip("_")
-            candidate_code = f"SK_{clean_part}"
-            sk = SkillService.get_skill_by_code(db, candidate_code)
+            # 3. Query by code (exact)
+            sk = SkillService.get_skill_by_code(db, sk_str)
             if sk:
                 return sk
 
-        # 5. Not found: Upsert/Create into skills table
-        if sk_str.upper().startswith("SK_"):
-            code = sk_str.upper()[:50]
-            name = sk_str[3:].replace("_", " ").title()
-        else:
-            name = sk_str
-            clean_part = "".join(c if c.isalnum() else "_" for c in sk_str.upper()).strip("_")
-            code = f"SK_{clean_part}" if clean_part else "SK_CUSTOM"
-            code = code[:50]
+            # 4. Query by name (case-insensitive)
+            sk = SkillService.get_skill_by_name(db, sk_str)
+            if sk:
+                return sk
+
+            # 5. Query variations (SK_ prefix <-> title name)
+            if sk_str.upper().startswith("SK_"):
+                candidate_name = sk_str[3:].replace("_", " ").strip()
+                sk = SkillService.get_skill_by_name(db, candidate_name)
+                if sk:
+                    return sk
+            else:
+                clean_part = "".join(c if c.isalnum() else "_" for c in sk_str.upper()).strip("_")
+                candidate_code = f"SK_{clean_part}"
+                sk = SkillService.get_skill_by_code(db, candidate_code)
+                if sk:
+                    return sk
+
+            # 6. Fallback: Upsert/Create into skills table
+            if sk_str.upper().startswith("SK_"):
+                code = sk_str.upper()[:50]
+                name = sk_str[3:].replace("_", " ").title()
+            else:
+                name = sk_str
+                clean_part = "".join(c if c.isalnum() else "_" for c in sk_str.upper()).strip("_")
+                code = f"SK_{clean_part}" if clean_part else "SK_CUSTOM"
+                code = code[:50]
 
         # Ensure code doesn't collide with an existing code
         base_code = code

@@ -1,9 +1,10 @@
 import os
 import sys
 import json
+import re
 import tempfile
 from pathlib import Path
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Optional, Union, Set
 
 from .models import (
     MLError,
@@ -61,6 +62,108 @@ class MLService:
         with open(tax_file, "r", encoding="utf-8") as f:
             self._taxonomy_data = json.load(f)
         self.valid_skill_ids = {s["id"] for s in self._taxonomy_data}
+        self._build_alias_map()
+
+    STOPWORDS: Set[str] = {
+        "and", "or", "the", "for", "with", "in", "of", "to", "at", "by", "from",
+        "programming", "management", "systems", "system", "services", "service",
+        "development", "tools", "tool", "technologies", "technology", "containerization"
+    }
+
+    def _build_alias_map(self):
+        self._alias_map: Dict[str, str] = {}
+        self._taxonomy_by_id: Dict[str, Dict[str, Any]] = {}
+        for s in self._taxonomy_data:
+            cid = s["id"]
+            cname = s.get("name", cid)
+            aliases = s.get("aliases", [])
+            self._taxonomy_by_id[cid] = s
+
+            all_terms = [cid, cname] + list(aliases)
+            for term in all_terms:
+                if not term:
+                    continue
+                term_str = str(term).strip().lower()
+                self._alias_map[term_str] = cid
+
+                # Strip prefixes like SK_ or SKILL_
+                norm = re.sub(r'^(sk_|skill_)', '', term_str).replace('_', ' ').strip()
+                self._alias_map[norm] = cid
+
+                # Alphanumeric only
+                alpha = re.sub(r'[^a-z0-9]', '', term_str)
+                if alpha:
+                    self._alias_map[alpha] = cid
+
+    def resolve_canonical_skill_id(self, skill_ident: Any) -> Optional[str]:
+        """
+        Resolve an arbitrary skill string (name, canonical ID, alias, prefix variation)
+        to its canonical skill ID (e.g. 'Apache Airflow' -> 'SK_AIRFLOW').
+        """
+        if not skill_ident:
+            return None
+        s_str = str(skill_ident).strip().lower()
+        if not s_str:
+            return None
+        if s_str in self._alias_map:
+            return self._alias_map[s_str]
+
+        norm = re.sub(r'^(sk_|skill_)', '', s_str).replace('_', ' ').strip()
+        if norm in self._alias_map:
+            return self._alias_map[norm]
+
+        alpha = re.sub(r'[^a-z0-9]', '', s_str)
+        if alpha in self._alias_map:
+            return self._alias_map[alpha]
+
+        return None
+
+    def skills_match(self, s1: Any, s2: Any) -> bool:
+        """
+        Robust 6-tier matching engine between arbitrary skill representations:
+        canonical IDs (SK_AIRFLOW), names ('Apache Airflow'), prefixes ('SKILL_...'),
+        lowercased strings, and token variations.
+        """
+        if not s1 or not s2:
+            return False
+        str1 = str(s1).strip()
+        str2 = str(s2).strip()
+        if not str1 or not str2:
+            return False
+
+        # Tier 1: Exact case-insensitive match
+        if str1.lower() == str2.lower():
+            return True
+
+        # Tier 2: Taxonomy alias resolution
+        c1 = self.resolve_canonical_skill_id(str1)
+        c2 = self.resolve_canonical_skill_id(str2)
+        if c1 and c2:
+            return c1 == c2
+        if c1 and (c1.lower() == str2.lower()):
+            return True
+        if c2 and (c2.lower() == str1.lower()):
+            return True
+
+        # Tier 3: Prefix-stripped normalized comparison (sk_, skill_, underscores)
+        norm1 = re.sub(r'^(sk_|skill_)', '', str1.lower()).replace('_', ' ').strip()
+        norm2 = re.sub(r'^(sk_|skill_)', '', str2.lower()).replace('_', ' ').strip()
+        if norm1 == norm2:
+            return True
+
+        # Tier 4: Alphanumeric-only comparison
+        alpha1 = re.sub(r'[^a-z0-9]', '', norm1)
+        alpha2 = re.sub(r'[^a-z0-9]', '', norm2)
+        if alpha1 and alpha2 and alpha1 == alpha2:
+            return True
+
+        # Tier 5: Stopword-filtered word token equality
+        tok1 = {t for t in re.split(r'[^a-z0-9]+', norm1) if t and t not in self.STOPWORDS}
+        tok2 = {t for t in re.split(r'[^a-z0-9]+', norm2) if t and t not in self.STOPWORDS}
+        if tok1 and tok2 and tok1 == tok2:
+            return True
+
+        return False
 
     def _load_artifact(self, artifact_path: Path) -> Dict[str, Any]:
         if not artifact_path.exists():
@@ -834,9 +937,6 @@ class MLService:
         stu_id = student_profile.student_id if isinstance(student_profile, StudentProfileResult) else student_profile.get("student_id", "")
         profile_skills = student_profile.profile_skills if isinstance(student_profile, StudentProfileResult) else student_profile.get("skills", student_profile.get("profile_skills", []))
 
-        student_skill_ids = {s["skill_id"] for s in profile_skills}
-        student_evidence_map = {s["skill_id"]: s.get("evidence", []) for s in profile_skills}
-
         role_id = role_context.role_id if isinstance(role_context, RoleSkillContextResult) else role_context.get("role_id", "")
         role_name = role_context.role_name if isinstance(role_context, RoleSkillContextResult) else role_context.get("role_name", role_id)
         role_recs = role_context.contextual_recommendations if isinstance(role_context, RoleSkillContextResult) else role_context.get("contextual_recommendations", role_context.get("role_skill_context", []))
@@ -846,8 +946,45 @@ class MLService:
         missing_count = 0
 
         for item in role_recs:
-            sk_id = item["skill_id"]
-            is_present = sk_id in student_skill_ids
+            if isinstance(item, str):
+                sk_id = item
+                sk_name = item
+                category = "General"
+                context_status = "not_available"
+                ev_ctx = {}
+            else:
+                sk_id = item.get("skill_id", "")
+                sk_name = item.get("skill_name", sk_id)
+                category = item.get("category", "General")
+                context_status = item.get("contextual_recommendation_status", item.get("recommendation", {}).get("status", "not_available"))
+                ev_ctx = item.get("evidence_context", {})
+
+            # Match against student profile skills using robust multi-tier skills_match
+            matching_student_skill = None
+            for s in profile_skills:
+                if isinstance(s, str):
+                    s_id = s
+                    s_name = s
+                    s_ev = []
+                else:
+                    s_id = s.get("skill_id", "")
+                    s_name = s.get("skill_name", s_id)
+                    s_ev = s.get("evidence", [])
+
+                if (
+                    self.skills_match(s_id, sk_id)
+                    or self.skills_match(s_id, sk_name)
+                    or self.skills_match(s_name, sk_id)
+                    or self.skills_match(s_name, sk_name)
+                ):
+                    matching_student_skill = {
+                        "skill_id": s_id,
+                        "skill_name": s_name,
+                        "evidence": s_ev
+                    }
+                    break
+
+            is_present = matching_student_skill is not None
             stu_status = "present" if is_present else "missing"
 
             if is_present:
@@ -855,16 +992,14 @@ class MLService:
             else:
                 missing_count += 1
 
-            context_status = item.get("contextual_recommendation_status", item.get("recommendation", {}).get("status", "not_available"))
-
             skill_gaps.append({
                 "skill_id": sk_id,
-                "skill_name": item["skill_name"],
-                "category": item["category"],
+                "skill_name": sk_name,
+                "category": category,
                 "student_status": stu_status,
-                "student_evidence": student_evidence_map.get(sk_id, []) if is_present else [],
+                "student_evidence": matching_student_skill.get("evidence", []) if is_present else [],
                 "contextual_recommendation_status": context_status,
-                "evidence_context": item.get("evidence_context", {})
+                "evidence_context": ev_ctx
             })
 
         summary = {
@@ -922,9 +1057,15 @@ class MLService:
                 # Actual missing role gap is recommended
                 status = "recommended"
                 reasons = ["student_skill_gap", "role_requirement"]
-                if context_status == "recommended" or sk_id in generic_rec_map:
+                matching_gen_rec = None
+                for g_id, g_rec in generic_rec_map.items():
+                    if self.skills_match(sk_id, g_id) or self.skills_match(gap.get("skill_name"), g_id) or self.skills_match(gap.get("skill_name"), g_rec.get("skill_name")):
+                        matching_gen_rec = g_rec
+                        break
+
+                if context_status == "recommended" or matching_gen_rec is not None:
                     reasons.append("generic_evidence_recommended")
-                    gen_rec = generic_rec_map.get(sk_id, {})
+                    gen_rec = matching_gen_rec or {}
                     gen_reasons = gen_rec.get("recommendation", {}).get("reasons", [])
                     for gr in gen_reasons:
                         if gr in ["observed_market_demand", "employer_validated", "observed_in_both_sources", "course_coverage_gap", "employer_only_signal"]:
@@ -1017,7 +1158,14 @@ class MLService:
                     taught.add(str(s.get("skill_id") or s.get("id", "")))
                 else:
                     taught.add(str(s))
-            covered_rec = sorted(list(taught & recommended_skill_ids))
+
+            covered_rec = set()
+            for t in taught:
+                for r in recommended_skill_ids:
+                    if self.skills_match(t, r):
+                        covered_rec.add(t)
+                        break
+            covered_rec = sorted(list(covered_rec))
 
             if len(covered_rec) >= 1:
                 for s in covered_rec:
@@ -1031,7 +1179,7 @@ class MLService:
                     "total_taught_skills_count": len(taught)
                 })
 
-        uncovered = sorted(list(recommended_skill_ids - globally_covered))
+        uncovered = [r for r in sorted(list(recommended_skill_ids)) if not any(self.skills_match(r, c) for c in globally_covered)]
 
         summary = {
             "total_personalized_recommended_skills": len(recommended_skill_ids),
@@ -1048,5 +1196,3 @@ class MLService:
             summary=summary,
             is_synthetic_artifact=False
         )
-
-

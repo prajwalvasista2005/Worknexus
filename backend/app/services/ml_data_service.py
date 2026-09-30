@@ -86,6 +86,28 @@ class MLDataService:
         Build mapping from integer database ID, string integer ID, and skill_id to canonical skill_id.
         """
         lookup: Dict[Any, str] = {}
+        try:
+            from ml.api.service import ML_BASE_DIR
+            tax_path = ML_BASE_DIR / "data" / "skills.json"
+            if tax_path.exists():
+                with open(tax_path, "r", encoding="utf-8") as f:
+                    tax_data = json.load(f)
+                for s in tax_data:
+                    cid = s.get("id")
+                    cname = s.get("name")
+                    aliases = s.get("aliases", [])
+                    if cid:
+                        lookup[cid] = cid
+                        lookup[cid.lower()] = cid
+                        if cname:
+                            lookup[cname] = cid
+                            lookup[cname.lower()] = cid
+                        for a in aliases:
+                            lookup[a] = cid
+                            lookup[a.lower()] = cid
+        except Exception:
+            pass
+
         if MLDataService._is_mock(db):
             for s in getattr(db, "skills", {}).values():
                 sid = getattr(s, "id", None)
