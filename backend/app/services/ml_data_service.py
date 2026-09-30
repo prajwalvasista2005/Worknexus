@@ -319,7 +319,9 @@ class MLDataService:
             if not profile:
                 try:
                     num_id = int(student_id)
-                    profile = next((p for p in db.student_profiles.values() if p.user_id == num_id or p.id == num_id), None)
+                    profile = next((p for p in db.student_profiles.values() if p.user_id == num_id), None)
+                    if not profile:
+                        profile = next((p for p in db.student_profiles.values() if p.id == num_id), None)
                     if not profile:
                         user = getattr(db, "users", {}).get(num_id)
                         if not user:
@@ -407,8 +409,12 @@ class MLDataService:
                 try:
                     num_id = int(student_id)
                     profile = db.query(DBStudentProfile).filter(
-                        (DBStudentProfile.user_id == num_id) | (DBStudentProfile.id == num_id)
+                        DBStudentProfile.user_id == num_id
                     ).first()
+                    if not profile:
+                        profile = db.query(DBStudentProfile).filter(
+                            DBStudentProfile.id == num_id
+                        ).first()
 
                     # If not found, check if User exists and auto-create StudentProfile
                     if not profile:
