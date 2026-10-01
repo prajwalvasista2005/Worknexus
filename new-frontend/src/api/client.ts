@@ -11,22 +11,38 @@ export const USER_KEY = 'worknexus_user';
 
 // Configurable base URL
 export const getApiBaseUrl = (): string => {
-  const envUrl = import.meta.env.VITE_API_URL;
-  if (envUrl && typeof envUrl === 'string' && envUrl.trim().length > 0) {
+  const envUrl =
+    import.meta.env.VITE_API_BASE_URL ||
+    import.meta.env.VITE_API_URL;
+
+  if (
+    envUrl &&
+    typeof envUrl === 'string' &&
+    envUrl.trim().length > 0
+  ) {
     return envUrl.replace(/\/+$/, '');
   }
+
   if (typeof window !== 'undefined') {
-    // If frontend is accessed on port 3000, target backend on port 8000 using current hostname
-    if (window.location.port === '3000') {
-      return `${window.location.protocol}//${window.location.hostname}:8000`;
-    }
-    // If backend is on same origin (reverse proxy / production ingress)
-    if (window.location.port === '8000' || window.location.port === '80' || window.location.port === '443') {
-      return window.location.origin;
-    }
+    return window.location.origin.replace(/\/+$/, '');
   }
-  return 'http://localhost:8000';
+
+  return '';
 };
+console.log(
+  '[ApiClient] VITE_API_BASE_URL =',
+  import.meta.env.VITE_API_BASE_URL
+);
+
+console.log(
+  '[ApiClient] VITE_API_URL =',
+  import.meta.env.VITE_API_URL
+);
+
+console.log(
+  '[ApiClient] Resolved Base URL =',
+  getApiBaseUrl()
+);
 
 export class ApiError extends Error {
   status: number;

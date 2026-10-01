@@ -2,6 +2,7 @@ import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, APIRouter, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from .config import settings
 from .api import (
@@ -65,16 +66,29 @@ def create_app() -> FastAPI:
         SecurityHeadersMiddleware,
     )
 
+    # Explicitly configure CORS allowed origins (Production & Local Development)
+    cors_origins = [
+        "https://skillmesh.up.railway.app",
+        "http://localhost:5173",
+        "http://localhost:3000",
+    ]
+    # Merge additional configured origins from environment/settings if present
+    for origin in getattr(settings, "CORS_ORIGINS", []):
+        if origin not in cors_origins:
+            cors_origins.append(origin)
+
     app.add_middleware(RateLimitMiddleware)
     app.add_middleware(RequestCorrelationMiddleware)
     app.add_middleware(SecurityHeadersMiddleware)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.CORS_ORIGINS,
+        allow_origins=cors_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    # Enable reverse proxy forwarded headers for Railway load balancers / HTTPS termination
+    app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
 
     # Configure structured logging filters
     req_filter = RequestIdFilter()
@@ -93,7 +107,7 @@ def create_app() -> FastAPI:
 
     def _cors_headers(request):
         origin = request.headers.get("origin")
-        allowed = origin if (origin and (origin in settings.CORS_ORIGINS or "*" in settings.CORS_ORIGINS)) else (origin or "*")
+        allowed = origin if (origin and (origin in cors_origins or "*" in cors_origins)) else (origin or "*")
         headers = {
             "Access-Control-Allow-Origin": allowed,
             "Access-Control-Allow-Credentials": "true",
