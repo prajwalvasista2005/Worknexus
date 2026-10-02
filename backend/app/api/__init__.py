@@ -3,6 +3,7 @@ from .routes_employers import router as employers_router
 from .routes_ml import router as ml_router
 from .routes_roles import router as roles_router
 from .routes_students import router as students_router
+from .routes_trainers import router as trainer_interventions_router  # Phase 1 — Loop D
 from .auth import router as auth_router
 from .skills import router as skills_router
 from .courses import router as courses_router
@@ -17,6 +18,7 @@ __all__ = [
     "ml_router",
     "roles_router",
     "students_router",
+    "trainer_interventions_router",
     "auth_router",
     "skills_router",
     "courses_router",

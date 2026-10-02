@@ -28,7 +28,7 @@ def create_or_update_student_profile(
 ):
     # FastAPI's Depends(get_db) injects the Session directly — db IS the session.
     user_role = getattr(_user, "role", "").lower() if _user else ""
-    if user_role != "admin" and getattr(_user, "user_id", None) != profile_in.user_id:
+    if user_role not in ("admin", "trainer") and getattr(_user, "user_id", None) != profile_in.user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not authorized to modify another user's student profile."
@@ -101,7 +101,7 @@ def add_student_skill_evidence(
     _user: CurrentUser = Depends(get_current_user)
 ):
     user_role = getattr(_user, "role", "").lower() if _user else ""
-    if user_role != "admin" and getattr(_user, "user_id", None) != user_id:
+    if user_role not in ("admin", "trainer") and getattr(_user, "user_id", None) != user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not authorized to add evidence for another user."
