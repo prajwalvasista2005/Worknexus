@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { PortalLayout } from '../components/layout/PortalLayout';
 import { useAuth } from '../contexts/AuthContext';
 import { mlApi } from '../api/ml';
+import { trainerApi, TrainerIntervention } from '../api/trainers';
 import { DemandData, EvidenceSummary, SkillExtractionItem } from '../types';
 import { TableSkeleton, Skeleton } from '../components/ui/Skeleton';
 import { EmptyState } from '../components/ui/EmptyState';
@@ -20,13 +21,15 @@ import {
   Database,
   ArrowRight,
   CheckCircle2,
+  Briefcase,
+  Send,
 } from 'lucide-react';
 
 export const TrainerHub: React.FC = () => {
   const { user } = useAuth();
 
-  // Active Tab state: 'demand' | 'extractor' | 'recommendations' | 'evidence'
-  const [activeTab, setActiveTab] = useState<'demand' | 'extractor' | 'recommendations' | 'evidence'>('demand');
+  // Active Tab state: 'demand' | 'extractor' | 'recommendations' | 'evidence' | 'interventions'
+  const [activeTab, setActiveTab] = useState<'demand' | 'extractor' | 'recommendations' | 'evidence' | 'interventions'>('demand');
 
   // --- Tab 1: Demand & Evidence Summary ---
   const [demandList, setDemandList] = useState<DemandData[]>([]);
@@ -55,6 +58,20 @@ export const TrainerHub: React.FC = () => {
   const [evidenceData, setEvidenceData] = useState<any | null>(null);
   const [isLoadingEvidence, setIsLoadingEvidence] = useState(false);
   const [evidenceError, setEvidenceError] = useState<string | null>(null);
+
+  // --- Tab 5: Trainer Interventions (Phase 1 — Loop D) ---
+  const [interventions, setInterventions] = useState<TrainerIntervention[]>([]);
+  const [isLoadingInterventions, setIsLoadingInterventions] = useState(false);
+  const [interventionsError, setInterventionsError] = useState<string | null>(null);
+  const [interventionSuccess, setInterventionSuccess] = useState<string | null>(null);
+  const [isSubmittingIntervention, setIsSubmittingIntervention] = useState(false);
+  // Form fields
+  const [formStudentId, setFormStudentId] = useState('');
+  const [formSkillId, setFormSkillId] = useState('');
+  const [formInterventionType, setFormInterventionType] = useState('coaching');
+  const [formNotes, setFormNotes] = useState('');
+  const [formProficiencyBefore, setFormProficiencyBefore] = useState('');
+  const [formProficiencyAfter, setFormProficiencyAfter] = useState('');
 
   // Fetch top 12 skill demand rankings
   const fetchDemand = useCallback(async () => {
@@ -152,13 +169,75 @@ export const TrainerHub: React.FC = () => {
     }
   }, []);
 
+  // Fetch trainer's own intervention history
+  const fetchInterventions = useCallback(async () => {
+    setIsLoadingInterventions(true);
+    setInterventionsError(null);
+    try {
+      const data = await trainerApi.getMyInterventions();
+      setInterventions(Array.isArray(data) ? data : []);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to fetch intervention history.';
+      setInterventionsError(msg);
+    } finally {
+      setIsLoadingInterventions(false);
+    }
+  }, []);
+
+  // Submit a new intervention
+  const handleSubmitIntervention = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formStudentId.trim() || !formSkillId.trim()) return;
+
+    const studentIdNum = parseInt(formStudentId.trim(), 10);
+    const skillIdNum = parseInt(formSkillId.trim(), 10);
+    if (isNaN(studentIdNum) || isNaN(skillIdNum)) {
+      setInterventionsError('Student ID and Skill ID must be valid integers.');
+      return;
+    }
+
+    setIsSubmittingIntervention(true);
+    setInterventionsError(null);
+    setInterventionSuccess(null);
+
+    try {
+      const created = await trainerApi.createIntervention({
+        student_id: studentIdNum,
+        skill_id: skillIdNum,
+        intervention_type: formInterventionType,
+        notes: formNotes.trim() || undefined,
+        proficiency_before: formProficiencyBefore || undefined,
+        proficiency_after: formProficiencyAfter || undefined,
+      });
+      setInterventionSuccess(
+        `Intervention #${created.id} created successfully. Readiness recalculated for student ${created.student_id}.`
+      );
+      // Reset form
+      setFormStudentId('');
+      setFormSkillId('');
+      setFormInterventionType('coaching');
+      setFormNotes('');
+      setFormProficiencyBefore('');
+      setFormProficiencyAfter('');
+      // Refresh history
+      fetchInterventions();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to create intervention.';
+      setInterventionsError(msg);
+    } finally {
+      setIsSubmittingIntervention(false);
+    }
+  };
+
   useEffect(() => {
     if (activeTab === 'recommendations' && recommendations.length === 0) {
       fetchRecommendations();
     } else if (activeTab === 'evidence' && !evidenceData) {
       fetchEvidence();
+    } else if (activeTab === 'interventions' && interventions.length === 0) {
+      fetchInterventions();
     }
-  }, [activeTab, fetchRecommendations, fetchEvidence, recommendations.length, evidenceData]);
+  }, [activeTab, fetchRecommendations, fetchEvidence, fetchInterventions, recommendations.length, evidenceData, interventions.length]);
 
   // Filter skills by search query
   const filteredDemand = demandList.filter((item) => {
@@ -247,6 +326,18 @@ export const TrainerHub: React.FC = () => {
             >
               <Activity className="w-4 h-4" />
               <span>Multi-Signal Matrix</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('interventions')}
+              className={`flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
+                activeTab === 'interventions'
+                  ? 'bg-indigo-50 text-indigo-700'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
+            >
+              <Briefcase className="w-4 h-4" />
+              <span>Assign Intervention</span>
             </button>
           </div>
         </div>
@@ -747,6 +838,248 @@ export const TrainerHub: React.FC = () => {
                 )}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Tab 5: Assign Intervention — Phase 1 Loop D */}
+        {activeTab === 'interventions' && (
+          <div className="space-y-8">
+            {/* Assignment Form */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs">
+              <div className="border-b border-slate-100 pb-4 mb-6">
+                <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                  <Briefcase className="w-5 h-5 text-indigo-600" />
+                  Assign Student Intervention
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Create a coaching, assessment, or mentoring intervention for a student skill. Triggers automatic readiness recalculation.
+                </p>
+              </div>
+
+              {interventionsError && (
+                <Alert type="error" message={interventionsError} />
+              )}
+              {interventionSuccess && (
+                <div className="mb-4 flex items-start gap-2 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <span>{interventionSuccess}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmitIntervention} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Student ID */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Student ID <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    value={formStudentId}
+                    onChange={(e) => setFormStudentId(e.target.value)}
+                    placeholder="e.g. 42"
+                    required
+                    className="w-full text-xs text-slate-900 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+
+                {/* Skill ID */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Skill ID <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    value={formSkillId}
+                    onChange={(e) => setFormSkillId(e.target.value)}
+                    placeholder="e.g. 7"
+                    required
+                    className="w-full text-xs text-slate-900 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+
+                {/* Intervention Type */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Intervention Type
+                  </label>
+                  <select
+                    value={formInterventionType}
+                    onChange={(e) => setFormInterventionType(e.target.value)}
+                    className="w-full text-xs text-slate-900 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                    <option value="coaching">Coaching</option>
+                    <option value="assessment">Assessment</option>
+                    <option value="workshop">Workshop</option>
+                    <option value="mentoring">Mentoring</option>
+                    <option value="course_assignment">Course Assignment</option>
+                    <option value="feedback">Feedback</option>
+                  </select>
+                </div>
+
+                {/* Notes */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Notes
+                  </label>
+                  <input
+                    type="text"
+                    value={formNotes}
+                    onChange={(e) => setFormNotes(e.target.value)}
+                    placeholder="Optional notes for the student..."
+                    className="w-full text-xs text-slate-900 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+
+                {/* Proficiency Before */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Proficiency Before
+                  </label>
+                  <select
+                    value={formProficiencyBefore}
+                    onChange={(e) => setFormProficiencyBefore(e.target.value)}
+                    className="w-full text-xs text-slate-900 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                    <option value="">— Not specified —</option>
+                    <option value="basic">Basic</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                  </select>
+                </div>
+
+                {/* Proficiency After */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Proficiency After
+                  </label>
+                  <select
+                    value={formProficiencyAfter}
+                    onChange={(e) => setFormProficiencyAfter(e.target.value)}
+                    className="w-full text-xs text-slate-900 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                    <option value="">— Not specified —</option>
+                    <option value="basic">Basic</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                  </select>
+                </div>
+
+                {/* Submit */}
+                <div className="md:col-span-2 flex justify-end pt-2">
+                  <button
+                    type="submit"
+                    disabled={isSubmittingIntervention || !formStudentId.trim() || !formSkillId.trim()}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors shadow-xs disabled:opacity-50 cursor-pointer"
+                  >
+                    {isSubmittingIntervention ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <span>Submitting...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-3.5 h-3.5" />
+                        <span>Assign Intervention</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* Intervention History Table */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                <div>
+                  <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-indigo-600" />
+                    My Intervention History
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">All interventions you have assigned, newest first.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={fetchInterventions}
+                  disabled={isLoadingInterventions}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition-colors cursor-pointer"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isLoadingInterventions ? 'animate-spin' : ''}`} />
+                  <span>Refresh</span>
+                </button>
+              </div>
+
+              {isLoadingInterventions ? (
+                <TableSkeleton rows={5} cols={6} />
+              ) : interventionsError && interventions.length === 0 ? (
+                <Alert type="error" message={interventionsError} onRetry={fetchInterventions} />
+              ) : interventions.length === 0 ? (
+                <EmptyState
+                  icon={Briefcase}
+                  title="No interventions assigned yet."
+                  description="Use the form above to assign your first student intervention."
+                />
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-slate-200 text-slate-500 uppercase tracking-wider text-[11px]">
+                        <th className="py-2.5 px-3 font-semibold">Date</th>
+                        <th className="py-2.5 px-3 font-semibold">Student ID</th>
+                        <th className="py-2.5 px-3 font-semibold">Skill</th>
+                        <th className="py-2.5 px-3 font-semibold">Type</th>
+                        <th className="py-2.5 px-3 font-semibold">Proficiency</th>
+                        <th className="py-2.5 px-3 font-semibold text-center">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {interventions.map((iv) => {
+                        const dateStr = iv.created_at
+                          ? new Date(iv.created_at).toLocaleDateString('en-GB', {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric',
+                            })
+                          : '—';
+                        const profChange =
+                          iv.proficiency_before && iv.proficiency_after
+                            ? `${iv.proficiency_before} → ${iv.proficiency_after}`
+                            : iv.proficiency_after || iv.proficiency_before || '—';
+                        return (
+                          <tr key={iv.id} className="hover:bg-slate-50">
+                            <td className="py-3 px-3 tabular-nums text-slate-600">{dateStr}</td>
+                            <td className="py-3 px-3 font-semibold text-slate-900">#{iv.student_id}</td>
+                            <td className="py-3 px-3">
+                              <div className="font-semibold text-slate-900">{iv.skill_name || '—'}</div>
+                              {iv.skill_code && (
+                                <div className="text-[10px] text-slate-400 font-mono">{iv.skill_code}</div>
+                              )}
+                            </td>
+                            <td className="py-3 px-3">
+                              <span className="inline-block px-2 py-0.5 text-[10px] font-semibold rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100 capitalize">
+                                {iv.intervention_type.replace('_', ' ')}
+                              </span>
+                            </td>
+                            <td className="py-3 px-3 text-slate-600 capitalize">{profChange}</td>
+                            <td className="py-3 px-3 text-center">
+                              {iv.is_verified ? (
+                                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700">
+                                  <CheckCircle2 className="w-3.5 h-3.5" />
+                                  Verified
+                                </span>
+                              ) : (
+                                <span className="inline-block text-[10px] font-semibold text-amber-600 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full">
+                                  Pending
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

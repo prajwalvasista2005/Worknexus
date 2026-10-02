@@ -11,6 +11,7 @@ from .job_postings import JobPosting
 from .jobSkill import JobSkill
 from .student_roles import TargetRole, RoleSkill, StudentProfile, StudentSkillEvidence
 from .employers import Employer, EmployerFeedback, EmployerFeedbackSignal
+from .trainer_interventions import TrainerIntervention  # Phase 1 — Loop D
 
 __all__ = [
     "User",
@@ -29,4 +30,5 @@ __all__ = [
     "Employer",
     "EmployerFeedback",
     "EmployerFeedbackSignal",
+    "TrainerIntervention",
 ]

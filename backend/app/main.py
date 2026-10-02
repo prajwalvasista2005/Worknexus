@@ -11,6 +11,7 @@ from .api import (
     ml_router,
     roles_router,
     students_router,
+    trainer_interventions_router,
     auth_router,
     skills_router,
     courses_router,
@@ -165,6 +166,11 @@ def create_app() -> FastAPI:
     app.include_router(ml_router, prefix=f"{settings.API_V1_STR}/ml", tags=["ML Intelligence"])
     app.include_router(roles_router, prefix=f"{settings.API_V1_STR}/roles", tags=["Career Roles"])
     app.include_router(students_router, prefix=f"{settings.API_V1_STR}/students", tags=["Students"])
+    app.include_router(
+        trainer_interventions_router,
+        prefix=f"{settings.API_V1_STR}/trainers/interventions",
+        tags=["Trainers"],
+    )  # Phase 1 — Loop D
 
     @app.get("/", tags=["Root"])
     def root_endpoint():
